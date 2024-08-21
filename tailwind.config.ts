@@ -14,44 +14,43 @@ const config = {
     },
     extend: {
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
+        "dark-1": "#000000",
+        "dark-2": "#121417",
+        "dark-3": "#101012",
+        "dark-4": "#1F1F22",
+        "light-1": "#FFFFFF",
+        "light-2": "#EFEFEF",
+        "light-3": "#7878A3",
+        "light-4": "#5C5C7B",
+        "gray-1": "#697C89",
+        primary: "#007bff",
+        secondary: "#6c757d",
+        accent: "",
+        success: "#28a745",
+        warning: "#ffc107",
+        danger: "#dc3545",
+        info: "#17a2b8",
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        "count-badge": "0px 0px 6px 2px rgba(219, 188, 159, 0.30)",
+        "groups-sidebar": "-30px 0px 60px 0px rgba(28, 28, 31, 0.50)",
+      },
+      spacing: {
+        mobile: "480px",
+        tablet: "768px",
+        laptop: "1024px",
+        desktop: "1440px",
+      },
+      screens: {
+        mobile: "480px",
+        tablet: "768px",
+        laptop: "1024px",
+        desktop: "1920px",
       },
       keyframes: {
         "accordion-down": {
