@@ -1,0 +1,68 @@
+import { categories, footer } from "@/constants";
+import Link from "next/link";
+import { FaInstagram, FaFacebook } from "react-icons/fa";
+
+const Footer = () => {
+  return (
+    <div className="bg-dark-1 py-20 px-10 laptp:px-20">
+      <div className="max-w-desktop mx-auto text-light-1">
+        <div className="w-full flex justify-between flex-wrap">
+          <div className="w-full mobile:w-1/2 laptop:w-auto mt-7">
+            <h2 className="text-lg font-bold uppercase">Shop</h2>
+            <ul className="flex flex-col mobile:mt-5">
+              {categories?.map((category) => (
+                <FLink key={category.label} label={category.label} route={category.route} />
+              ))}
+            </ul>
+          </div>
+
+          <div className="w-full mobile:w-1/2 laptop:w-auto mt-7">
+            <h2 className="text-lg font-bold uppercase">About</h2>
+            <ul className="flex flex-col mobile:mt-5">
+              {footer.about?.map((item) => (
+                <FLink key={item.label} label={item.label} route={item.route} />
+              ))}
+            </ul>
+          </div>
+
+          <div className="w-full mobile:w-1/2 laptop:w-auto mt-7">
+            <h2 className="text-lg font-bold uppercase">Company</h2>
+            <ul className="flex flex-col mobile:mt-5">
+              {footer.company?.map((item) => (
+                <FLink key={item.label} label={item.label} route={item.route} />
+              ))}
+            </ul>
+          </div>
+
+          <div className="w-full mobile:w-1/2 laptop:w-auto mt-7">
+            <h2 className="text-lg font-bold uppercase">Help</h2>
+            <ul className="flex flex-col mobile:mt-5">
+              {footer.help?.map((item) => (
+                <FLink key={item.label} label={item.label} route={item.route} />
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="line-break pt-20" />
+        <div className="text-center flex flex-col">
+          <div className="flex justify-center gap-5 pt-5">
+            <FaInstagram className="text-2xl text-light-1" />
+            <FaFacebook className="text-2xl text-light-1" />
+          </div>
+          <p className="text-sm tablet:text-lg font-medium text-light-4 py-5">Copyright ©2024</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const FLink = ({ label, route }: { label: string; route: string }) => {
+  return (
+    <Link href={route}>
+      <li className="text-sm tablet:text-base mt-2 font-semibold text-light-3">{label}</li>
+    </Link>
+  );
+};
+
+export default Footer;

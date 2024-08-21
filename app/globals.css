@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* hide scrollbar */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-right-btn {
+  @apply cursor-pointer absolute top-1/2 right-0 -translate-y-1/2;
+}
+
+.scrollbar-left-btn {
+  @apply cursor-pointer absolute top-1/2 left-0 -translate-y-1/2;
+}
+
+.line-break {
+  @apply border-b border-dark-4;
+}
