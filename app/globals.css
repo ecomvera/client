@@ -18,3 +18,7 @@
 .line-break {
   @apply border-b border-dark-4;
 }
+
+.head-text {
+  @apply text-2xl mobile:text-3xl;
+}
