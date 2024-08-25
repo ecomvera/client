@@ -5,6 +5,7 @@ import { useState } from "react";
 import { IoLocationOutline } from "react-icons/io5";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 const ProductDetails = () => {
   const images = ["/assets/p1.webp", "/assets/p2.webp", "/assets/p3.webp", "/assets/p4.webp", "/assets/p5.webp"];
@@ -51,6 +52,7 @@ const LeftGallaryView = ({ images }: { images: string[] }) => {
 };
 
 const ProductDetail = () => {
+  const router = useRouter();
   const sizes = ["S", "M", "L", "XL", "2XL"];
 
   const keyHighlight = [
@@ -88,7 +90,10 @@ const ProductDetail = () => {
       </div>
 
       <div className="flex gap-2 py-5">
-        <button className=" bg-success text-white rounded-[5px] uppercase text-sm tablet:text-base font-bold p-2 px-4">
+        <button
+          className=" bg-success text-white rounded-[5px] uppercase text-sm tablet:text-base font-bold p-2 px-4"
+          onClick={() => router.push("/cart")}
+        >
           Add to cart
         </button>
         <button className=" bg-secondary text-white rounded-[5px] uppercase text-sm tablet:text-base font-bold p-2 px-4">
