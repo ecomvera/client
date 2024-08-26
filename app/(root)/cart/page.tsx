@@ -1,7 +1,10 @@
+"use client";
+
 import Footer from "@/components/Shared/Footer";
 import Header from "@/components/Shared/Header";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { FaMinus, FaPlus } from "react-icons/fa6";
 
@@ -68,6 +71,7 @@ const CartProduct = () => {
 };
 
 const CartSummary = () => {
+  const router = useRouter();
   return (
     <div className="w-full tablet:w-[300px] px-2">
       <div className="flex justify-between items-center py-3 border-b border-light-3">
@@ -84,7 +88,9 @@ const CartSummary = () => {
       </div>
 
       <div className="w-full flex justify-center py-5">
-        <Button className="w-full bg-success py-2 text-base">Checkout</Button>
+        <Button className="w-full bg-success py-2 text-base" onClick={() => router.push("/checkout")}>
+          Checkout
+        </Button>
       </div>
     </div>
   );
