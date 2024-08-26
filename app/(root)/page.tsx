@@ -19,7 +19,7 @@ export default function Home() {
     <main className="">
       <Header />
       <Banner />
-      <Categories />
+      {/* <Categories /> */}
 
       <NewArrivals />
 

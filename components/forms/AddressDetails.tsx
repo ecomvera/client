@@ -4,30 +4,35 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import InputField from "./InputField";
+import { useAddressStore } from "@/stores/address";
+import { useEffect, useRef } from "react";
+// @ts-ignore
+import { isEqual } from "lodash";
 
 const AddressDetails = () => {
+  const { addressData, setAddressData } = useAddressStore();
+
   const form = useForm<z.infer<typeof addressSchema>>({
     resolver: zodResolver(addressSchema),
-    defaultValues: {
-      name: "",
-      phone: "",
-      email: "",
-      line1: "",
-      line2: "",
-      landmark: "",
-      city: "",
-      state: "",
-      country: "",
-      pincode: "",
-    },
+    defaultValues: addressData,
   });
+
+  const formData = form.watch();
+  const prevFormData = useRef(formData);
 
   function onSubmit(values: z.infer<typeof addressSchema>) {
     console.log(values);
   }
+
+  useEffect(() => {
+    if (!isEqual(formData, prevFormData.current)) {
+      setAddressData(formData);
+      prevFormData.current = formData;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData]);
 
   return (
     <Form {...form}>
