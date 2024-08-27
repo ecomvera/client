@@ -4,7 +4,7 @@ import { FaInstagram, FaFacebook } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <div className="bg-dark-1 py-20 px-10 laptp:px-20">
+    <div className="py-20 px-10 laptp:px-20">
       <div className="max-w-desktop mx-auto text-light-1">
         <div className="w-full flex justify-between flex-wrap">
           <div className="w-full mobile:w-1/2 laptop:w-auto mt-7">
@@ -44,8 +44,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="line-break pt-20" />
-        <div className="text-center flex flex-col">
+        <div className="text-center pt-20 flex flex-col">
           <div className="flex justify-center gap-5 pt-5">
             <FaInstagram className="text-2xl text-light-1" />
             <FaFacebook className="text-2xl text-light-1" />
