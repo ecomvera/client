@@ -45,97 +45,39 @@ const components: { title: string; href: string; description: string }[] = [
 
 function HeaderNavigation() {
   return (
-    <NavigationMenu>
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger className="text-base">Men</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="flex w-full max-w-[550px] gap-10 p-5 px-8">
-              <div>
-                <h3 className="text-base font-semibold">Topwear</h3>
-                <ul role="list" className="mt-3 space-y-1">
-                  {components.map((component) => (
-                    <Link href={component.href} key={component.title}>
-                      <div className="text-light-3 my-2 text-sm">
-                        <p className="text-nowrap">{component.title}</p>
-                      </div>
-                    </Link>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold">Bottomwear</h3>
-                <ul role="list" className="mt-3 space-y-1">
-                  {components.map((component) => (
-                    <Link href={component.href} key={component.title}>
-                      <div className="text-light-3 my-2 text-sm">
-                        <p className="text-nowrap">{component.title}</p>
-                      </div>
-                    </Link>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold">Topseller</h3>
-                <ul role="list" className="mt-3 space-y-1">
-                  {components.map((component) => (
-                    <Link href={component.href} key={component.title}>
-                      <div className="text-light-3 my-2 text-sm">
-                        <p className="text-nowrap">{component.title}</p>
-                      </div>
-                    </Link>
-                  ))}
-                </ul>
-              </div>
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Women</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="flex w-full max-w-[550px] gap-10 p-5 px-8">
-              <div>
-                <h3 className="text-base font-semibold">Topwear</h3>
-                <ul role="list" className="mt-3 space-y-1">
-                  {components.map((component) => (
-                    <Link href={component.href} key={component.title}>
-                      <div className="text-light-3 my-2 text-sm">
-                        <p className="text-nowrap">{component.title}</p>
-                      </div>
-                    </Link>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold">Bottomwear</h3>
-                <ul role="list" className="mt-3 space-y-1">
-                  {components.map((component) => (
-                    <Link href={component.href} key={component.title}>
-                      <div className="text-light-3 my-2 text-sm">
-                        <p className="text-nowrap">{component.title}</p>
-                      </div>
-                    </Link>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold">Topseller</h3>
-                <ul role="list" className="mt-3 space-y-1">
-                  {components.map((component) => (
-                    <Link href={component.href} key={component.title}>
-                      <div className="text-light-3 my-2 text-sm">
-                        <p className="text-nowrap">{component.title}</p>
-                      </div>
-                    </Link>
-                  ))}
-                </ul>
-              </div>
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
+    <NavigationMenu className="absolute left-5 top-3">
+      <NavigationMenuList className="pl-40 laptop:pl-44">
+        <CategoryDropdown label="Men" />
+        <CategoryDropdown label="Women" />
       </NavigationMenuList>
     </NavigationMenu>
   );
 }
+
+const CategoryDropdown = ({ label }: { label: string }) => {
+  return (
+    <NavigationMenuItem>
+      <NavigationMenuTrigger className="text-base px-2">{label}</NavigationMenuTrigger>
+      <NavigationMenuContent>
+        <ul className="flex w-[715px] gap-10 p-5 px-8">
+          {["Topwear", "Bottomwear", "Topseller"].map((item) => (
+            <div key={item}>
+              <h3 className="text-base font-semibold">{item}</h3>
+              <ul role="list" className="mt-5 space-y-1">
+                {components.map((component) => (
+                  <Link href={component.href} key={component.title}>
+                    <div className="text-light-3 my-3 text-sm">
+                      <p className="text-nowrap">{component.title}</p>
+                    </div>
+                  </Link>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </ul>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
+  );
+};
 
 export default HeaderNavigation;

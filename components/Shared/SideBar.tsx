@@ -1,0 +1,97 @@
+"use client";
+
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { useAction } from "@/stores/action";
+import Link from "next/link";
+import { FaInstagram, FaFacebook } from "react-icons/fa";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+
+const SideBar = () => {
+  const { isSidebarOpen, setIsSidebarOpen } = useAction();
+
+  return (
+    <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+      <SheetContent side="left" className="p-0 border-border">
+        <SheetHeader className="text-start p-3">
+          <SheetTitle>Welcome User</SheetTitle>
+          <Link href={"#"}>
+            <SheetDescription>Sign In/Sign Up</SheetDescription>
+          </Link>
+        </SheetHeader>
+        <div className="line-break"></div>
+        <div className="flex flex-col gap-3 p-3">
+          <div className="text-sm text-muted-foreground">Shop In</div>
+
+          <div className="flex flex-col px-1">
+            <Accordion type="single" collapsible>
+              {["Men", "Women"].map((item) => (
+                <Item key={item} label={item} />
+              ))}
+            </Accordion>
+          </div>
+        </div>
+        <div className="bg-border w-full p-3">
+          <div className="text-sm text-muted-foreground">Contact Us</div>
+          <div className="flex flex-col mt-2">
+            <Link href={"#"} className="flex gap-3 p-2">
+              <div className="text-sm font-semibold">Help & Support</div>
+            </Link>
+            <Link href={"#"} className="flex gap-3 p-2">
+              <div className="text-sm font-semibold">Feedback & Suggestions</div>
+            </Link>
+            <Link href={"#"} className="flex gap-3 p-2">
+              <div className="text-sm font-semibold">Become a Seller</div>
+            </Link>
+          </div>
+
+          <div className="text-sm text-muted-foreground mt-3">About Us</div>
+          <div className="flex flex-col mt-2">
+            <Link href={"#"} className="flex gap-3 p-2">
+              <div className="text-sm font-semibold">Blogs</div>
+            </Link>
+            <div className="flex gap-3 p-2">
+              <div className="flex justify-center gap-5">
+                <Link href={"#"}>
+                  <FaInstagram className="text-2xl text-light-1" />
+                </Link>
+                <Link href={"#"}>
+                  <FaFacebook className="text-2xl text-light-1" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+};
+
+const Item = ({ label }: { label: string }) => {
+  return (
+    <AccordionItem value={label} className="border-none">
+      <AccordionTrigger style={{ textDecoration: "none" }} className="font-semibold">
+        {label}
+      </AccordionTrigger>
+      <AccordionContent className="px-2">
+        <Accordion type="single" collapsible>
+          {["Topwear", "Bottomwear"].map((item) => (
+            <AccordionItem key={item} value={item} className="border-none">
+              <AccordionTrigger style={{ textDecoration: "none" }}>{item}</AccordionTrigger>
+              <AccordionContent className="px-2">
+                <Accordion type="single" collapsible>
+                  {["tshirt", "polo"].map((i) => (
+                    <Link href={"#"} key={i} className="flex gap-3 p-2">
+                      <div className="text-sm font-semibold">{i}</div>
+                    </Link>
+                  ))}
+                </Accordion>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </AccordionContent>
+    </AccordionItem>
+  );
+};
+
+export default SideBar;
