@@ -5,6 +5,7 @@ const Banner = () => {
     <div>
       <Image
         src="/assets/banner.avif"
+        priority
         alt="banner"
         width={0}
         height={0}
