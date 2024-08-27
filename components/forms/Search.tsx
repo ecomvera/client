@@ -10,7 +10,7 @@ const Search = () => {
   const [search, setSearch] = useState("");
 
   return (
-    <div className="w-1/2">
+    <div className="hidden tablet:flex mr-5">
       <div className="flex items-center h-10  rounded-xl overflow-hidden bg-primary-50">
         <Input
           type="text"

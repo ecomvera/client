@@ -19,7 +19,6 @@ export default function Home() {
     <main className="">
       <Header />
       <Banner />
-      {/* <Categories /> */}
 
       <NewArrivals />
 
