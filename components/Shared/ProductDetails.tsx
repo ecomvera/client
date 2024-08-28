@@ -30,7 +30,7 @@ const LeftGallaryView = ({ images }: { images: string[] }) => {
     <div className="flex justify-center h-[330px] mobile:h-[420px]">
       <div className="relative flex flex-col w-[80px] h-full">
         {images.map((image, index) => (
-          <div key={index} className="relative cursor-pointer border m-[2px] h-[80px] bg-gray-100">
+          <div key={index} className="relative cursor-pointer border border-muted-foreground m-[2px] h-[80px] bg-background">
             <Image
               layout="fill"
               key={index}
@@ -44,7 +44,7 @@ const LeftGallaryView = ({ images }: { images: string[] }) => {
         ))}
       </div>
 
-      <div className="relative w-[350px] border ">
+      <div className="relative w-[350px]">
         <Image layout="fill" src={currentSlide} quality={100} objectFit="contain" objectPosition="center" alt="product" />
       </div>
     </div>

@@ -7,7 +7,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-const BreadcrumbCard = () => {
+const BreadcrumbCard = ({ nav, title }: { nav?: { title: string; url: string }[]; title: string }) => {
   return (
     <Breadcrumb className="mt-4">
       <BreadcrumbList>
@@ -15,12 +15,16 @@ const BreadcrumbCard = () => {
           <BreadcrumbLink href="/">Home</BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
+        {nav?.map((item) => (
+          <>
+            <BreadcrumbItem key={item.title}>
+              <BreadcrumbLink href={item.url}>{item.title}</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+          </>
+        ))}
         <BreadcrumbItem>
-          <BreadcrumbLink href="/components">Components</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+          <BreadcrumbPage>{title}</BreadcrumbPage>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>

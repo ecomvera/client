@@ -12,7 +12,7 @@ const Header = () => {
   const { setIsSidebarOpen } = useAction();
 
   return (
-    <div className="w-full sticky top-0 bg-background z-10 shadow-lg">
+    <div className="w-full sticky top-0 bg-background z-10 ">
       <div className="max-w-desktop mx-auto px-2 w-full sticky top-0 bg-background">
         <div className="flex justify-between gap-3 py-3 tablet:py-2 items-center">
           <div className="flex gap-3 items-center">
@@ -20,7 +20,7 @@ const Header = () => {
               className="text-3xl tablet:hidden cursor-pointer"
               onClick={() => setIsSidebarOpen(true)}
             />
-            <Link href={"/"}>
+            <Link href={"/"} className="z-20">
               <h2 className="text-xl tablet:text-2xl font-bold uppercase tracking-wide">Silkyester</h2>
             </Link>
 

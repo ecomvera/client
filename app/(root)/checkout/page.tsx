@@ -1,23 +1,17 @@
 "use client";
 
 import AddressDetails from "@/components/forms/AddressDetails";
-import Footer from "@/components/Shared/Footer";
-import Header from "@/components/Shared/Header";
 import React from "react";
 
-const page = () => {
+const Page = () => {
   return (
-    <div>
-      <Header />
-      <div className="max-w-desktop mx-auto px-2 py-5">
-        <h1 className="head-text font-semibold text-dark-3">Checkout</h1>
+    <div className="max-w-desktop mx-auto px-2 py-5">
+      <h1 className="head-text font-semibold text-dark-3">Checkout</h1>
 
-        <div className="flex flex-col tablet:flex-row justify-between py-3 gap-4 border-light-3">
-          <AddressDetails />
-          <PaymentDetails />
-        </div>
+      <div className="flex flex-col tablet:flex-row justify-between py-3 gap-4 border-light-3">
+        <AddressDetails />
+        <PaymentDetails />
       </div>
-      <Footer />
     </div>
   );
 };
@@ -34,4 +28,4 @@ const PaymentDetails = () => {
   );
 };
 
-export default page;
+export default Page;

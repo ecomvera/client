@@ -1,26 +1,20 @@
 "use client";
 
-import Footer from "@/components/Shared/Footer";
-import Header from "@/components/Shared/Header";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { FaMinus, FaPlus } from "react-icons/fa6";
 
-const page = () => {
+const Page = () => {
   return (
-    <div>
-      <Header />
-      <div className="max-w-desktop mx-auto px-2 py-5">
-        <h1 className="head-text font-semibold text-dark-3">My Cart</h1>
+    <div className="max-w-desktop mx-auto px-2 py-5">
+      <h1 className="head-text font-semibold text-dark-3">My Cart</h1>
 
-        <div className="flex flex-col tablet:flex-row justify-between py-3 gap-4 border-light-3">
-          <CartProducts />
-          <CartSummary />
-        </div>
+      <div className="flex flex-col tablet:flex-row justify-between py-3 gap-4 border-light-3">
+        <CartProducts />
+        <CartSummary />
       </div>
-      <Footer />
     </div>
   );
 };
@@ -96,4 +90,4 @@ const CartSummary = () => {
   );
 };
 
-export default page;
+export default Page;

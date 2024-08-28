@@ -1,100 +1,37 @@
-// @ts-ignore
-import Slider from "react-slick";
-import { FiChevronLeft, FiChevronRight, FiChevronUp, FiChevronDown } from "react-icons/fi";
+import { Carousel, CarouselContent, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 
-function Carousel({
+function ReactCarousel({
   children,
-  isVertical = false,
-  infinite = false,
-  nodots = false,
+  autoPlay,
+  showArrows,
 }: {
-  children: any;
-  isVertical?: boolean;
-  infinite?: boolean;
-  nodots?: boolean;
+  children: React.ReactNode;
+  autoPlay?: boolean;
+  showArrows: boolean;
 }) {
-  const settings = {
-    dots: !nodots,
-    infinite: !infinite,
-    speed: 500,
-    slidesToShow: 5,
-    slidesToScroll: 1,
-    initialSlide: 0,
-    vertical: isVertical,
-    verticalSwiping: isVertical,
-    nextArrow: <NextArrow isVertical={isVertical} />,
-    prevArrow: <PrevArrow isVertical={isVertical} />,
-    responsive: isVertical
-      ? []
-      : [
-          {
-            breakpoint: 1024,
-            settings: {
-              slidesToShow: 4,
-              slidesToScroll: 1,
-              infinite: true,
-              dots: !nodots,
-            },
-          },
-          {
-            breakpoint: 768,
-            settings: {
-              slidesToShow: 3,
-              slidesToScroll: 1,
-              infinite: true,
-              dots: !nodots,
-            },
-          },
-          {
-            breakpoint: 480,
-            settings: {
-              slidesToShow: 2,
-              slidesToScroll: 1,
-              infinite: true,
-              dots: !nodots,
-            },
-          },
-        ],
-  };
   return (
-    <div className="slider-container mx-auto h-full">
-      <Slider {...settings} className="h-full">
-        {children}
-      </Slider>
-    </div>
-  );
-}
-
-function PrevArrow(props: any) {
-  const { onClick, isVertical } = props;
-  return (
-    <div
-      className={`absolute ${isVertical ? "top-[-30px] w-full" : "left-0 bottom-[45%]"} z-10 cursor-pointer`}
-      onClick={onClick}
+    <Carousel
+      className="w-full mx-auto"
+      plugins={
+        autoPlay
+          ? [
+              Autoplay({
+                delay: 2000,
+              }),
+            ]
+          : []
+      }
     >
-      {isVertical ? (
-        <FiChevronUp className="text-2xl laptop:text-4xl text-dark-4 mx-auto" />
-      ) : (
-        <FiChevronLeft className="text-2xl laptop:text-4xl text-dark-4" />
+      <CarouselContent className="-ml-1">{children}</CarouselContent>
+      {showArrows && (
+        <>
+          <CarouselPrevious className="absolute top-1/2 -translate-y-1/2 left-1" />
+          <CarouselNext className="absolute top-1/2 -translate-y-1/2 right-1" />
+        </>
       )}
-    </div>
+    </Carousel>
   );
 }
 
-function NextArrow(props: any) {
-  const { onClick, isVertical } = props;
-  return (
-    <div
-      className={`absolute ${isVertical ? "bottom-[-30px] w-full" : "right-0 top-[45%]"} z-10 cursor-pointer`}
-      onClick={onClick}
-    >
-      {isVertical ? (
-        <FiChevronDown className="text-2xl laptop:text-4xl text-dark-4 mx-auto" />
-      ) : (
-        <FiChevronRight className="text-2xl laptop:text-4xl text-dark-4" />
-      )}
-    </div>
-  );
-}
-
-export default Carousel;
+export default ReactCarousel;

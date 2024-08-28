@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Header from "@/components/Shared/Header";
 import BottomBar from "@/components/Shared/BottomBar";
 import SideBar from "@/components/Shared/SideBar";
+import Footer from "@/components/Shared/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,25 +21,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link
-          rel="stylesheet"
-          type="text/css"
-          charSet="UTF-8"
-          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
-        />
-        <link
-          rel="stylesheet"
-          type="text/css"
-          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
-        />
-      </head>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <div className="!scroll-smooth select-none">
             <Header />
             <SideBar />
-            <main>{children}</main>
+            <main className="max-w-desktop mx-auto">{children}</main>
+            <Footer />
             <BottomBar />
           </div>
         </ThemeProvider>
