@@ -5,9 +5,13 @@ import { useAction } from "@/stores/action";
 import Link from "next/link";
 import { FaInstagram, FaFacebook } from "react-icons/fa";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useStore } from "@/stores/store";
+import { useEffect, useState } from "react";
+import { ICategory } from "@/types";
 
 const SideBar = () => {
   const { isSidebarOpen, setIsSidebarOpen } = useAction();
+  const { categories } = useStore();
 
   return (
     <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
@@ -24,8 +28,8 @@ const SideBar = () => {
 
           <div className="flex flex-col px-1">
             <Accordion type="single" collapsible>
-              {["Men", "Women"].map((item) => (
-                <Item key={item} label={item} />
+              {categories.map((item) => (
+                <Item key={item._id} label={item.name} subCategories={item.children} />
               ))}
             </Accordion>
           </div>
@@ -66,7 +70,24 @@ const SideBar = () => {
   );
 };
 
-const Item = ({ label }: { label: string }) => {
+const Item = ({ label, subCategories }: { label: string; subCategories: any }) => {
+  const [arr, setArr] = useState<{ [key: string]: ICategory[] }>({});
+
+  useEffect(() => {
+    const arr = subCategories.reduce((acc: any[], item: any) => {
+      if (!acc[item.wearType]) {
+        acc[item.wearType] = [];
+      }
+
+      acc[item.wearType].push(item);
+
+      return acc;
+    }, {});
+
+    setArr(arr);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <AccordionItem value={label} className="border-none">
       <AccordionTrigger style={{ textDecoration: "none" }} className="font-semibold">
@@ -74,14 +95,14 @@ const Item = ({ label }: { label: string }) => {
       </AccordionTrigger>
       <AccordionContent className="px-2">
         <Accordion type="single" collapsible>
-          {["Topwear", "Bottomwear"].map((item) => (
+          {Object.keys(arr).map((item) => (
             <AccordionItem key={item} value={item} className="border-none">
               <AccordionTrigger style={{ textDecoration: "none" }}>{item}</AccordionTrigger>
               <AccordionContent className="px-2">
                 <Accordion type="single" collapsible>
-                  {["tshirt", "polo"].map((i) => (
-                    <Link href={"#"} key={i} className="flex gap-3 p-2">
-                      <div className="text-sm font-semibold">{i}</div>
+                  {arr[item].map((i) => (
+                    <Link href={`/${i.slug}`} key={i._id} className="flex gap-3 p-2">
+                      <div className="text-sm font-semibold">{i.name}</div>
                     </Link>
                   ))}
                 </Accordion>

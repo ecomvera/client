@@ -16,12 +16,12 @@ const BreadcrumbCard = ({ nav, title }: { nav?: { title: string; url: string }[]
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         {nav?.map((item) => (
-          <>
+          <div key={item.title} className="flex items-center gap-2">
             <BreadcrumbItem key={item.title}>
               <BreadcrumbLink href={item.url}>{item.title}</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
-          </>
+          </div>
         ))}
         <BreadcrumbItem>
           <BreadcrumbPage>{title}</BreadcrumbPage>

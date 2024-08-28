@@ -3,20 +3,20 @@
 import Banner from "@/components/Cards/Banner";
 import BestSellers from "@/components/Shared/BestSellers";
 import NewArrivals from "@/components/Shared/NewArrivals";
-import { useEffect, useState } from "react";
 import ReactCarousel from "@/components/Shared/Carousel";
 import { CarouselItem } from "@/components/ui/carousel";
+import LoadingPage from "@/components/Shared/LoadingPage";
 
 export default function Home() {
-  const [isMounted, setIsMounted] = useState(false);
+  // const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  // useEffect(() => {
+  //   setIsMounted(true);
+  // }, []);
 
-  if (!isMounted) {
-    return null;
-  }
+  // if (!isMounted) {
+  //   return <LoadingPage />;
+  // }
 
   return (
     <>
@@ -24,7 +24,7 @@ export default function Home() {
 
       <NewArrivals />
 
-      <ReactCarousel showArrows>
+      {/* <ReactCarousel showArrows>
         {Array.from({ length: 10 }).map((_, index) => (
           <CarouselItem key={index} className="pl-2 basis-1/2 md:basis-1/3 lg:basis-1/5">
             <div className="p-1 bg-red-300">
@@ -36,9 +36,9 @@ export default function Home() {
             </div>
           </CarouselItem>
         ))}
-      </ReactCarousel>
+      </ReactCarousel> */}
 
-      <BestSellers />
+      {/* <BestSellers /> */}
     </>
   );
 }

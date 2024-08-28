@@ -4,23 +4,43 @@ import NotFound from "@/components/Cards/404";
 import BreadcrumbCard from "@/components/Cards/BreadcrumbCard";
 import Filters from "@/components/Shared/Filters";
 import ProductsList from "@/components/Shared/ProductsList";
-import React from "react";
+import React, { useEffect } from "react";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Accordion } from "@/components/ui/accordion";
+import { ICategory } from "@/types";
+import LoadingPage from "@/components/Shared/LoadingPage";
 
-const Page = ({ params }: { params: { name: string } }) => {
-  const data = {};
+const Page = ({ params }: { params: { slug: string } }) => {
+  const [category, setCategory] = React.useState<ICategory>({} as ICategory);
+  const [loading, setLoading] = React.useState(true);
 
-  if (!data) return <NotFound />;
+  useEffect(() => {
+    async function fetchData() {
+      console.log("fetching data - category -", params.slug);
+      const response = await fetch(`/api/categories/${params.slug}`);
+      const data = await response.json();
+      if (data.ok) setCategory(data.data);
+      setLoading(false);
+    }
+
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (loading) return <LoadingPage />;
+  if (!loading && !category) return <NotFound />;
 
   return (
     <div className="px-2">
-      <BreadcrumbCard title={params.name} />
+      <BreadcrumbCard
+        title={params.slug}
+        nav={category.parentId ? [{ title: category.parentId?.name, url: `/${category.parentId.slug}` }] : []}
+      />
 
       <div className="">
         <div className="z-[2] flex justify-between items-center gap-5 sticky md:block top-12 md:top-auto py-3 bg-background">
           <div className="font-bold text-xl md:text-3xl font-sans text-light-1  tracking-wide">
-            Men's Clothing <span className="font-extralight">(120)</span>
+            {category.name} <span className="font-extralight">({category?.products?.length})</span>
           </div>
           <div className="md:hidden">
             <BottomFilters />
@@ -29,7 +49,7 @@ const Page = ({ params }: { params: { name: string } }) => {
 
         <div className="flex gap-5 my-3 md:my-8">
           <SideFilters />
-          <ProductsList />
+          <ProductsList products={category?.products ?? []} />
         </div>
       </div>
     </div>

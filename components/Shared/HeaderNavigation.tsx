@@ -8,66 +8,71 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-
-const components: { title: string; href: string; description: string }[] = [
-  {
-    title: "Alert Dialog",
-    href: "/docs/primitives/alert-dialog",
-    description: "A modal dialog that interrupts the user with important content and expects a response.",
-  },
-  {
-    title: "Hover Card",
-    href: "/docs/primitives/hover-card",
-    description: "For sighted users to preview content available behind a link.",
-  },
-  {
-    title: "Progress",
-    href: "/docs/primitives/progress",
-    description: "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
-  },
-  {
-    title: "Scroll-area",
-    href: "/docs/primitives/scroll-area",
-    description: "Visually or semantically separates content.",
-  },
-  {
-    title: "Tabs",
-    href: "/docs/primitives/tabs",
-    description: "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
-  },
-  {
-    title: "Tooltip",
-    href: "/docs/primitives/tooltip",
-    description:
-      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-  },
-];
+import { useStore } from "@/stores/store";
+import { useEffect, useState } from "react";
+import { ICategory } from "@/types";
 
 function HeaderNavigation() {
+  const { setCategories } = useStore();
+  const [categories, setData] = useState<ICategory[]>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      console.log("fetching data - categories");
+      const response = await fetch(`/api/categories`);
+      const data = await response.json();
+      if (data.ok) {
+        setData(data.data);
+        setCategories(data.data);
+      }
+    }
+
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <NavigationMenu className="absolute left-5 top-3">
       <NavigationMenuList className="pl-40 laptop:pl-44">
-        <CategoryDropdown label="Men" />
-        <CategoryDropdown label="Women" />
+        {categories.map((category) => (
+          <CategoryDropdown key={category._id} label={category.name} subCategories={category.children} />
+        ))}
       </NavigationMenuList>
     </NavigationMenu>
   );
 }
 
-const CategoryDropdown = ({ label }: { label: string }) => {
+const CategoryDropdown = ({ label, subCategories }: { label: string; subCategories: any }) => {
+  const [arr, setArr] = useState<{ [key: string]: ICategory[] }>({});
+
+  useEffect(() => {
+    const arr = subCategories.reduce((acc: any[], item: any) => {
+      if (!acc[item.wearType]) {
+        acc[item.wearType] = [];
+      }
+
+      acc[item.wearType].push(item);
+
+      return acc;
+    }, {});
+
+    setArr(arr);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <NavigationMenuItem>
-      <NavigationMenuTrigger className="text-base px-2">{label}</NavigationMenuTrigger>
+      <NavigationMenuTrigger className="text-base px-2">{label.split("-")[0]}</NavigationMenuTrigger>
       <NavigationMenuContent>
         <ul className="flex w-[715px] gap-10 p-5 px-8">
-          {["Topwear", "Bottomwear", "Topseller"].map((item) => (
+          {Object.keys(arr).map((item) => (
             <div key={item}>
               <h3 className="text-base font-semibold">{item}</h3>
               <ul role="list" className="mt-5 space-y-1">
-                {components.map((component) => (
-                  <Link href={component.href} key={component.title}>
+                {arr[item].map((category: ICategory) => (
+                  <Link href={`/${category.slug}`} key={category.slug}>
                     <div className="text-light-3 my-3 text-sm">
-                      <p className="text-nowrap">{component.title}</p>
+                      <p className="text-nowrap">{category.name}</p>
                     </div>
                   </Link>
                 ))}
