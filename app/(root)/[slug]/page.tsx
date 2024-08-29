@@ -11,7 +11,7 @@ import { ICategory } from "@/types";
 import LoadingPage from "@/components/Shared/LoadingPage";
 
 const Page = ({ params }: { params: { slug: string } }) => {
-  const [category, setCategory] = React.useState<ICategory>({} as ICategory);
+  const [category, setCategory] = React.useState<ICategory | null>({} as ICategory);
   const [loading, setLoading] = React.useState(true);
 
   useEffect(() => {
@@ -20,6 +20,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
       const response = await fetch(`/api/categories/${params.slug}`);
       const data = await response.json();
       if (data.ok) setCategory(data.data);
+      if (!data.ok) setCategory(null);
       setLoading(false);
     }
 
@@ -30,30 +31,31 @@ const Page = ({ params }: { params: { slug: string } }) => {
   if (loading) return <LoadingPage />;
   if (!loading && !category) return <NotFound />;
 
-  return (
-    <div className="px-2">
-      <BreadcrumbCard
-        title={params.slug}
-        nav={category.parentId ? [{ title: category.parentId?.name, url: `/${category.parentId.slug}` }] : []}
-      />
+  if (category)
+    return (
+      <div className="px-2">
+        <BreadcrumbCard
+          title={params.slug}
+          nav={category.parentId ? [{ title: category.parentId?.name, url: `/${category.parentId.slug}` }] : []}
+        />
 
-      <div className="">
-        <div className="z-[2] flex justify-between items-center gap-5 sticky md:block top-12 md:top-auto py-3 bg-background">
-          <div className="font-bold text-xl md:text-3xl font-sans text-light-1  tracking-wide">
-            {category.name} <span className="font-extralight">({category?.products?.length})</span>
+        <div className="">
+          <div className="z-[2] flex justify-between items-center gap-5 sticky md:block top-12 md:top-auto py-3 bg-background">
+            <div className="font-bold text-xl md:text-3xl font-sans text-light-1  tracking-wide">
+              {category.name} <span className="font-extralight">({category?.products?.length})</span>
+            </div>
+            <div className="md:hidden">
+              <BottomFilters />
+            </div>
           </div>
-          <div className="md:hidden">
-            <BottomFilters />
-          </div>
-        </div>
 
-        <div className="flex gap-5 my-3 md:my-8">
-          <SideFilters />
-          <ProductsList products={category?.products ?? []} />
+          <div className="flex gap-5 my-3 md:my-8">
+            <SideFilters />
+            <ProductsList products={category?.products ?? []} />
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
 };
 
 const SideFilters = () => {

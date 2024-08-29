@@ -9,7 +9,7 @@ import { IProduct } from "@/types";
 import React, { useEffect } from "react";
 
 const Page = ({ params }: { params: { slug: string } }) => {
-  const [product, setProduct] = React.useState<IProduct>({} as IProduct);
+  const [product, setProduct] = React.useState<IProduct | null>({} as IProduct);
   const [loading, setLoading] = React.useState(true);
 
   useEffect(() => {
@@ -18,6 +18,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
       const response = await fetch(`/api/product/${params.slug}`);
       const data = await response.json();
       if (data.ok) setProduct(data.data);
+      if (!data.ok) setProduct(null);
       setLoading(false);
     }
 
@@ -28,21 +29,22 @@ const Page = ({ params }: { params: { slug: string } }) => {
   if (loading) return <LoadingPage />;
   if (!loading && !product) return <NotFound />;
 
-  return (
-    <div>
-      <div className="max-w-desktop mx-auto px-2">
-        <BreadcrumbCard
-          nav={[
-            { title: product.category?.name, url: `/${product.category?.slug}` },
-            { title: product.subCategory?.name, url: `/${product.subCategory?.slug}` },
-          ]}
-          title={product.name}
-        />
-        <ProductDetails product={product} />
-        {/* <SimilarProducts /> */}
+  if (product)
+    return (
+      <div>
+        <div className="max-w-desktop mx-auto px-2">
+          <BreadcrumbCard
+            nav={[
+              { title: product.category?.name, url: `/${product.category?.slug}` },
+              { title: product.subCategory?.name, url: `/${product.subCategory?.slug}` },
+            ]}
+            title={product.name}
+          />
+          <ProductDetails product={product} />
+          {/* <SimilarProducts /> */}
+        </div>
       </div>
-    </div>
-  );
+    );
 };
 
 export default Page;
