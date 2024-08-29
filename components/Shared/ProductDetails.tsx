@@ -10,7 +10,7 @@ import { IProduct } from "@/types";
 
 const ProductDetails = ({ product }: { product: IProduct }) => {
   return (
-    <div className="py-5">
+    <div className="mobile:py-5">
       <div className="flex flex-col items-center tablet:items-start tablet:flex-row">
         <LeftGallaryView images={product.images} />
         <ProductDetail data={product} />

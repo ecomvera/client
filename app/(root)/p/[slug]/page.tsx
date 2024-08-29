@@ -31,7 +31,13 @@ const Page = ({ params }: { params: { slug: string } }) => {
   return (
     <div>
       <div className="max-w-desktop mx-auto px-2">
-        <BreadcrumbCard title={product.name} />
+        <BreadcrumbCard
+          nav={[
+            { title: product.category?.name, url: `/${product.category?.slug}` },
+            { title: product.subCategory?.name, url: `/${product.subCategory?.slug}` },
+          ]}
+          title={product.name}
+        />
         <ProductDetails product={product} />
         {/* <SimilarProducts /> */}
       </div>
