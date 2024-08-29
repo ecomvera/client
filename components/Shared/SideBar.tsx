@@ -29,7 +29,7 @@ const SideBar = () => {
           <div className="flex flex-col px-1">
             <Accordion type="single" collapsible>
               {categories.map((item) => (
-                <Item key={item._id} label={item.name} subCategories={item.children} />
+                <Item key={item._id} label={item.name} subCategories={item.children} setIsSidebarOpen={setIsSidebarOpen} />
               ))}
             </Accordion>
           </div>
@@ -70,7 +70,15 @@ const SideBar = () => {
   );
 };
 
-const Item = ({ label, subCategories }: { label: string; subCategories: any }) => {
+const Item = ({
+  label,
+  subCategories,
+  setIsSidebarOpen,
+}: {
+  label: string;
+  subCategories: any;
+  setIsSidebarOpen: (openSidebar: boolean) => void;
+}) => {
   const [arr, setArr] = useState<{ [key: string]: ICategory[] }>({});
 
   useEffect(() => {
@@ -101,7 +109,7 @@ const Item = ({ label, subCategories }: { label: string; subCategories: any }) =
               <AccordionContent className="px-2">
                 <Accordion type="single" collapsible>
                   {arr[item].map((i) => (
-                    <Link href={`/${i.slug}`} key={i._id} className="flex gap-3 p-2">
+                    <Link href={`/${i.slug}`} onClick={() => setIsSidebarOpen(false)} key={i._id} className="flex gap-3 p-2">
                       <div className="text-sm font-semibold">{i.name}</div>
                     </Link>
                   ))}
