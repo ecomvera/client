@@ -12,34 +12,53 @@ export interface IAddress {
 }
 
 export interface ICategory {
-  _id: string;
+  id: string;
   name: string;
   slug: string;
   wearType?: string;
-  parentId: { _id: string; name: string; slug: string } | null;
+  parentId?: string | null;
   children?: ICategory[];
   products?: IProduct[];
+  parent?: ICategory;
 }
 
 export interface IProduct {
-  _id?: string;
+  id?: string;
   name: string;
   slug: string;
   description: string;
   price: number;
   mrp: number;
-  images: { key: string; url: string }[];
-  category: { _id: string; name: string; slug: string };
-  subCategory: { _id: string; name: string; slug: string };
   material: string;
   quantity: number;
-  sizes: string[];
-  attributes: { key: string; value: string }[];
   inStock: boolean;
   isNewArrival: boolean;
+  isBestSeller?: boolean;
+  colors: string[];
+
+  sizes: IKeyValue[];
+  images: IImageFile[];
+  attributes: IKeyValue[];
+
+  category?: ICategory;
+  categoryId: string;
+
+  subCategory?: { id: string; name: string; slug?: string } | string;
 }
 
-export interface IAttribute {
-  _id: string;
-  title: string;
+export interface IImageFile {
+  id?: string;
+  key: string;
+  color: string;
+  blob?: string;
+  url: string;
+  publicId: string;
+  productId?: string;
+}
+
+export interface IKeyValue {
+  id?: string;
+  key: string;
+  value: string;
+  productId?: string;
 }

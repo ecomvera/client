@@ -11,31 +11,28 @@ import {
 import { useStore } from "@/stores/store";
 import { useEffect, useState } from "react";
 import { ICategory } from "@/types";
+import useSWR from "swr";
+import { fetcher, fetchOpt } from "@/lib/utils";
 
 function HeaderNavigation() {
-  const { setCategories } = useStore();
-  const [categories, setData] = useState<ICategory[]>([]);
+  const { categories, setCategories } = useStore();
+  const { mutate: fetchCategories, isLoading: fetchCategoriesLoading } = useSWR("/api/categories", fetcher, fetchOpt);
 
   useEffect(() => {
-    async function fetchData() {
-      console.log("fetching data - categories");
-      const response = await fetch(`/api/categories`);
-      const data = await response.json();
-      if (data.ok) {
-        setData(data.data);
-        setCategories(data.data);
+    const fetch = async () => {
+      if (!categories.length) {
+        const res = await fetchCategories();
+        setCategories(res?.data || []);
       }
-    }
-
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    };
+    fetch();
   }, []);
 
   return (
     <NavigationMenu className="absolute left-5 top-3">
       <NavigationMenuList className="pl-40 laptop:pl-44">
         {categories.map((category) => (
-          <CategoryDropdown key={category._id} label={category.name} subCategories={category.children} />
+          <CategoryDropdown key={category.id} label={category.name} subCategories={category.children} />
         ))}
       </NavigationMenuList>
     </NavigationMenu>

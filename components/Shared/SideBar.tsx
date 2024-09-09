@@ -29,7 +29,7 @@ const SideBar = () => {
           <div className="flex flex-col px-1">
             <Accordion type="single" collapsible>
               {categories.map((item) => (
-                <Item key={item._id} label={item.name} subCategories={item.children} setIsSidebarOpen={setIsSidebarOpen} />
+                <Item key={item.id} label={item.name} subCategories={item.children} setIsSidebarOpen={setIsSidebarOpen} />
               ))}
             </Accordion>
           </div>
@@ -109,7 +109,7 @@ const Item = ({
               <AccordionContent className="px-2">
                 <Accordion type="single" collapsible>
                   {arr[item].map((i) => (
-                    <Link href={`/${i.slug}`} onClick={() => setIsSidebarOpen(false)} key={i._id} className="flex gap-3 p-2">
+                    <Link href={`/${i.slug}`} onClick={() => setIsSidebarOpen(false)} key={i.id} className="flex gap-3 p-2">
                       <div className="text-sm font-semibold">{i.name}</div>
                     </Link>
                   ))}
