@@ -6,6 +6,7 @@ import NewArrivals from "@/components/Shared/NewArrivals";
 import ReactCarousel from "@/components/Shared/Carousel";
 import { CarouselItem } from "@/components/ui/carousel";
 import LoadingPage from "@/components/Shared/LoadingPage";
+import { useEffect } from "react";
 
 export default function Home() {
   // const [isMounted, setIsMounted] = useState(false);
@@ -22,6 +23,7 @@ export default function Home() {
     <>
       <Banner />
 
+      <BestSellers />
       <NewArrivals />
 
       {/* <ReactCarousel showArrows>
@@ -37,8 +39,6 @@ export default function Home() {
           </CarouselItem>
         ))}
       </ReactCarousel> */}
-
-      {/* <BestSellers /> */}
     </>
   );
 }

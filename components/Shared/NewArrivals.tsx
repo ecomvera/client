@@ -1,39 +1,30 @@
 "use client";
 
-import React, { useEffect } from "react";
-import ProductCard from "../Cards/ProductCard";
+import React from "react";
 import { IProduct } from "@/types";
+import useSWR from "swr";
+import { fetcher, fetchOpt } from "@/lib/utils";
+import ReactCarousel from "./Carousel";
+import { CarouselItem } from "../ui/carousel";
+import ProductCard from "../Cards/ProductCard";
 
 const NewArrivals = () => {
-  const [products, setProducts] = React.useState<IProduct[]>([]);
+  const fetchProducts = useSWR("/api/products?new-arrivals", fetcher, fetchOpt);
+  const { data: products, isLoading } = fetchProducts;
 
-  useEffect(() => {
-    async function fetchData() {
-      console.log("fetching data - products -", "new-arrivals");
-      const response = await fetch(`/api/product?query=new-arr=true`);
-      const data = await response.json();
-      if (data.ok) setProducts(data.data);
-    }
-
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  if (products.length === 0) return null;
+  if (isLoading || products?.data?.length === 0) return null;
 
   return (
     <div className="px-2 mobile:py-4 mt-5">
-      <h2 className="text-center text-xl mobile:text-2xl tablet:text-3xl text-light-1 font-bold uppercase">New Arrivals</h2>
+      <h2 className="text-center text-xl mobile:text-2xl text-light-1 font-semibold uppercase">New Arrivals</h2>
 
-      <div className="max-w-screen overflow-x-scroll hide-scrollbar">
-        <div className="flex gap-2 my-2 w-[max-content]">
-          {products.map((product) => (
-            <div key={product._id} className="w-[250px] h-[350px]">
-              <ProductCard key={product._id} product={product} />
-            </div>
-          ))}
-        </div>
-      </div>
+      <ReactCarousel showArrows autoPlay>
+        {products?.data.map((product: IProduct) => (
+          <CarouselItem key={product.id} className="pl-2 sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
+            <ProductCard product={product} showHeart={false} showRating={false} />
+          </CarouselItem>
+        ))}
+      </ReactCarousel>
     </div>
   );
 };
