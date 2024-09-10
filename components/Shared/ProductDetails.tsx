@@ -87,8 +87,8 @@ const ProductDetail = ({ data }: { data: IProduct }) => {
       <p className="text-base mobile:text-lg font-semibold text-dark-3 uppercase mt-5">Select Size</p>
       <div className="flex gap-1">
         {data.sizes.map((size) => (
-          <div key={size} className="border border-light-3 px-3 py-1 cursor-pointer">
-            <p className="text-base mobile:text-lg font-semibold text-dark-3">{size}</p>
+          <div key={size.key} className="border border-light-3 px-3 py-1 cursor-pointer">
+            <p className="text-base mobile:text-lg font-semibold text-dark-3">{size.key}</p>
           </div>
         ))}
       </div>
