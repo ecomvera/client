@@ -1,148 +1,148 @@
 import React from "react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { ImCheckboxChecked, ImCheckboxUnchecked } from "react-icons/im";
 
-const colors = ["red", "yellow", "green", "blue", "indigo", "purple", "pink"];
+interface ISelectedItem {
+  key: string;
+  value: string[];
+}
 
-const Filters = () => {
-  const [selectedColor, setSelectedColor] = React.useState<string>("red");
-  const [selectedItem, setSelectedItem] = React.useState<{ key: string; value: string[] }[]>([]);
+interface ISetFilters extends React.Dispatch<React.SetStateAction<ISelectedItem[]>> {}
+
+const Filters = ({
+  isOffer = false,
+  sizes,
+  attributes,
+  colors,
+  filters,
+  setFilters,
+}: {
+  isOffer?: boolean;
+  sizes: string[];
+  attributes: { key: string; value: string[] }[];
+  colors: string[];
+  filters: ISelectedItem[];
+  setFilters: ISetFilters;
+}) => {
+  const handleSelectItem = (category: string, value: string) => {
+    setFilters((prev) => {
+      const index = prev.findIndex((item) => item.key === category);
+      if (index === -1) {
+        return [...prev, { key: category, value: [value] }];
+      }
+      if (prev[index].value.includes(value)) {
+        const copy = [...prev];
+        copy[index] = { ...copy[index], value: copy[index].value.filter((item) => item !== value) };
+        if (copy[index].value.length === 0) {
+          copy.splice(index, 1); // if the value length is 0, remove the category from the filters
+        }
+        return copy;
+      } else {
+        const copy = [...prev];
+        copy[index] = { ...copy[index], value: [...copy[index].value, value] };
+        return copy;
+      }
+    });
+  };
 
   return (
     <>
-      <AccordionItem className="border-none" value="item-1">
-        <AccordionTrigger style={{ textDecoration: "none" }}>Gender</AccordionTrigger>
-        <AccordionContent className="flex flex-col gap-2 px-5">
-          <Item category="gender" value="men" selectedItem={selectedItem} setSelectedItem={setSelectedItem}>
-            Men
-          </Item>
-          <Item category="gender" value="women" selectedItem={selectedItem} setSelectedItem={setSelectedItem}>
-            Women
-          </Item>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem className="border-none" value="item-2">
-        <AccordionTrigger style={{ textDecoration: "none" }}>Sizes</AccordionTrigger>
-        <AccordionContent className="flex flex-col gap-2 px-5">
-          <Item category="sizes" value="xs" selectedItem={selectedItem} setSelectedItem={setSelectedItem}>
-            XS
-          </Item>
-          <Item category="sizes" value="s" selectedItem={selectedItem} setSelectedItem={setSelectedItem}>
-            S
-          </Item>
-          <Item category="sizes" value="m" selectedItem={selectedItem} setSelectedItem={setSelectedItem}>
-            M
-          </Item>
-          <Item category="sizes" value="l" selectedItem={selectedItem} setSelectedItem={setSelectedItem}>
-            L
-          </Item>
-          <Item category="sizes" value="xl" selectedItem={selectedItem} setSelectedItem={setSelectedItem}>
-            XL
-          </Item>
-          <Item category="sizes" value="2xl" selectedItem={selectedItem} setSelectedItem={setSelectedItem}>
-            2XL
-          </Item>
-        </AccordionContent>
-      </AccordionItem>
+      {isOffer && (
+        <AccordionItem className="border-none" value="item-1">
+          <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Gender</AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-2 px-5">
+            <Item category="Gender" value="men" filters={filters} handleSelectItem={handleSelectItem}>
+              Men
+            </Item>
+            <Item category="Gender" value="women" filters={filters} handleSelectItem={handleSelectItem}>
+              Women
+            </Item>
+          </AccordionContent>
+        </AccordionItem>
+      )}
+
+      {colors && (
+        <AccordionItem className="border-none" value="item-2">
+          <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Color</AccordionTrigger>
+          <AccordionContent className="flex flex-wrap gap-2 px-2">
+            {colors.map((color) => (
+              <div
+                key={color}
+                className="w-7 h-7 text-center rounded cursor-pointer shadow shadow-gray-300"
+                style={{
+                  border: filters.filter((item) => item.key === "color")[0]?.value?.includes(color)
+                    ? `2px solid ${color}`
+                    : "none",
+                  padding: filters.filter((item) => item.key === "color")[0]?.value?.includes(color) ? "1px" : "0",
+                }}
+                onClick={() => {
+                  handleSelectItem("color", color);
+                }}
+              >
+                <div key={color} className={`rounded w-full h-full`} style={{ backgroundColor: color }} />
+              </div>
+            ))}
+          </AccordionContent>
+        </AccordionItem>
+      )}
+
       <AccordionItem className="border-none" value="item-3">
-        <AccordionTrigger style={{ textDecoration: "none" }}>Color</AccordionTrigger>
-        <AccordionContent className="flex flex-wrap gap-2 px-5">
-          {colors.map((color) => (
-            <div
-              key={color}
-              className="w-7 h-7 text-center rounded cursor-pointer"
-              style={{
-                border: selectedColor === color ? `2px solid ${color}` : "none",
-                padding: selectedColor === color ? "1px" : "0",
-              }}
-              onClick={() => {
-                if (selectedColor === color) {
-                  setSelectedColor("");
-                  return;
-                }
-                setSelectedColor(color);
-              }}
-            >
-              <div key={color} className={`rounded w-full h-full`} style={{ backgroundColor: color }} />
-            </div>
+        <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Sizes</AccordionTrigger>
+        <AccordionContent className="flex flex-col px-4 p-0">
+          {sizes?.map((size) => (
+            <Item key={size} category="sizes" value={size} filters={filters} handleSelectItem={handleSelectItem}>
+              {size}
+            </Item>
           ))}
         </AccordionContent>
       </AccordionItem>
-      <AccordionItem className="border-none" value="item-4">
-        <AccordionTrigger style={{ textDecoration: "none" }}>Fit</AccordionTrigger>
-        <AccordionContent className="flex flex-col gap-2 px-5">
-          <Item category="fit" value="regular_fit" selectedItem={selectedItem} setSelectedItem={setSelectedItem}>
-            Regular Fit
-          </Item>
-          <Item category="fit" value="oversized_fit" selectedItem={selectedItem} setSelectedItem={setSelectedItem}>
-            Oversized Fit
-          </Item>
-          <Item category="fit" value="relaxed_fit" selectedItem={selectedItem} setSelectedItem={setSelectedItem}>
-            Relaxed Fit
-          </Item>
-          <Item category="fit" value="slim_fit" selectedItem={selectedItem} setSelectedItem={setSelectedItem}>
-            Slim Fit
-          </Item>
-          <Item category="fit" value="loose_fit" selectedItem={selectedItem} setSelectedItem={setSelectedItem}>
-            Loose Fit
-          </Item>
-          <Item category="fit" value="extra_loose_fit" selectedItem={selectedItem} setSelectedItem={setSelectedItem}>
-            Extra Loose Fit
-          </Item>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem className="border-none" value="item-5">
-        <AccordionTrigger style={{ textDecoration: "none" }}>Sleeve</AccordionTrigger>
-        <AccordionContent className="flex flex-col gap-2 px-5">
-          <Item category="sleeve" value="full_sleeve" selectedItem={selectedItem} setSelectedItem={setSelectedItem}>
-            Full Sleeve
-          </Item>
-          <Item category="sleeve" value="half_sleeve" selectedItem={selectedItem} setSelectedItem={setSelectedItem}>
-            Half Sleeve
-          </Item>
-          <Item category="sleeve" value="short_sleeve" selectedItem={selectedItem} setSelectedItem={setSelectedItem}>
-            Short Sleeve
-          </Item>
-          <Item category="sleeve" value="long_sleeve" selectedItem={selectedItem} setSelectedItem={setSelectedItem}>
-            Long Sleeve
-          </Item>
-        </AccordionContent>
-      </AccordionItem>
+
+      {attributes?.map((attribute, index) => (
+        <AccordionItem key={attribute.key} className="border-none" value={`item-${index + 4}`}>
+          <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>{attribute.key}</AccordionTrigger>
+          <AccordionContent className="flex flex-col px-4 p-0">
+            {attribute.value.map((value) => (
+              <Item
+                key={value}
+                category={attribute.key.toLowerCase()}
+                value={value}
+                filters={filters}
+                handleSelectItem={handleSelectItem}
+              >
+                {value}
+              </Item>
+            ))}
+          </AccordionContent>
+        </AccordionItem>
+      ))}
     </>
   );
 };
 
 const Item = ({
-  selectedItem,
-  setSelectedItem,
+  filters,
+  handleSelectItem,
   category,
   value,
   children,
 }: {
-  selectedItem: {
-    key: string;
-    value: string[];
-  }[];
-  setSelectedItem: React.Dispatch<
-    React.SetStateAction<
-      {
-        key: string;
-        value: string[];
-      }[]
-    >
-  >;
+  filters: ISelectedItem[];
+  handleSelectItem: (category: string, value: string) => void;
   category: string;
   value: string;
   children: React.ReactNode;
 }) => {
+  const isClicked = filters.filter((item) => item.key === category)[0]?.value?.includes(value.replace(" ", "-"));
   return (
-    <p
-      className={`cursor-pointer text-muted-foreground hover:text-foreground ${
-        selectedItem === children ? "text-accent font-bold" : ""
+    <div
+      className={`flex gap-2 items-center px-2 py-1 cursor-pointer text-muted-foreground hover:text-foreground hover:bg-muted rounded ${
+        isClicked ? "text-black font-bold" : ""
       }`}
-      onClick={() => {}}
+      onClick={() => handleSelectItem(category, value.replace(" ", "-"))}
     >
-      {children}
-    </p>
+      {isClicked ? <ImCheckboxChecked size={16} className="text-primary" /> : <ImCheckboxUnchecked size={16} />}
+      <p className="text-base">{children}</p>
+    </div>
   );
 };
 
