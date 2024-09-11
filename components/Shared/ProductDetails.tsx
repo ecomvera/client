@@ -1,19 +1,22 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { IoLocationOutline } from "react-icons/io5";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { IProduct } from "@/types";
+import { useStore } from "@/stores/store";
 
 const ProductDetails = ({ product }: { product: IProduct }) => {
+  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
+
   return (
     <div className="mobile:py-5">
       <div className="flex flex-col items-center tablet:items-start tablet:flex-row">
         <LeftGallaryView images={product.images} />
-        <ProductDetail data={product} />
+        <ProductDetail data={product} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
       </div>
     </div>
   );
@@ -67,8 +70,46 @@ const LeftGallaryView = ({ images }: { images: IProduct["images"] }) => {
   );
 };
 
-const ProductDetail = ({ data }: { data: IProduct }) => {
+const ProductDetail = ({
+  data,
+  selectedColor,
+  setSelectedColor,
+}: {
+  data: IProduct;
+  selectedColor: string;
+  setSelectedColor: Dispatch<SetStateAction<string>>;
+}) => {
   const router = useRouter();
+  const { addToWishlist, removeFromWishlist, wishlist, addToCart, cart } = useStore();
+  const [selectedSize, setSelectedSize] = useState<string>("");
+  const [showSelectSizeMessage, setShowSelectSizeMessage] = useState(false);
+
+  const createItemId = () => {
+    return `${data.id}-${selectedColor}-${selectedSize}`;
+  };
+
+  const isInWishlist = wishlist.some((item) => item.itemId === createItemId());
+  const isExistInCart = cart.some((item) => item.itemId === createItemId());
+
+  const item = {
+    itemId: createItemId(),
+    color: selectedColor,
+    size: selectedSize,
+    quantity: 1,
+    product: data,
+  };
+
+  const handleAddToCart = () => {
+    if (!selectedSize) return setShowSelectSizeMessage(true);
+    if (isExistInCart) return router.push("/cart");
+    addToCart(item);
+  };
+
+  const handleAddToWishlist = () => {
+    if (!selectedSize) return setShowSelectSizeMessage(true);
+    if (isInWishlist) return removeFromWishlist(createItemId());
+    addToWishlist(item);
+  };
 
   return (
     <div className="w-full px-2 tablet:px-5 laptop:px-10 mt-2 tablet:mt-0">
@@ -84,24 +125,56 @@ const ProductDetail = ({ data }: { data: IProduct }) => {
         <p className="text-base font-semibold text-light-1">{data.material}</p>
       </div>
 
-      <p className="text-base mobile:text-lg font-semibold text-dark-3 uppercase mt-5">Select Size</p>
+      <p className="text-base mobile:text-lg font-semibold text-dark-3 uppercase mt-5">Select Color</p>
       <div className="flex gap-1">
-        {data.sizes.map((size) => (
-          <div key={size.key} className="border border-light-3 px-3 py-1 cursor-pointer">
-            <p className="text-base mobile:text-lg font-semibold text-dark-3">{size.key}</p>
+        {data.colors.map((color) => (
+          <div
+            key={color}
+            className={`w-9 h-9 rounded-full items-center justify-center cursor-pointer flex`}
+            style={{
+              backgroundColor: color,
+              border: selectedColor === color ? `1px solid ${color}` : "1px solid transparent",
+            }}
+            onClick={() => setSelectedColor(color)}
+          >
+            {selectedColor === color && <div className="w-8 h-8 rounded-full border-white border-2" />}
           </div>
         ))}
       </div>
 
+      <p className="text-base mobile:text-lg font-semibold text-dark-3 uppercase mt-5">Select Size</p>
+      <div className="flex gap-1">
+        {data.sizes.map((size) => (
+          <div
+            key={size.key}
+            className="border border-light-3 w-10 h-10 flex justify-center items-center cursor-pointer"
+            style={{ border: selectedSize === size.key ? `2px solid black` : "2px solid lightgray" }}
+            onClick={() => setSelectedSize(size.key)}
+          >
+            <p className={`text-base mobile:text-lg font-${selectedSize === size.key ? "bold" : "semibold"} text-dark-3`}>
+              {size.key}
+            </p>
+          </div>
+        ))}
+      </div>
+      {!selectedSize && showSelectSizeMessage && (
+        <div className="text-red-500 font-sans text-sm tablet:text-base tablet:font-semibold">Please select a size</div>
+      )}
+
       <div className="flex gap-2 py-5">
         <button
-          className="bg-green-600 text-white rounded-[5px] uppercase text-sm tablet:text-base font-bold p-2 px-4"
-          onClick={() => router.push("/cart")}
+          className={`bg-green-600 text-white rounded-[5px] text-sm tablet:text-base font-bold p-2 px-4 flex-1 md:flex-none`}
+          onClick={handleAddToCart}
         >
-          Add to cart
+          {isExistInCart ? "Added. Go to cart" : "Add to cart"}
         </button>
-        <button className="bg-gray-600 text-white rounded-[5px] uppercase text-sm tablet:text-base font-bold p-2 px-4">
-          Add to wishlist
+        <button
+          className={`${
+            isInWishlist ? "bg-red-600" : "bg-gray-600"
+          } text-white rounded-[5px] text-sm tablet:text-base font-bold p-2 px-4 flex-1 md:flex-none`}
+          onClick={handleAddToWishlist}
+        >
+          {isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
         </button>
       </div>
 

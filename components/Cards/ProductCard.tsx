@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { IoHeart, IoHeartOutline, IoStar } from "react-icons/io5";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useStore } from "@/stores/store";
 
 const ProductCard = ({
   product,
@@ -14,7 +15,28 @@ const ProductCard = ({
   showHeart?: boolean;
   showRating?: boolean;
 }) => {
-  const [added, setAdded] = useState(false);
+  const { addToWishlist, removeFromWishlist, wishlist } = useStore();
+
+  const createItemId = () => {
+    return `${product.id}-${product.colors[0]}-${product.sizes[0].key}`;
+  };
+
+  const isAdded = wishlist?.find((p) => p.itemId === createItemId());
+
+  const handleAddToWishlist = () => {
+    // addToWishlist({
+    //   itemId: createItemId(),
+    //   color: product.colors[0],
+    //   size: product.sizes[0].key,
+    //   quantity: 1,
+    //   product,
+    // });
+  };
+
+  const handleRemoveFromWishlist = () => {
+    // const item = wishlist?.find((p) => p.itemId === createItemId());
+    // removeFromWishlist(createItemId());
+  };
 
   return (
     <Card className="flex aspect-auto items-center justify-center text-light-1 overflow-hidden rounded-none border-none shadow-none">
@@ -25,10 +47,10 @@ const ProductCard = ({
               className="absolute top-1 right-1 z-[1]"
               onClick={(event) => {
                 event.preventDefault();
-                setAdded(!added);
+                isAdded ? handleRemoveFromWishlist : handleAddToWishlist;
               }}
             >
-              {added ? <IoHeart className="text-2xl text-red-500" /> : <IoHeartOutline className="text-2xl" />}
+              {isAdded ? <IoHeart className="text-2xl text-red-500" /> : <IoHeartOutline className="text-2xl" />}
             </div>
           )}
 

@@ -7,8 +7,12 @@ import { useTheme } from "next-themes";
 import { IoMoonOutline, IoSunnyOutline, IoCartOutline, IoPersonOutline, IoReorderThreeOutline } from "react-icons/io5";
 import { useAction } from "@/stores/action";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useStore } from "@/stores/store";
 
 const Header = () => {
+  const router = useRouter();
+  const { cart } = useStore();
   const { setIsSidebarOpen } = useAction();
 
   return (
@@ -35,7 +39,14 @@ const Header = () => {
 
             <div className="hidden tablet:flex gap-5">
               <IoPersonOutline className="cursor-pointer text-xl tablet:text-2xl" />
-              <IoCartOutline className="cursor-pointer text-xl tablet:text-2xl" />
+              <span className="relative" onClick={() => router.push("/cart")}>
+                {cart.length > 0 && (
+                  <span className="absolute -top-2 -right-2 text-sm font-semibold text-white bg-green-600 rounded-full w-5 h-5 flex justify-center items-center">
+                    {cart.length}
+                  </span>
+                )}
+                <IoCartOutline className="cursor-pointer text-xl tablet:text-2xl" />
+              </span>
             </div>
           </div>
         </div>

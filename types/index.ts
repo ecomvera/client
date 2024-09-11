@@ -62,3 +62,11 @@ export interface IKeyValue {
   value: string;
   productId?: string;
 }
+
+export interface ICartItem {
+  itemId: string;
+  quantity: number;
+  color: string;
+  size: string;
+  product: IProduct;
+}
