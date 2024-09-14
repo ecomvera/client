@@ -5,13 +5,17 @@ import { useAction } from "@/stores/action";
 import Link from "next/link";
 import { FaInstagram, FaFacebook } from "react-icons/fa";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { useStore } from "@/stores/store";
+import { useDataStore } from "@/stores/data";
 import { useEffect, useState } from "react";
 import { ICategory } from "@/types";
+import { usePathname } from "next/navigation";
 
 const SideBar = () => {
+  const pathname = usePathname();
   const { isSidebarOpen, setIsSidebarOpen } = useAction();
-  const { categories } = useStore();
+  const { categories } = useDataStore();
+
+  if (pathname === "/sign-in") return null;
 
   return (
     <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>

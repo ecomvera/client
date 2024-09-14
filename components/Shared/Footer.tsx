@@ -1,8 +1,14 @@
+"use client";
+
 import { categories, footer } from "@/constants";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { FaInstagram, FaFacebook } from "react-icons/fa";
 
 const Footer = () => {
+  const pathname = usePathname();
+
+  if (pathname === "/sign-in") return null;
   return (
     <div className="py-20 px-10 laptp:px-20">
       <div className="max-w-desktop mx-auto text-light-1">
