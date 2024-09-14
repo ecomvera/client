@@ -1,14 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { useStore } from "@/stores/store";
+import { useData } from "@/hooks/useData";
+import { useUser } from "@/hooks/useUser";
+import { checkExistsOrAddToCart, useDataStore } from "@/stores/data";
 import { ICartItem, IProduct } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const WishList = () => {
-  const { wishlist, removeFromWishlist, addToCart } = useStore();
+const WishList = ({ cart, wishlist }: { cart: ICartItem[]; wishlist: ICartItem[] }) => {
+  const { user, token } = useUser();
+  const { removeFromWishlist, setCart } = useDataStore();
 
+  if (!user) return null;
   return (
     <div>
       <h1 className="font-semibold text-xl md:text-2xl font-sans text-light-1">WishList</h1>
@@ -19,7 +23,14 @@ const WishList = () => {
         ) : (
           <div className="grid grid-cols-[repeat(auto-fit,minmax(100px,150px))] gap-4">
             {wishlist.map((i) => (
-              <ProductCard key={i.itemId} item={i} removeFromWishlist={removeFromWishlist} addToCart={addToCart} />
+              <ProductCard
+                key={i.id}
+                item={i}
+                token={token}
+                cart={cart}
+                removeFromWishlist={removeFromWishlist}
+                setCart={setCart}
+              />
             ))}
           </div>
         )}
@@ -30,20 +41,36 @@ const WishList = () => {
 
 const ProductCard = ({
   item,
+  token,
+  cart,
   removeFromWishlist,
-  addToCart,
+  setCart,
 }: {
   item: ICartItem;
+  token: { access: string | null };
+  cart: ICartItem[];
   removeFromWishlist: (id: string) => void;
-  addToCart: (item: ICartItem) => void;
+  setCart: (item: ICartItem[]) => void;
 }) => {
-  const handleRemove = () => {
-    removeFromWishlist(item.itemId);
+  const handleDeleteItem = async () => {
+    removeFromWishlist(item.id);
+    await fetch("/api/user/wishlist", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
+      body: JSON.stringify({ id: item.id }),
+    });
   };
 
-  const handleMoveToCart = () => {
-    removeFromWishlist(item.itemId);
-    addToCart(item);
+  const handleMoveToCart = async () => {
+    await handleDeleteItem();
+    const updatedCart = checkExistsOrAddToCart(cart, item);
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    await fetch("/api/user/cart", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
+      body: JSON.stringify({ cart: updatedCart.map(({ product, ...rest }) => rest) }),
+    });
   };
   return (
     <Card className="items-center justify-center text-light-1 overflow-hidden rounded-none border-none shadow-none">
@@ -74,7 +101,7 @@ const ProductCard = ({
         <Button className="w-full hover:bg-green-400" variant="outline" onClick={handleMoveToCart}>
           Move to Cart
         </Button>
-        <Button className="w-full hover:bg-red-300" variant="outline" onClick={handleRemove}>
+        <Button className="w-full hover:bg-red-300" variant="outline" onClick={handleDeleteItem}>
           Remove
         </Button>
       </CardFooter>

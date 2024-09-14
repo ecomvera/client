@@ -7,7 +7,9 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { IProduct } from "@/types";
-import { useStore } from "@/stores/store";
+import { useDataStore } from "@/stores/data";
+import { useUser } from "@/hooks/useUser";
+import { useData } from "@/hooks/useData";
 
 const ProductDetails = ({ product }: { product: IProduct }) => {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]);
@@ -80,7 +82,9 @@ const ProductDetail = ({
   setSelectedColor: Dispatch<SetStateAction<string>>;
 }) => {
   const router = useRouter();
-  const { addToWishlist, removeFromWishlist, wishlist, addToCart, cart } = useStore();
+  const { user, token } = useUser();
+  const { cart, wishlist } = useData();
+  const { addToCart, addToWishlist, removeFromWishlist } = useDataStore();
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [showSelectSizeMessage, setShowSelectSizeMessage] = useState(false);
 
@@ -88,27 +92,52 @@ const ProductDetail = ({
     return `${data.id}-${selectedColor}-${selectedSize}`;
   };
 
-  const isInWishlist = wishlist.some((item) => item.itemId === createItemId());
-  const isExistInCart = cart.some((item) => item.itemId === createItemId());
+  const isInWishlist = wishlist.some((item) => item.id === createItemId());
+  const isExistInCart = cart.some((item) => item.id === createItemId());
 
   const item = {
-    itemId: createItemId(),
+    id: createItemId(),
     color: selectedColor,
     size: selectedSize,
     quantity: 1,
-    product: data,
+    productId: data.id || "",
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!selectedSize) return setShowSelectSizeMessage(true);
     if (isExistInCart) return router.push("/cart");
-    addToCart(item);
+
+    addToCart({ ...item, product: data });
+    if (!user) return;
+
+    // add item to DB if user is logged in
+    await fetch("/api/user/cart", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
+      body: JSON.stringify({ item }),
+    }).then((res) => res.json());
   };
 
-  const handleAddToWishlist = () => {
+  const handleAddToWishlist = async () => {
+    if (!user) return router.push("/login");
     if (!selectedSize) return setShowSelectSizeMessage(true);
-    if (isInWishlist) return removeFromWishlist(createItemId());
-    addToWishlist(item);
+
+    if (isInWishlist) {
+      const res = await fetch("/api/user/wishlist", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
+        body: JSON.stringify({ id: createItemId() }),
+      }).then((res) => res.json());
+      if (res.ok) removeFromWishlist(createItemId());
+      return;
+    }
+
+    const res = await fetch("/api/user/wishlist", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
+      body: JSON.stringify({ item }),
+    }).then((res) => res.json());
+    if (res.ok) addToWishlist({ ...item, product: data });
   };
 
   return (

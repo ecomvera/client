@@ -6,24 +6,19 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { FaMinus, FaPlus } from "react-icons/fa6";
 import WishList from "./WishList";
-import { useStore } from "@/stores/store";
-import { syncData } from "@/lib/syncData";
 import { ICartItem } from "@/types";
 import SelectSize from "@/components/Dialogs/SelectSize";
 import UpdateQuantity from "@/components/Dialogs/UpdateQuantity";
 import Link from "next/link";
+import { useData } from "@/hooks/useData";
 
 const Page = () => {
-  const { cart, wishlist } = useStore();
-
-  React.useEffect(() => {
-    if (!cart.length || !wishlist.length) syncData();
-  }, []);
+  const { cart, wishlist } = useData();
 
   return (
     <div className="max-w-desktop mx-auto px-2 py-5">
       <Cart cart={cart} />
-      <WishList />
+      <WishList cart={cart} wishlist={wishlist} />
     </div>
   );
 };
@@ -40,7 +35,7 @@ const Cart = ({ cart }: { cart: ICartItem[] }) => {
           ) : (
             <div>
               {cart.map((item) => (
-                <CartProduct key={item.itemId} item={item} />
+                <CartProduct key={item.id} item={item} />
               ))}
             </div>
           )}

@@ -11,21 +11,33 @@ import { ICartItem, IKeyValue } from "@/types";
 import { ArrowDownIcon, ChevronDownIcon } from "@radix-ui/react-icons";
 import { Button } from "../ui/button";
 import { useState } from "react";
-import { useStore } from "@/stores/store";
+import { checkExistsOrAddToCart, useDataStore } from "@/stores/data";
+import { useData } from "@/hooks/useData";
+import { useUser } from "@/hooks/useUser";
 
 const SelectSize = ({ item }: { item: ICartItem }) => {
-  const { addToCart, removeFromCart } = useStore();
+  const { cart } = useData();
+  const { user, token } = useUser();
+  const { addToCart, removeFromCart, setCart } = useDataStore();
   const [selectedSize, setSelectedSize] = useState(item.size);
 
   const createItemId = () => {
     return `${item.product.id}-${item.color}-${selectedSize}`;
   };
 
-  const handleChangeSize = () => {
+  const handleChangeSize = async () => {
     if (selectedSize === item?.size) return;
 
-    addToCart({ ...item, size: selectedSize, itemId: createItemId() });
-    removeFromCart(item);
+    const updatedCart = checkExistsOrAddToCart(cart, { ...item, size: selectedSize, id: createItemId() }).filter(
+      (i) => i.id !== item.id
+    );
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    await fetch("/api/user/cart", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
+      body: JSON.stringify({ cart: updatedCart.map(({ product, ...rest }) => rest) }),
+    });
   };
 
   return (

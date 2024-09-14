@@ -12,7 +12,7 @@ import { fetcher, fetchOpt } from "@/lib/utils";
 import useSWR from "swr";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { useStore } from "@/stores/store";
+import { useDataStore } from "@/stores/data";
 
 interface IFilters {
   key: string;
@@ -22,7 +22,7 @@ interface IFilters {
 const Page = ({ params }: { params: { slug: string } }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { filterProperties, setFilterProperties } = useStore();
+  const { filterProperties, setFilterProperties } = useDataStore();
   const { mutate: fetchFilterProperties } = useSWR(`/api/enum`, fetcher, fetchOpt);
 
   const [category, setCategory] = useState<ICategory>();

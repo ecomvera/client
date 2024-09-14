@@ -8,14 +8,14 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { useStore } from "@/stores/store";
+import { useDataStore } from "@/stores/data";
 import { useEffect, useState } from "react";
 import { ICategory } from "@/types";
 import useSWR from "swr";
 import { fetcher, fetchOpt } from "@/lib/utils";
 
 function HeaderNavigation() {
-  const { categories, setCategories } = useStore();
+  const { categories, setCategories } = useDataStore();
   const { mutate: fetchCategories, isLoading: fetchCategoriesLoading } = useSWR("/api/categories", fetcher, fetchOpt);
 
   useEffect(() => {

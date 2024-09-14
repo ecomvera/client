@@ -11,18 +11,23 @@ import { ICartItem, IKeyValue } from "@/types";
 import { ArrowDownIcon, ChevronDownIcon } from "@radix-ui/react-icons";
 import { Button } from "../ui/button";
 import { useState } from "react";
-import { useStore } from "@/stores/store";
+import { useDataStore } from "@/stores/data";
+import { useUser } from "@/hooks/useUser";
 
 const UpdateQuantity = ({ item }: { item: ICartItem }) => {
-  const [open, setOpen] = useState(false);
-  const { updateQuantity } = useStore();
+  const { user, token } = useUser();
+  const { updateQuantity } = useDataStore();
   const [currentQnt, setCurrentQnt] = useState(item.quantity);
 
-  const handleQuantity = () => {
+  const handleQuantity = async () => {
     if (currentQnt === item?.quantity) return;
 
-    updateQuantity(item.itemId, currentQnt);
-    setOpen(false);
+    updateQuantity(item.id, currentQnt);
+    await fetch("/api/user/cart", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
+      body: JSON.stringify({ id: item.id, quantity: currentQnt }),
+    });
   };
 
   return (

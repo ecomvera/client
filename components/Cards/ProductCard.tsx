@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { IoHeart, IoHeartOutline, IoStar } from "react-icons/io5";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useStore } from "@/stores/store";
+import { useDataStore } from "@/stores/data";
 
 const ProductCard = ({
   product,
@@ -15,17 +15,19 @@ const ProductCard = ({
   showHeart?: boolean;
   showRating?: boolean;
 }) => {
-  const { addToWishlist, removeFromWishlist, wishlist } = useStore();
+  // const { addToWishlist, removeFromWishlist, wishlist } = useDataStore();
 
-  const createItemId = () => {
-    return `${product.id}-${product.colors[0]}-${product.sizes[0].key}`;
-  };
+  // console.log(product);
 
-  const isAdded = wishlist?.find((p) => p.itemId === createItemId());
+  // const createItemId = () => {
+  //   return `${product.id}-${product?.colors[0]}-${product?.sizes[0].key}`;
+  // };
+
+  // const isAdded = product && wishlist?.find((p) => p.id === createItemId());
 
   const handleAddToWishlist = () => {
     // addToWishlist({
-    //   itemId: createItemId(),
+    //   id: createItemId(),
     //   color: product.colors[0],
     //   size: product.sizes[0].key,
     //   quantity: 1,
@@ -34,7 +36,7 @@ const ProductCard = ({
   };
 
   const handleRemoveFromWishlist = () => {
-    // const item = wishlist?.find((p) => p.itemId === createItemId());
+    // const item = wishlist?.find((p) => p.id === createItemId());
     // removeFromWishlist(createItemId());
   };
 
@@ -47,10 +49,10 @@ const ProductCard = ({
               className="absolute top-1 right-1 z-[1]"
               onClick={(event) => {
                 event.preventDefault();
-                isAdded ? handleRemoveFromWishlist : handleAddToWishlist;
+                // isAdded ? handleRemoveFromWishlist : handleAddToWishlist;
               }}
             >
-              {isAdded ? <IoHeart className="text-2xl text-red-500" /> : <IoHeartOutline className="text-2xl" />}
+              {/* {isAdded ? <IoHeart className="text-2xl text-red-500" /> : <IoHeartOutline className="text-2xl" />} */}
             </div>
           )}
 

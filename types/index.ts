@@ -64,9 +64,33 @@ export interface IKeyValue {
 }
 
 export interface ICartItem {
-  itemId: string;
+  id: string;
   quantity: number;
   color: string;
   size: string;
+  productId: string;
   product: IProduct;
+}
+
+export interface IOrder {
+  id: string;
+  userId: string;
+  paymetId: string;
+  addressId: string;
+  status: "created" | "dispatched" | "delivered" | "cancelled";
+}
+
+export interface IUser {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  gender: string;
+  onBoarded: boolean;
+
+  addresses: IAddress[];
+  orders: IOrder[];
+
+  createdAt: string;
+  updatedAt: string;
 }
