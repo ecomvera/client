@@ -11,6 +11,8 @@ import SelectSize from "@/components/Dialogs/SelectSize";
 import UpdateQuantity from "@/components/Dialogs/UpdateQuantity";
 import Link from "next/link";
 import { useData } from "@/hooks/useData";
+import { Cross1Icon } from "@radix-ui/react-icons";
+import DeleteCartItem from "@/components/Dialogs/DeleteCartItem";
 
 const Page = () => {
   const { cart, wishlist } = useData();
@@ -53,7 +55,7 @@ const CartProduct = ({ item }: { item: ICartItem }) => {
         <Image src={item.product.images[0].url} alt="product" layout="fill" objectFit="contain" />
       </Link>
       <div className="flex flex-1 flex-col">
-        <div className="flex-1">
+        <div className="relative">
           <h1 className="text-sm tablet:text-lg font-semibold text-light-1">{item.product.name}</h1>
           <span
             style={{ backgroundColor: item.color }}
@@ -61,6 +63,7 @@ const CartProduct = ({ item }: { item: ICartItem }) => {
           >
             <span className="w-4 h-4 tablet:w-6 tablet:h-6 rounded-full border-2 border-white"></span>
           </span>
+          <DeleteCartItem item={item} />
         </div>
         <div className="flex justify-between">
           <div className="flex gap-2 items-center">
