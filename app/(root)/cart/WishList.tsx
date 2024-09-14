@@ -1,3 +1,4 @@
+import SelectSize from "@/components/Dialogs/SelectSize";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { useData } from "@/hooks/useData";
@@ -61,17 +62,6 @@ const ProductCard = ({
     });
   };
 
-  const handleMoveToCart = async () => {
-    await handleDeleteItem();
-    const updatedCart = checkExistsOrAddToCart(cart, item);
-    setCart(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    await fetch("/api/user/cart", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
-      body: JSON.stringify({ cart: updatedCart.map(({ product, ...rest }) => rest) }),
-    });
-  };
   return (
     <Card className="items-center justify-center text-light-1 overflow-hidden rounded-none border-none shadow-none">
       <Link href={`/p/${item.product.slug}`}>
@@ -98,9 +88,7 @@ const ProductCard = ({
         </CardContent>
       </Link>
       <CardFooter className="flex flex-col gap-1 p-0 m-0">
-        <Button className="w-full hover:bg-green-400" variant="outline" onClick={handleMoveToCart}>
-          Move to Cart
-        </Button>
+        <SelectSize item={item} moveToCart deleteItem={handleDeleteItem} />
         <Button className="w-full hover:bg-red-300" variant="outline" onClick={handleDeleteItem}>
           Remove
         </Button>

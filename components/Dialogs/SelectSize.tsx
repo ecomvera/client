@@ -15,10 +15,18 @@ import { checkExistsOrAddToCart, useDataStore } from "@/stores/data";
 import { useData } from "@/hooks/useData";
 import { useUser } from "@/hooks/useUser";
 
-const SelectSize = ({ item }: { item: ICartItem }) => {
+const SelectSize = ({
+  item,
+  moveToCart,
+  deleteItem,
+}: {
+  item: ICartItem;
+  moveToCart?: boolean;
+  deleteItem?: () => void;
+}) => {
   const { cart } = useData();
-  const { user, token } = useUser();
-  const { addToCart, removeFromCart, setCart } = useDataStore();
+  const { token } = useUser();
+  const { setCart } = useDataStore();
   const [selectedSize, setSelectedSize] = useState(item.size);
 
   const createItemId = () => {
@@ -38,12 +46,20 @@ const SelectSize = ({ item }: { item: ICartItem }) => {
       headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
       body: JSON.stringify({ cart: updatedCart.map(({ product, ...rest }) => rest) }),
     });
+
+    if (moveToCart && deleteItem) deleteItem();
   };
 
   return (
     <Dialog onOpenChange={() => setSelectedSize(item?.size)}>
       <DialogTrigger className="flex items-center text-xs tablet:text-base">
-        Size: <span className="font-semibold ml-1 ">{item?.size}</span> <ChevronDownIcon className="w-5 h-5" />
+        {moveToCart ? (
+          <span className="w-full hover:bg-primary-foreground border py-[6px] px-6 rounded-md">Move to Cart</span>
+        ) : (
+          <>
+            Size: <span className="font-semibold ml-1 ">{item?.size}</span> <ChevronDownIcon className="w-5 h-5" />
+          </>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

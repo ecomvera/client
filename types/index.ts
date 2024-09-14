@@ -67,7 +67,7 @@ export interface ICartItem {
   id: string;
   quantity: number;
   color: string;
-  size: string;
+  size?: string;
   productId: string;
   product: IProduct;
 }

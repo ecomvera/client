@@ -88,11 +88,11 @@ const ProductDetail = ({
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [showSelectSizeMessage, setShowSelectSizeMessage] = useState(false);
 
-  const createItemId = () => {
-    return `${data.id}-${selectedColor}-${selectedSize}`;
+  const createItemId = (key?: string) => {
+    return `${data.id}-${selectedColor}-${key === "wishlist" ? data.sizes[0].key : selectedSize}`;
   };
 
-  const isInWishlist = wishlist.some((item) => item.id === createItemId());
+  const isInWishlist = wishlist.some((item) => item.id === `${data.id}-${selectedColor}-${data.sizes[0].key}`);
   const isExistInCart = cart.some((item) => item.id === createItemId());
 
   const item = {
@@ -120,24 +120,25 @@ const ProductDetail = ({
 
   const handleAddToWishlist = async () => {
     if (!user) return router.push("/login");
-    if (!selectedSize) return setShowSelectSizeMessage(true);
+    const id = createItemId("wishlist");
 
     if (isInWishlist) {
       const res = await fetch("/api/user/wishlist", {
         method: "DELETE",
         headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
-        body: JSON.stringify({ id: createItemId() }),
+        body: JSON.stringify({ id }),
       }).then((res) => res.json());
-      if (res.ok) removeFromWishlist(createItemId());
+      if (res.ok) removeFromWishlist(id);
       return;
     }
 
+    addToWishlist({ ...item, id, product: data });
     const res = await fetch("/api/user/wishlist", {
       method: "POST",
       headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
-      body: JSON.stringify({ item }),
+      body: JSON.stringify({ item: { ...item, id } }),
     }).then((res) => res.json());
-    if (res.ok) addToWishlist({ ...item, product: data });
+    if (!res.ok) removeFromWishlist(id);
   };
 
   return (

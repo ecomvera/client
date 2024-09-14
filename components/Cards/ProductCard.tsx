@@ -5,6 +5,8 @@ import { useState } from "react";
 import { IoHeart, IoHeartOutline, IoStar } from "react-icons/io5";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDataStore } from "@/stores/data";
+import { useUser } from "@/hooks/useUser";
+import { useRouter } from "next/navigation";
 
 const ProductCard = ({
   product,
@@ -15,29 +17,45 @@ const ProductCard = ({
   showHeart?: boolean;
   showRating?: boolean;
 }) => {
-  // const { addToWishlist, removeFromWishlist, wishlist } = useDataStore();
+  const router = useRouter();
+  const { user, token } = useUser();
+  const { addToWishlist, removeFromWishlist, wishlist } = useDataStore();
 
-  // console.log(product);
-
-  // const createItemId = () => {
-  //   return `${product.id}-${product?.colors[0]}-${product?.sizes[0].key}`;
-  // };
-
-  // const isAdded = product && wishlist?.find((p) => p.id === createItemId());
-
-  const handleAddToWishlist = () => {
-    // addToWishlist({
-    //   id: createItemId(),
-    //   color: product.colors[0],
-    //   size: product.sizes[0].key,
-    //   quantity: 1,
-    //   product,
-    // });
+  const createItemId = () => {
+    return `${product.id}-${product?.colors[0]}-${product?.sizes[0].key}`;
   };
 
-  const handleRemoveFromWishlist = () => {
-    // const item = wishlist?.find((p) => p.id === createItemId());
-    // removeFromWishlist(createItemId());
+  const isAdded = product && wishlist?.find((p) => p.id === createItemId());
+
+  const handleAddToWishlist = async () => {
+    if (!user) return router.push("/sign-in");
+
+    const item = {
+      id: createItemId(),
+      color: product.colors[0],
+      quantity: 1,
+      productId: product.id as string,
+    };
+
+    addToWishlist({ ...item, product });
+    const res = await fetch("/api/user/wishlist", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
+      body: JSON.stringify({ item }),
+    }).then((res) => res.json());
+    if (!res.ok) removeFromWishlist(createItemId());
+  };
+
+  const handleRemoveFromWishlist = async () => {
+    if (!user) return;
+
+    const id = createItemId();
+    removeFromWishlist(createItemId());
+    await fetch("/api/user/wishlist", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
+      body: JSON.stringify({ id }),
+    });
   };
 
   return (
@@ -49,10 +67,10 @@ const ProductCard = ({
               className="absolute top-1 right-1 z-[1]"
               onClick={(event) => {
                 event.preventDefault();
-                // isAdded ? handleRemoveFromWishlist : handleAddToWishlist;
+                isAdded ? handleRemoveFromWishlist() : handleAddToWishlist();
               }}
             >
-              {/* {isAdded ? <IoHeart className="text-2xl text-red-500" /> : <IoHeartOutline className="text-2xl" />} */}
+              {isAdded ? <IoHeart className="text-2xl text-red-500" /> : <IoHeartOutline className="text-2xl" />}
             </div>
           )}
 
