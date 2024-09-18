@@ -8,9 +8,25 @@ import { IoShirtOutline } from "react-icons/io5";
 import { FaRegAddressCard } from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/stores/user";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const Page = () => {
   const { user } = useUser();
+  const router = useRouter();
+  const { setUser } = useUserStore();
+  const [open, setOpen] = React.useState(false);
+
+  const handleSignOut = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("cart");
+    localStorage.removeItem("wishlist");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    setUser(null);
+    router.replace("/sign-in");
+  };
 
   return (
     <div>
@@ -58,6 +74,28 @@ const Page = () => {
           <p className="text-sm">Manage your profile</p>
         </Link>
       </div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild className="flex gap-3 items-center text-lg">
+          <Button className="md:hidden w-full mt-10" variant={"destructive"}>
+            Logout
+          </Button>
+        </DialogTrigger>
+        <DialogContent aria-describedby={undefined}>
+          <DialogHeader>
+            <DialogTitle className="mb-10">Are you sure you want to log out?</DialogTitle>
+
+            <div className="flex gap-2 justify-end">
+              <Button variant="outline" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
+              <Button variant="destructive" className="font-semibold" onClick={handleSignOut}>
+                Log out
+              </Button>
+            </div>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -22,13 +22,22 @@ export default function RootLayout({
   const pathname = usePathname();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!isLoading && !user) return router.push(`/sign-in?src=${pathname}`);
-  }, [isLoading, user]);
+  // useEffect(() => {
+  //   if (!isLoading && !user) return router.push(`/sign-in?src=${pathname}`);
+  // }, [isLoading, user]);
   return (
     <div className="flex py-2 md:py-5 px-3 mb-20 min-h-[calc(100vh-300px)]">
       <SidebarNav />
-      <main className="w-full md:px-3">{children}</main>
+      {!isLoading && !user ? (
+        <div className="w-full text-center mt-28">
+          <p className="font-semibold">Please Sign In to continue</p>
+          <Button className="md:text-lg mt-3" onClick={() => router.push(`/sign-in?src=${pathname}`)}>
+            Sign In
+          </Button>
+        </div>
+      ) : (
+        <main className="w-full md:px-3">{children}</main>
+      )}
     </div>
   );
 }

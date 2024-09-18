@@ -116,7 +116,7 @@ const CartSummary = ({ cart }: { cart: ICartItem[] }) => {
               ? user.addresses.length > 0
                 ? router.push("/checkout")
                 : router.push("/myaccount/addresses?address=new&src=/cart")
-              : router.push("/signin?src=/cart")
+              : router.push("/sign-in?src=/cart")
           }
           disabled={cart.length === 0}
         >

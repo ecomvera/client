@@ -9,9 +9,11 @@ import { useDataStore } from "@/stores/data";
 import { useEffect, useState } from "react";
 import { ICategory } from "@/types";
 import { usePathname } from "next/navigation";
+import { useUser } from "@/hooks/useUser";
 
 const SideBar = () => {
   const pathname = usePathname();
+  const { user } = useUser();
   const { isSidebarOpen, setIsSidebarOpen } = useAction();
   const { categories } = useDataStore();
 
@@ -21,10 +23,14 @@ const SideBar = () => {
     <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
       <SheetContent side="left" className="p-0 border-border">
         <SheetHeader className="text-start p-3">
-          <SheetTitle>Welcome User</SheetTitle>
-          <Link href={"#"}>
-            <SheetDescription>Sign In/Sign Up</SheetDescription>
-          </Link>
+          <div>Welcome {user ? <p className="text-lg font-semibold">{user.name}</p> : "User"}</div>
+          {user ? (
+            <></>
+          ) : (
+            <Link href={`/sign-in?src=${pathname}`}>
+              <SheetDescription>Sign In/Sign Up</SheetDescription>
+            </Link>
+          )}
         </SheetHeader>
         <div className="line-break"></div>
         <div className="flex flex-col gap-3 p-3">
