@@ -5,7 +5,6 @@ import BreadcrumbCard from "@/components/Cards/BreadcrumbCard";
 import Filters from "@/components/Shared/Filters";
 import ProductsList from "@/components/Shared/ProductsList";
 import React, { useEffect, useState } from "react";
-import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import { Accordion } from "@/components/ui/accordion";
 import { ICategory, IProduct } from "@/types";
 import { fetcher, fetchOpt } from "@/lib/utils";
@@ -15,7 +14,8 @@ import { Button } from "@/components/ui/button";
 import { useDataStore } from "@/stores/data";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { GrSort } from "react-icons/gr";
-import { FiFilter } from "react-icons/fi";
+import MobileFilters from "@/components/Shared/MobileFilters";
+import SortBy from "@/components/Shared/SortBy";
 
 interface IFilters {
   key: string;
@@ -44,6 +44,9 @@ const Page = ({ params }: { params: { slug: string } }) => {
   const handleClearAll = () => {
     setFilters(category?.parentId ? [] : [filters[0]]); // Set the first filter as the default for the parent category
   };
+
+  const isFiltersApplied =
+    subCategories?.length === 0 ? (filters.length === 0 ? false : true) : filters.length === 1 ? false : true;
 
   useEffect(() => {
     // create a single string from the filters
@@ -91,42 +94,26 @@ const Page = ({ params }: { params: { slug: string } }) => {
 
         {/* mobile design */}
         <div className="md:hidden fixed bottom-[48px] mobile:bottom-[56px] left-0 right-0 z-[2] flex justify-between bg-background">
-          <div className="w-full text-center p-2 border border-r-0 font-semibold text-muted-foreground">
-            <GrSort className="inline mr-1" /> Sort
+          <div className="w-full text-center p-2 border border-r-0 border-border">
+            <SortBy items={filteredProducts} setItems={setFilteredProducts} />
           </div>
-          <Drawer>
-            <DrawerTitle className="hidden">Filters</DrawerTitle>
-            <DrawerTrigger className="w-full border">
-              <span className="font-semibold text-muted-foreground">
-                <FiFilter className="inline mr-1 w-5 h-5" />
-                Filters
-              </span>
-            </DrawerTrigger>
-            <DrawerContent className="px-5 mb-4 max-h-[60vh] border-none" aria-describedby={undefined}>
-              <Accordion
-                type="multiple"
-                defaultValue={Array.from({ length: 10 }).map((_, i) => `item-${i + 1}`)}
-                className="w-full gap-5 grid grid-cols-auto overflow-scroll hide-scrollbar"
-              >
-                <Filters
-                  subCategories={subCategories}
-                  sizes={filterProperties.sizes}
-                  attributes={filterProperties.attributes}
-                  colors={filterProperties.colors}
-                  filters={filters}
-                  setFilters={setFilters}
-                />
-              </Accordion>
-            </DrawerContent>
-          </Drawer>
+          <MobileFilters
+            subCategories={subCategories}
+            sizes={filterProperties.sizes}
+            attributes={filterProperties.attributes}
+            colors={filterProperties.colors}
+            filters={filters}
+            setFilters={setFilters}
+            handleClearAll={handleClearAll}
+          />
         </div>
 
         {/* desktop design */}
-        <div className="flex gap-8 py-3 md:py-5">
+        <div className="flex gap-8 md:py-5">
           <div className="static top-12 hidden md:block tablet:w-50 laptop:w-64 ">
             <div className="flex justify-between">
               <span className="font-semibold text-muted-foreground">Filters</span>
-              {filters.length > 0 && (
+              {isFiltersApplied && (
                 <span className="font-semibold text-destructive cursor-pointer" onClick={handleClearAll}>
                   Clear All
                 </span>
@@ -153,13 +140,13 @@ const Page = ({ params }: { params: { slug: string } }) => {
 
           <div className="flex flex-col w-full mt-[-5px]">
             <div className="z-[2] flex justify-between items-center gap-5 sticky md:flex top-12 md:top-auto bg-background mb-3 py-3 md:p-0">
-              <div className="font-semibold text-xl md:text-2xl font-sans text-light-1 tracking-wide">
+              <div className="font-semibold text-xl md:text-2xl font-sans tracking-wide">
                 {category.name}{" "}
                 {category.products && <span className="font-extralight">({category?.products?.length})</span>}
               </div>
 
-              <div className="font-semibold text-muted-foreground">
-                <GrSort className="inline mr-1" /> Sort
+              <div className="hidden md:block">
+                <SortBy items={filteredProducts} setItems={setFilteredProducts} desktop />
               </div>
             </div>
 
