@@ -1,6 +1,7 @@
 import React from "react";
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ImCheckboxChecked, ImCheckboxUnchecked } from "react-icons/im";
+import { ICategory } from "@/types";
 
 interface ISelectedItem {
   key: string;
@@ -10,6 +11,7 @@ interface ISelectedItem {
 interface ISetFilters extends React.Dispatch<React.SetStateAction<ISelectedItem[]>> {}
 
 const Filters = ({
+  subCategories,
   isOffer = false,
   sizes,
   attributes,
@@ -17,6 +19,7 @@ const Filters = ({
   filters,
   setFilters,
 }: {
+  subCategories?: ICategory[];
   isOffer?: boolean;
   sizes: string[];
   attributes: { key: string; value: string[] }[];
@@ -61,8 +64,27 @@ const Filters = ({
         </AccordionItem>
       )}
 
-      {colors && (
+      {subCategories && subCategories?.length > 0 && (
         <AccordionItem className="border-none" value="item-2">
+          <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Category</AccordionTrigger>
+          <AccordionContent className="flex flex-col px-4 p-0">
+            {subCategories.map((category) => (
+              <Item
+                key={category.slug}
+                category="category"
+                value={category.slug}
+                filters={filters}
+                handleSelectItem={handleSelectItem}
+              >
+                {category.name}
+              </Item>
+            ))}
+          </AccordionContent>
+        </AccordionItem>
+      )}
+
+      {colors && (
+        <AccordionItem className="border-none" value="item-3">
           <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Color</AccordionTrigger>
           <AccordionContent className="flex flex-wrap gap-2 px-2">
             {colors.map((color) => (
@@ -86,7 +108,7 @@ const Filters = ({
         </AccordionItem>
       )}
 
-      <AccordionItem className="border-none" value="item-3">
+      <AccordionItem className="border-none" value="item-4">
         <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Sizes</AccordionTrigger>
         <AccordionContent className="flex flex-col px-4 p-0">
           {sizes?.map((size) => (

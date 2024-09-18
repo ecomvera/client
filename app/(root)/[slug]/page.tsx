@@ -26,6 +26,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
   const { mutate: fetchFilterProperties } = useSWR(`/api/enum`, fetcher, fetchOpt);
 
   const [category, setCategory] = useState<ICategory>();
+  const [subCategories, setSubCategories] = useState<ICategory[]>([]);
   const { data, isLoading } = useSWR(`/api/categories/${params.slug}?${searchParams.toString()}`, fetcher);
 
   // applying filters
@@ -37,6 +38,10 @@ const Page = ({ params }: { params: { slug: string } }) => {
   });
 
   const [filters, setFilters] = React.useState<IFilters[]>(allParams);
+  const handleClearAll = () => {
+    setFilters(category?.parentId ? [] : [filters[0]]); // Set the first filter as the default for the parent category
+  };
+
   useEffect(() => {
     // create a single string from the filters
     const filterString = filters.length ? filters.map((f) => `${f.key}=${f.value.join("_")}`).join("&") : "";
@@ -57,7 +62,17 @@ const Page = ({ params }: { params: { slug: string } }) => {
 
   useEffect(() => {
     if (data?.category) {
-      setFilteredProducts(data?.category.products);
+      if (data?.category?.parentId) {
+        setFilteredProducts(data?.category.products);
+      } else {
+        // console.log(data?.subCategories);
+        setSubCategories(data?.subCategories);
+        const products = data?.category?.children?.reduce((acc: IProduct[], category: ICategory) => {
+          // @ts-ignore
+          return [...acc, ...category.products];
+        }, []);
+        setFilteredProducts(products);
+      }
       setCategory(data?.category);
     }
   }, [data?.category]);
@@ -68,21 +83,22 @@ const Page = ({ params }: { params: { slug: string } }) => {
       <div className="px-2 pb-1 py-[2px] min-h-[calc(100vh-100px)]">
         <BreadcrumbCard
           title={category.name}
-          nav={category.parent ? [{ title: category.parent?.name, url: `/${category.parent.slug}` }] : []}
+          nav={category.parent ? [{ title: category.parent?.name, url: `/${category.parent.slug}?parent=true` }] : []}
         />
 
         <div className="">
           <div className="z-[2] flex justify-between items-center gap-5 sticky md:block top-12 md:top-auto py-3 bg-background">
             <div className="flex justify-between">
-              <div className="font-bold text-xl md:text-2xl font-sans text-light-1  tracking-wide">
-                {category.name} <span className="font-extralight">({category?.products?.length})</span>
+              <div className="font-bold text-xl md:text-2xl font-sans text-light-1 tracking-wide">
+                {category.name}{" "}
+                {category.products?.length && <span className="font-extralight">({category?.products?.length})</span>}
               </div>
             </div>
             <div className="md:hidden">
               <Drawer>
                 <DrawerTitle className="hidden">Filters</DrawerTitle>
                 {filters.length > 0 && (
-                  <span className="text-sm font-semibold text-destructive" onClick={() => setFilters([])}>
+                  <span className="text-sm font-semibold text-destructive cursor-pointer" onClick={handleClearAll}>
                     Clear All
                   </span>
                 )}
@@ -113,7 +129,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
               <div className="flex justify-between">
                 <span className="font-semibold text-muted-foreground">Filters</span>
                 {filters.length > 0 && (
-                  <span className="font-semibold text-destructive" onClick={() => setFilters([])}>
+                  <span className="font-semibold text-destructive" onClick={handleClearAll}>
                     Clear All
                   </span>
                 )}
@@ -126,6 +142,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
                   className="w-full"
                 >
                   <Filters
+                    subCategories={subCategories}
                     sizes={filterProperties.sizes}
                     attributes={filterProperties.attributes}
                     colors={filterProperties.colors}
@@ -140,7 +157,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
                 <p className="text-xl tablet:text-2xl font-light mt-10">fetching...</p>
               </div>
             )}
-            {!isLoading && !filteredProducts.length && (
+            {!isLoading && !filteredProducts?.length && (
               <div className="flex flex-col gap-5 items-center  text-muted-foreground flex-1 w-full">
                 <p className="text-lg">No products found</p>
                 <Button className="" onClick={() => setFilters([])}>
@@ -148,7 +165,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
                 </Button>
               </div>
             )}
-            {!isLoading && filteredProducts.length > 0 && <ProductsList products={filteredProducts} />}
+            {!isLoading && filteredProducts?.length > 0 && <ProductsList products={filteredProducts} />}
           </div>
         </div>
       </div>
