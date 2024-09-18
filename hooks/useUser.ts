@@ -12,8 +12,6 @@ export const useUser = () => {
         const accessToken = localStorage.getItem("accessToken");
         const refreshToken = localStorage.getItem("refreshToken");
 
-        console.log("user");
-
         if (localUser) setUser(JSON.parse(localUser));
         if (accessToken && refreshToken) {
           setToken({ access: accessToken, refresh: refreshToken });

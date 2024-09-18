@@ -32,6 +32,7 @@ const VerifyOTP = ({
       }).then((data) => data.json());
 
       if (!res.ok) {
+        setIsLoading(false);
         toast({
           title: "Error",
           description: res.error || "Something went wrong",

@@ -33,7 +33,9 @@ const SignInForm = ({
         });
       }
 
-      console.log(res.data);
+      toast({
+        title: res.data.otp,
+      });
 
       if (!res.data.user.onBoarded) {
         return setCurrentState("OnBoarding");

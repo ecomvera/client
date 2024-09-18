@@ -1,7 +1,7 @@
 export interface IAddress {
+  id?: string;
   name: string;
   phone: string;
-  email: string;
   line1: string;
   line2: string;
   landmark: string;
@@ -9,6 +9,7 @@ export interface IAddress {
   state: string;
   country: string;
   pincode: string;
+  residenceType?: string;
 }
 
 export interface ICategory {
@@ -81,7 +82,7 @@ export interface IOrder {
 }
 
 export interface IUser {
-  id: string;
+  id?: string;
   name: string;
   email: string;
   phone: string;

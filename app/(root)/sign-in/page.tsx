@@ -4,25 +4,20 @@ import { useEffect, useState } from "react";
 import SignInForm from "./SignInForm";
 import VerifyOTP from "./VerifyOTP";
 import OnBoarding from "./OnBoarding";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@/hooks/useUser";
 import { toast } from "@/components/ui/use-toast";
 
 const Page = () => {
+  const params = useSearchParams();
   const router = useRouter();
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
   const [currentState, setCurrentState] = useState<"SignIn" | "VerifyOTP" | "OnBoarding">("SignIn");
   const [phone, setPhone] = useState("");
 
   useEffect(() => {
-    if (user) {
-      // toast({
-      //   description: "Already logged in. Redirected",
-      //   variant: "success",
-      // });
-      router.replace("/");
-    }
-  }, [user]);
+    if (!isLoading && user) router.replace(params.get("src") || "/");
+  }, []);
   return (
     <div className="h-[calc(100vh-100px)]">
       <div className="flex flex-col tablet:flex-row overflow-hidden h-full">
