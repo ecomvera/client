@@ -10,7 +10,7 @@ const Footer = () => {
 
   if (["/sign-in", "/cart", "/checkout"].includes(pathname)) return null;
   return (
-    <div className="py-20 px-10 laptp:px-20">
+    <div className="py-10 px-10 laptp:px-20 bg-secondary">
       <div className="max-w-desktop mx-auto text-light-1">
         <div className="w-full flex justify-between flex-wrap">
           <div className="w-full mobile:w-1/2 laptop:w-auto mt-7">

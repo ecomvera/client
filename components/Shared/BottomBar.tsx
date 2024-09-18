@@ -20,7 +20,7 @@ const BottomBar = () => {
           <Link href="/">
             <IoHomeOutline className="text-2xl" />
           </Link>
-          <Link href="/orders">
+          <Link href="/myaccount/orders">
             <PiPackageLight className="text-2xl" />
           </Link>
           <Link href="/search">
@@ -36,7 +36,7 @@ const BottomBar = () => {
               <IoCartOutline className="text-2xl" />
             </span>
           </Link>
-          <Link href="/profile">
+          <Link href="/myaccount">
             <IoPersonOutline className="text-2xl" />
           </Link>
         </div>
