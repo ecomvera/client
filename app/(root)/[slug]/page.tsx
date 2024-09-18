@@ -13,6 +13,9 @@ import useSWR from "swr";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useDataStore } from "@/stores/data";
+import { ReloadIcon } from "@radix-ui/react-icons";
+import { GrSort } from "react-icons/gr";
+import { FiFilter } from "react-icons/fi";
 
 interface IFilters {
   key: string;
@@ -80,87 +83,96 @@ const Page = ({ params }: { params: { slug: string } }) => {
   if (!isLoading && !data?.category) return <NotFound />;
   if (category)
     return (
-      <div className="px-2 pb-1 py-[2px] min-h-[calc(100vh-100px)]">
+      <div className="px-2 pb-1 md:py-[2px] min-h-[calc(100vh-200px)] md:min-h-0">
         <BreadcrumbCard
           title={category.name}
           nav={category.parent ? [{ title: category.parent?.name, url: `/${category.parent.slug}?parent=true` }] : []}
         />
 
-        <div className="">
-          <div className="z-[2] flex justify-between items-center gap-5 sticky md:block top-12 md:top-auto py-3 bg-background">
+        {/* mobile design */}
+        <div className="md:hidden fixed bottom-[48px] mobile:bottom-[56px] left-0 right-0 z-[2] flex justify-between bg-background">
+          <div className="w-full text-center p-2 border border-r-0 font-semibold text-muted-foreground">
+            <GrSort className="inline mr-1" /> Sort
+          </div>
+          <Drawer>
+            <DrawerTitle className="hidden">Filters</DrawerTitle>
+            <DrawerTrigger className="w-full border">
+              <span className="font-semibold text-muted-foreground">
+                <FiFilter className="inline mr-1 w-5 h-5" />
+                Filters
+              </span>
+            </DrawerTrigger>
+            <DrawerContent className="px-5 mb-4 max-h-[60vh] border-none" aria-describedby={undefined}>
+              <Accordion
+                type="multiple"
+                defaultValue={Array.from({ length: 10 }).map((_, i) => `item-${i + 1}`)}
+                className="w-full gap-5 grid grid-cols-auto overflow-scroll hide-scrollbar"
+              >
+                <Filters
+                  subCategories={subCategories}
+                  sizes={filterProperties.sizes}
+                  attributes={filterProperties.attributes}
+                  colors={filterProperties.colors}
+                  filters={filters}
+                  setFilters={setFilters}
+                />
+              </Accordion>
+            </DrawerContent>
+          </Drawer>
+        </div>
+
+        {/* desktop design */}
+        <div className="flex gap-8 py-3 md:py-5">
+          <div className="static top-12 hidden md:block tablet:w-50 laptop:w-64 ">
             <div className="flex justify-between">
-              <div className="font-bold text-xl md:text-2xl font-sans text-light-1 tracking-wide">
-                {category.name}{" "}
-                {category.products?.length && <span className="font-extralight">({category?.products?.length})</span>}
-              </div>
+              <span className="font-semibold text-muted-foreground">Filters</span>
+              {filters.length > 0 && (
+                <span className="font-semibold text-destructive cursor-pointer" onClick={handleClearAll}>
+                  Clear All
+                </span>
+              )}
             </div>
-            <div className="md:hidden">
-              <Drawer>
-                <DrawerTitle className="hidden">Filters</DrawerTitle>
-                {filters.length > 0 && (
-                  <span className="text-sm font-semibold text-destructive cursor-pointer" onClick={handleClearAll}>
-                    Clear All
-                  </span>
-                )}
-                <DrawerTrigger>
-                  <span className="ml-5 font-semibold text-muted-foreground">Filters</span>
-                </DrawerTrigger>
-                <DrawerContent className="px-5 mb-4 max-h-[60vh] border-none" aria-describedby={undefined}>
-                  <Accordion
-                    type="multiple"
-                    defaultValue={Array.from({ length: 10 }).map((_, i) => `item-${i + 1}`)}
-                    className="w-full gap-5 grid grid-cols-auto overflow-scroll hide-scrollbar"
-                  >
-                    <Filters
-                      sizes={filterProperties.sizes}
-                      attributes={filterProperties.attributes}
-                      colors={filterProperties.colors}
-                      filters={filters}
-                      setFilters={setFilters}
-                    />
-                  </Accordion>
-                </DrawerContent>
-              </Drawer>
+
+            <div className="flex flex-col gap-3">
+              <Accordion
+                type="multiple"
+                defaultValue={Array.from({ length: 10 }).map((_, i) => `item-${i + 1}`)}
+                className="w-full"
+              >
+                <Filters
+                  subCategories={subCategories}
+                  sizes={filterProperties.sizes}
+                  attributes={filterProperties.attributes}
+                  colors={filterProperties.colors}
+                  filters={filters}
+                  setFilters={setFilters}
+                />
+              </Accordion>
             </div>
           </div>
 
-          <div className="flex gap-5 my-3 md:my-8">
-            <div className="hidden md:block tablet:w-40 laptop:w-64 ">
-              <div className="flex justify-between">
-                <span className="font-semibold text-muted-foreground">Filters</span>
-                {filters.length > 0 && (
-                  <span className="font-semibold text-destructive" onClick={handleClearAll}>
-                    Clear All
-                  </span>
-                )}
+          <div className="flex flex-col w-full mt-[-5px]">
+            <div className="z-[2] flex justify-between items-center gap-5 sticky md:flex top-12 md:top-auto bg-background mb-3 py-3 md:p-0">
+              <div className="font-semibold text-xl md:text-2xl font-sans text-light-1 tracking-wide">
+                {category.name}{" "}
+                {category.products && <span className="font-extralight">({category?.products?.length})</span>}
               </div>
 
-              <div className="flex flex-col gap-3">
-                <Accordion
-                  type="multiple"
-                  defaultValue={Array.from({ length: 10 }).map((_, i) => `item-${i + 1}`)}
-                  className="w-full"
-                >
-                  <Filters
-                    subCategories={subCategories}
-                    sizes={filterProperties.sizes}
-                    attributes={filterProperties.attributes}
-                    colors={filterProperties.colors}
-                    filters={filters}
-                    setFilters={setFilters}
-                  />
-                </Accordion>
+              <div className="font-semibold text-muted-foreground">
+                <GrSort className="inline mr-1" /> Sort
               </div>
             </div>
+
             {isLoading && (
-              <div className="flex-1 w-full h-full z-50 flex justify-center">
-                <p className="text-xl tablet:text-2xl font-light mt-10">fetching...</p>
+              <div className="flex items-center justify-center mt-32">
+                <ReloadIcon className="mr-2 h-5 w-5 animate-spin" />
+                <p className="text-xl tablet:text-2xl font-light">fetching...</p>
               </div>
             )}
             {!isLoading && !filteredProducts?.length && (
-              <div className="flex flex-col gap-5 items-center  text-muted-foreground flex-1 w-full">
+              <div className="flex flex-col gap-5 items-center text-muted-foreground mt-32">
                 <p className="text-lg">No products found</p>
-                <Button className="" onClick={() => setFilters([])}>
+                <Button className="" onClick={handleClearAll}>
                   Clear All
                 </Button>
               </div>
