@@ -17,7 +17,7 @@ const BestSellers = () => {
 
       <ReactCarousel showArrows autoPlay>
         {products?.data.map((product: IProduct) => (
-          <CarouselItem key={product.id} className="pl-2 sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
+          <CarouselItem key={product.id} className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
             <ProductCard product={product} showHeart={false} />
           </CarouselItem>
         ))}

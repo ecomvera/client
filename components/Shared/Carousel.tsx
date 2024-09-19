@@ -23,11 +23,11 @@ function ReactCarousel({
           : []
       }
     >
-      <CarouselContent className="-ml-1">{children}</CarouselContent>
+      <CarouselContent>{children}</CarouselContent>
       {showArrows && (
         <>
-          <CarouselPrevious className="absolute top-1/2 -translate-y-1/2 left-1" />
-          <CarouselNext className="absolute top-1/2 -translate-y-1/2 right-1" />
+          <CarouselPrevious className="absolute top-1/2 -translate-y-1/2 left-1 disabled:hidden" />
+          <CarouselNext className="absolute top-1/2 -translate-y-1/2 right-1 disabled:hidden" />
         </>
       )}
     </Carousel>
