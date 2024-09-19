@@ -1,12 +1,11 @@
 import { IProduct } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import { IoHeart, IoHeartOutline, IoStar } from "react-icons/io5";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDataStore } from "@/stores/data";
 import { useUser } from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
+import { AspectRatio } from "../ui/aspect-ratio";
 
 const ProductCard = ({
   product,
@@ -59,9 +58,9 @@ const ProductCard = ({
   };
 
   return (
-    <Card className="flex aspect-auto items-center justify-center text-light-1 overflow-hidden rounded-none border-none shadow-none">
-      <Link href={`/p/${product.slug}`}>
-        <CardHeader className="relative p-0 w-full">
+    <Link href={`/p/${product.slug}`}>
+      <div className="flex flex-col text-light-1">
+        <AspectRatio ratio={0.8 / 1} className="border rounded-md relative">
           {showHeart && (
             <div
               className="absolute top-1 right-1 z-[1]"
@@ -75,15 +74,14 @@ const ProductCard = ({
           )}
 
           <Image
-            src={product.images[0].url}
+            src={"/assets/women.webp"}
             quality={10}
             priority
             alt="mugs"
-            width="0"
-            height="0"
+            width={0}
+            height={0}
             sizes="100vw"
-            className="w-full h-full"
-            style={{ margin: "0" }}
+            className="rounded-md object-contain w-full h-full"
           />
 
           {showRating && (
@@ -91,17 +89,17 @@ const ProductCard = ({
               <IoStar fill="#FFC107" /> 4.5
             </div>
           )}
-        </CardHeader>
+        </AspectRatio>
 
-        <CardContent className="p-1">
+        <div className="p-1">
           <p className="text-sm tablet:text-lg font-bold text-ellipsis truncate">{product.name}</p>
           <p className="text-sm tablet:text-lg  font-semibold">
             ₹{product.price}{" "}
             <span className="text-xs font-extralight tablet:text-sm line-through text-">₹{product.mrp}</span>
           </p>
-        </CardContent>
-      </Link>
-    </Card>
+        </div>
+      </div>
+    </Link>
   );
 };
 
