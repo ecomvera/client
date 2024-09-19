@@ -74,10 +74,10 @@ const ProductCard = ({
           )}
 
           <Image
-            src={"/assets/women.webp"}
+            src={product.images[0].url}
             quality={10}
             priority
-            alt="mugs"
+            alt="image"
             width={0}
             height={0}
             sizes="100vw"
