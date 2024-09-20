@@ -7,6 +7,7 @@ import ReactCarousel from "@/components/Shared/Carousel";
 import { CarouselItem } from "@/components/ui/carousel";
 import LoadingPage from "@/components/Shared/LoadingPage";
 import { useEffect } from "react";
+import GroupCategories from "@/components/Shared/GroupCategories";
 
 export default function Home() {
   // const [isMounted, setIsMounted] = useState(false);
@@ -20,8 +21,9 @@ export default function Home() {
   // }
 
   return (
-    <>
-      <Banner />
+    <div className="">
+      {/* <Banner /> */}
+      <GroupCategories />
 
       <BestSellers />
       <NewArrivals />
@@ -39,6 +41,6 @@ export default function Home() {
           </CarouselItem>
         ))}
       </ReactCarousel> */}
-    </>
+    </div>
   );
 }

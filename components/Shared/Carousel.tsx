@@ -7,8 +7,8 @@ function ReactCarousel({
   showArrows,
 }: {
   children: React.ReactNode;
-  autoPlay?: boolean;
-  showArrows: boolean;
+  autoPlay?: number;
+  showArrows?: boolean;
 }) {
   return (
     <Carousel
@@ -17,7 +17,9 @@ function ReactCarousel({
         autoPlay
           ? [
               Autoplay({
-                delay: 2000,
+                delay: autoPlay,
+                // stopOnLastSnap: true,
+                // stopOnMouseEnter: true,
               }),
             ]
           : []
