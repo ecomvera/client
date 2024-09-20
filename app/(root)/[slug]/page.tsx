@@ -32,7 +32,10 @@ const Page = ({ params }: { params: { slug: string } }) => {
 
   const [category, setCategory] = useState<ICategory>();
   const [subCategories, setSubCategories] = useState<ICategory[]>([]);
-  const { data, isLoading } = useSWR(`/api/categories/${params.slug}?${searchParams.toString()}`, fetcher);
+  const { data, isLoading } = useSWR(`/api/categories/${params.slug}?${searchParams.toString()}`, fetcher, {
+    ...fetchOpt,
+    revalidateOnMount: true,
+  });
 
   // applying filters
   const [filteredProducts, setFilteredProducts] = React.useState<IProduct[]>([]);
@@ -84,12 +87,16 @@ const Page = ({ params }: { params: { slug: string } }) => {
     }
   }, [data?.category]);
 
-  console.log("object");
-
   if (!isLoading && !data?.category) return <NotFound />;
+  if (isLoading && !category)
+    return (
+      <div className="h-full min-h-[calc(100vh-100px)]">
+        <Fetching />
+      </div>
+    );
   if (category)
     return (
-      <div className="max-w-desktop mx-auto px-2 pb-1 md:py-[2px] min-h-[calc(100vh-200px)] md:min-h-0">
+      <div className="max-w-desktop mx-auto px-2 pb-1 md:py-[2px] h-full min-h-[calc(100vh-200px)]">
         <BreadcrumbCard
           title={category.name}
           nav={category.parent ? [{ title: category.parent?.name, url: `/${category.parent.slug}` }] : []}
@@ -170,14 +177,9 @@ const Page = ({ params }: { params: { slug: string } }) => {
               </div>
             )}
 
-            {isLoading && (
-              <div className="flex items-center justify-center mt-32">
-                <ReloadIcon className="mr-2 h-5 w-5 animate-spin" />
-                <p className="text-xl tablet:text-2xl font-light">fetching...</p>
-              </div>
-            )}
+            {isLoading && <Fetching />}
             {!isLoading && !filteredProducts?.length && (
-              <div className="flex flex-col gap-5 items-center text-muted-foreground mt-32">
+              <div className="flex flex-col gap-5 items-center text-muted-foreground mt-10">
                 <p className="text-lg">No products found</p>
                 <Button className="" onClick={handleClearAll}>
                   Clear All
@@ -190,6 +192,15 @@ const Page = ({ params }: { params: { slug: string } }) => {
         </div>
       </div>
     );
+};
+
+const Fetching = () => {
+  return (
+    <div className="flex items-center justify-center mt-10">
+      <ReloadIcon className="mr-2 h-5 w-5 animate-spin" />
+      <p className="text-xl tablet:text-2xl font-light">fetching...</p>
+    </div>
+  );
 };
 
 export default Page;

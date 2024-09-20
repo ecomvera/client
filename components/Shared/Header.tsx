@@ -14,19 +14,10 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { BiLogOut } from "react-icons/bi";
 import { Button } from "../ui/button";
 import { useUserStore } from "@/stores/user";
@@ -40,7 +31,7 @@ const Header = () => {
 
   const isCheckoutPage = pathname === "/checkout";
   return (
-    <div className="w-full sticky top-0 bg-background z-10 ">
+    <div className="w-full sticky top-0 bg-background z-10 border-b-2">
       <div className="max-w-desktop mx-auto px-2 w-full sticky top-0 bg-background">
         <div className="flex justify-between gap-3 py-3 tablet:py-2 items-center">
           <div className="flex gap-3 items-center">

@@ -15,6 +15,7 @@ import { Cross1Icon } from "@radix-ui/react-icons";
 import DeleteCartItem from "@/components/Dialogs/DeleteCartItem";
 import { useUser } from "@/hooks/useUser";
 import { Separator } from "@/components/ui/separator";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 const Page = () => {
   const { cart, wishlist } = useData();
@@ -53,26 +54,37 @@ const Cart = ({ cart }: { cart: ICartItem[] }) => {
 const CartProduct = ({ item }: { item: ICartItem }) => {
   return (
     <div className="p-2 flex gap-2 border my-2">
-      <Link href={`/p/${item.product.slug}`} className="relative w-[100px] tablet:w-[150px]">
-        <Image src={item.product.images[0].url} alt="product" layout="fill" objectFit="contain" />
+      <Link href={`/p/${item.product.slug}`} className="relative w-[60px] tablet:w-[100px]">
+        <AspectRatio ratio={0.8 / 1}>
+          <Image
+            src={item.product.images[0].url}
+            alt="product"
+            width={0}
+            height={0}
+            priority
+            sizes="100vw"
+            className="w-full"
+          />
+        </AspectRatio>
       </Link>
       <div className="flex flex-1 flex-col">
         <div className="relative">
           <h1 className="text-sm tablet:text-base font-semibold text-light-1">{item.product.name}</h1>
           <span
             style={{ backgroundColor: item.color }}
-            className="w-5 h-5 tablet:w-7 tablet:h-7 rounded-full flex items-center justify-center"
+            className="w-5 h-5 tablet:w-7 tablet:h-7 rounded-full flex items-center justify-center mt-1"
           >
             <span className="w-4 h-4 tablet:w-6 tablet:h-6 rounded-full border-2 border-white"></span>
           </span>
           <DeleteCartItem item={item} />
         </div>
+        <div className="flex-1"></div>
         <div className="flex justify-between">
           <div className="flex gap-2 items-center">
             <SelectSize item={item} />
             <UpdateQuantity item={item} />
           </div>
-          <div className="flex gap-1 tablet:gap-2 items-baseline">
+          <div className="flex gap-1 tablet:gap-2 items-end">
             <p className="font-bold text-sm tablet:text-lg">₹{item.product.price * item.quantity}</p>
             <p className="line-through text-[10px] tablet:text-sm">₹{item.product.mrp * item.quantity}</p>
           </div>

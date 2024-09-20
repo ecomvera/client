@@ -9,14 +9,14 @@ import { CarouselItem } from "../ui/carousel";
 import ProductCard from "../Cards/ProductCard";
 
 const NewArrivals = () => {
-  const fetchProducts = useSWR("/api/products?new-arrivals", fetcher, fetchOpt);
+  const fetchProducts = useSWR("/api/products?new-arrivals", fetcher, { ...fetchOpt, revalidateOnMount: true });
   const { data: products, isLoading } = fetchProducts;
 
   if (isLoading || products?.data?.length === 0) return null;
 
   return (
     <div className="px-2 mobile:py-4 mt-5">
-      <h2 className="text-center text-xl mobile:text-2xl text-light-1 font-semibold uppercase">New Arrivals</h2>
+      <h2 className="text-center text-xl mobile:text-2xl text-light-1 font-semibold uppercase pb-3">New Arrivals</h2>
 
       <ReactCarousel showArrows autoPlay={5000}>
         {products?.data.map((product: IProduct) => (

@@ -22,6 +22,7 @@ const SideBar = () => {
   return (
     <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
       <SheetContent side="left" className="p-0 border-border">
+        <SheetTitle className="hidden"></SheetTitle>
         <SheetHeader className="text-start p-3">
           <div>Welcome {user ? <p className="text-lg font-semibold">{user.name}</p> : "User"}</div>
           {user ? (

@@ -21,12 +21,12 @@ export default function Home() {
   // }
 
   return (
-    <div className="">
+    <div className="h-full min-h-[calc(100vh-100px)]">
       {/* <Banner /> */}
       <GroupCategories />
 
-      <BestSellers />
       <NewArrivals />
+      <BestSellers />
 
       {/* <ReactCarousel showArrows>
         {Array.from({ length: 10 }).map((_, index) => (

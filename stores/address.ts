@@ -4,7 +4,6 @@ import { create } from "zustand";
 const addressData: IAddress = {
   name: "",
   phone: "",
-  email: "",
   line1: "",
   line2: "",
   landmark: "",

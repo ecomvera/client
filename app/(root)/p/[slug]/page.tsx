@@ -11,7 +11,7 @@ import React, { useEffect } from "react";
 import useSWR from "swr";
 
 const Page = ({ params }: { params: { slug: string } }) => {
-  const fetchProduct = useSWR(`/api/products/${params.slug}`, fetcher, fetchOpt);
+  const fetchProduct = useSWR(`/api/products/${params.slug}`, fetcher, { ...fetchOpt, revalidateOnMount: true });
   const { data, isLoading } = fetchProduct;
   const product: IProduct = data?.data;
 

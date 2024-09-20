@@ -59,7 +59,7 @@ const CategoryDropdown = ({ label, subCategories }: { label: string; subCategori
 
   return (
     <NavigationMenuItem>
-      <NavigationMenuTrigger className="text-base px-2">{label.split("-")[0]}</NavigationMenuTrigger>
+      <NavigationMenuTrigger className="text-base px-2">{label.split("'")[0]}</NavigationMenuTrigger>
       <NavigationMenuContent>
         <ul className="flex w-[715px] gap-10 p-5 px-8">
           {Object.keys(arr).map((item) => (

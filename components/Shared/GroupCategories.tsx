@@ -11,7 +11,7 @@ import { AspectRatio } from "../ui/aspect-ratio";
 import Image from "next/image";
 
 const GroupCategories = () => {
-  const fetchCategories = useSWR("/api/categories/group?active=true", fetcher, fetchOpt);
+  const fetchCategories = useSWR("/api/categories/group?active=true", fetcher, { ...fetchOpt, revalidateOnMount: true });
   const { data: categories, isLoading } = fetchCategories;
 
   if (isLoading || categories?.data?.length === 0) return null;
