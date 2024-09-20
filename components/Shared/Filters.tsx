@@ -83,7 +83,7 @@ const Filters = ({
         </AccordionItem>
       )}
 
-      {colors && (
+      {colors?.length > 0 && (
         <AccordionItem className="border-none" value="item-3">
           <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Color</AccordionTrigger>
           <AccordionContent className="flex flex-wrap gap-2 px-2">
@@ -108,16 +108,18 @@ const Filters = ({
         </AccordionItem>
       )}
 
-      <AccordionItem className="border-none" value="item-4">
-        <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Sizes</AccordionTrigger>
-        <AccordionContent className="flex flex-col px-4 p-0">
-          {sizes?.map((size) => (
-            <Item key={size} category="sizes" value={size} filters={filters} handleSelectItem={handleSelectItem}>
-              {size}
-            </Item>
-          ))}
-        </AccordionContent>
-      </AccordionItem>
+      {sizes?.length > 0 && (
+        <AccordionItem className="border-none" value="item-4">
+          <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Sizes</AccordionTrigger>
+          <AccordionContent className="flex flex-col px-4 p-0">
+            {sizes?.map((size) => (
+              <Item key={size} category="sizes" value={size} filters={filters} handleSelectItem={handleSelectItem}>
+                {size}
+              </Item>
+            ))}
+          </AccordionContent>
+        </AccordionItem>
+      )}
 
       {attributes?.map((attribute, index) => (
         <AccordionItem key={attribute.key} className="border-none" value={`item-${index + 4}`}>

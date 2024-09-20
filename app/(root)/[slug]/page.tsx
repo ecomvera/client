@@ -18,6 +18,7 @@ import MobileFilters from "@/components/Shared/MobileFilters";
 import SortBy from "@/components/Shared/SortBy";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import Image from "next/image";
+import { useAction } from "@/stores/action";
 
 interface IFilters {
   key: string;
@@ -27,6 +28,7 @@ interface IFilters {
 const Page = ({ params }: { params: { slug: string } }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { setShowLoadingScreen } = useAction();
   const { filterProperties, setFilterProperties } = useDataStore();
   const { mutate: fetchFilterProperties } = useSWR(`/api/enum`, fetcher, fetchOpt);
 
@@ -47,6 +49,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
 
   const [filters, setFilters] = React.useState<IFilters[]>(allParams);
   useEffect(() => {
+    if (data) setShowLoadingScreen(true);
     // create a param string from the filters
     const filterString = filters.length ? filters.map((f) => `${f.key}=${f.value.join("_")}`).join("&") : "";
     router.push(`/${params.slug}?${filterString}`);
@@ -68,6 +71,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
     if (!data?.category) return;
 
     setCategory(data.category);
+    setShowLoadingScreen(false);
     const { parentId, products, children } = data.category;
 
     // If it's a child category (has a parentId)
@@ -95,109 +99,104 @@ const Page = ({ params }: { params: { slug: string } }) => {
   }, [data?.category]);
 
   if (!isLoading && !data?.category) return <NotFound />;
-  if (isLoading && !category)
-    return (
-      <div className="h-full min-h-[calc(100vh-100px)]">
-        <Fetching />
-      </div>
-    );
-  if (category)
-    return (
-      <div className="max-w-desktop mx-auto px-2 pb-1 md:py-[2px] h-full min-h-[calc(100vh-200px)]">
-        <BreadcrumbCard
-          title={category.name}
-          nav={category.parent ? [{ title: category.parent?.name, url: `/${category.parent.slug}` }] : []}
-        />
+  // return <LoadingScreen />;
+  // if (category)
+  return (
+    <div className="max-w-desktop mx-auto px-2 pb-1 md:py-[2px] h-full min-h-[calc(100vh-200px)]">
+      <BreadcrumbCard
+        title={category?.name || ""}
+        nav={category?.parent ? [{ title: category?.parent?.name, url: `/${category?.parent.slug}` }] : []}
+      />
 
-        {/* mobile design */}
-        <div className="md:hidden fixed bottom-[48px] mobile:bottom-[56px] left-0 right-0 z-[2] flex justify-between bg-background">
-          <div className="w-full text-center p-2 border border-r-0 border-border">
-            <SortBy items={filteredProducts} setItems={setFilteredProducts} />
+      {/* mobile design */}
+      <div className="md:hidden fixed bottom-[48px] mobile:bottom-[56px] left-0 right-0 z-[2] flex justify-between bg-background">
+        <div className="w-full text-center p-2 border border-r-0 border-border">
+          <SortBy items={filteredProducts} setItems={setFilteredProducts} />
+        </div>
+        <MobileFilters
+          subCategories={subCategories}
+          sizes={filterProperties?.sizes}
+          attributes={filterProperties?.attributes}
+          colors={filterProperties?.colors}
+          filters={filters}
+          setFilters={setFilters}
+        />
+      </div>
+
+      {/* desktop design */}
+      <div className="flex gap-8 md:py-5">
+        <div className="static top-12 hidden md:block tablet:w-50 laptop:w-64 ">
+          <div className="flex justify-between">
+            <span className="font-semibold text-muted-foreground">Filters</span>
+            {filters.length > 0 && (
+              <span className="font-semibold text-destructive cursor-pointer" onClick={() => setFilters([])}>
+                Clear All
+              </span>
+            )}
           </div>
-          <MobileFilters
-            subCategories={subCategories}
-            sizes={filterProperties?.sizes}
-            attributes={filterProperties?.attributes}
-            colors={filterProperties?.colors}
-            filters={filters}
-            setFilters={setFilters}
-          />
+
+          <div className="flex flex-col gap-3">
+            <Accordion
+              type="multiple"
+              defaultValue={Array.from({ length: 10 }).map((_, i) => `item-${i + 1}`)}
+              className="w-full"
+            >
+              <Filters
+                subCategories={subCategories}
+                sizes={filterProperties?.sizes}
+                attributes={filterProperties?.attributes}
+                colors={filterProperties?.colors}
+                filters={filters}
+                setFilters={setFilters}
+              />
+            </Accordion>
+          </div>
         </div>
 
-        {/* desktop design */}
-        <div className="flex gap-8 md:py-5">
-          <div className="static top-12 hidden md:block tablet:w-50 laptop:w-64 ">
-            <div className="flex justify-between">
-              <span className="font-semibold text-muted-foreground">Filters</span>
-              {filters.length > 0 && (
-                <span className="font-semibold text-destructive cursor-pointer" onClick={() => setFilters([])}>
-                  Clear All
-                </span>
+        <div className="flex flex-col w-full mt-[-5px]">
+          <div className="z-[2] flex justify-between items-center gap-5 sticky md:flex top-12 md:top-auto bg-background mb-3 py-3 md:p-0">
+            <div className="font-semibold text-xl md:text-2xl font-sans tracking-wide">
+              {category?.name}{" "}
+              {(category?.products || data?.products) && (
+                <span className="font-extralight">({category?.products?.length || data?.products?.length})</span>
               )}
             </div>
 
-            <div className="flex flex-col gap-3">
-              <Accordion
-                type="multiple"
-                defaultValue={Array.from({ length: 10 }).map((_, i) => `item-${i + 1}`)}
-                className="w-full"
-              >
-                <Filters
-                  subCategories={subCategories}
-                  sizes={filterProperties.sizes}
-                  attributes={filterProperties.attributes}
-                  colors={filterProperties.colors}
-                  filters={filters}
-                  setFilters={setFilters}
+            <div className="hidden md:block">
+              <SortBy items={filteredProducts} setItems={setFilteredProducts} desktop />
+            </div>
+          </div>
+
+          {category?.banner && (
+            <div className="mb-3">
+              <AspectRatio ratio={3.57 / 1}>
+                <Image
+                  src={category?.banner || ""}
+                  alt="Image"
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                  className="rounded-md object-contain w-full h-full"
                 />
-              </Accordion>
+              </AspectRatio>
             </div>
-          </div>
+          )}
 
-          <div className="flex flex-col w-full mt-[-5px]">
-            <div className="z-[2] flex justify-between items-center gap-5 sticky md:flex top-12 md:top-auto bg-background mb-3 py-3 md:p-0">
-              <div className="font-semibold text-xl md:text-2xl font-sans tracking-wide">
-                {category.name}{" "}
-                {(category?.products || data?.products) && (
-                  <span className="font-extralight">({category?.products?.length || data?.products?.length})</span>
-                )}
-              </div>
-
-              <div className="hidden md:block">
-                <SortBy items={filteredProducts} setItems={setFilteredProducts} desktop />
-              </div>
+          {/* {isLoading && <Fetching />} */}
+          {!isLoading && !filteredProducts?.length && (
+            <div className="flex flex-col gap-5 items-center text-muted-foreground mt-10">
+              <p className="text-lg">No products found</p>
+              <Button className="" onClick={() => setFilters([])}>
+                Clear All
+              </Button>
             </div>
+          )}
 
-            {category?.banner && (
-              <div className="mb-3">
-                <AspectRatio ratio={3.57 / 1}>
-                  <Image
-                    src={category?.banner || ""}
-                    alt="Image"
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                    className="rounded-md object-contain w-full h-full"
-                  />
-                </AspectRatio>
-              </div>
-            )}
-
-            {isLoading && <Fetching />}
-            {!isLoading && !filteredProducts?.length && (
-              <div className="flex flex-col gap-5 items-center text-muted-foreground mt-10">
-                <p className="text-lg">No products found</p>
-                <Button className="" onClick={() => setFilters([])}>
-                  Clear All
-                </Button>
-              </div>
-            )}
-
-            {!isLoading && filteredProducts?.length > 0 && <ProductsList products={filteredProducts} />}
-          </div>
+          {filteredProducts?.length > 0 && <ProductsList products={filteredProducts} />}
         </div>
       </div>
-    );
+    </div>
+  );
 };
 
 const Fetching = () => {

@@ -16,9 +16,9 @@ interface ISetFilters extends React.Dispatch<React.SetStateAction<ISelectedItem[
 const MobileFilters = ({
   subCategories,
   isOffer = false,
-  sizes,
-  attributes,
-  colors,
+  sizes = [],
+  attributes = [],
+  colors = [],
   filters,
   setFilters,
 }: {

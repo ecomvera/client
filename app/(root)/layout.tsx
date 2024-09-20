@@ -7,6 +7,7 @@ import BottomBar from "@/components/Shared/BottomBar";
 import SideBar from "@/components/Shared/SideBar";
 import Footer from "@/components/Shared/Footer";
 import { Toaster } from "@/components/ui/toaster";
+import { LoadingScreen } from "@/components/Dialogs/LoadingScreen";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,7 +25,8 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <div className="!scroll-smooth select-none">
+          <div className="!scroll-smooth select-none relative">
+            <LoadingScreen />
             <Toaster />
             <Header />
             <SideBar />
