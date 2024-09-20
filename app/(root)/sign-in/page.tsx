@@ -19,7 +19,7 @@ const Page = () => {
     if (!isLoading && user) router.replace(params.get("src") || "/");
   }, []);
   return (
-    <div className="h-[calc(100vh-100px)]">
+    <div className="max-w-desktop mx-auto h-[calc(100vh-100px)]">
       <div className="flex flex-col tablet:flex-row overflow-hidden h-full">
         <div className="w-full h-full tablet:w-1/2 p-2"></div>
 

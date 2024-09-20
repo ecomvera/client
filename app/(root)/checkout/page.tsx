@@ -36,7 +36,7 @@ const Page = () => {
     if ((!user && !userLoading) || (!cartLoading && !cart.length)) return router.replace("/sign-in?src=/checkout");
   }, [userLoading, cartLoading]);
   return (
-    <div className="max-w-desktop mx-auto px-2 tablet:py-5">
+    <div className="max-w-desktop mx-auto tablet:py-5">
       <h1 className="text-2xl font-semibold text-light-1">Checkout</h1>
 
       <div className="flex flex-col-reverse tablet:flex-row justify-between py-3 gap-4 border-light-3">

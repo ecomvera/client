@@ -86,7 +86,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
   if (!isLoading && !data?.category) return <NotFound />;
   if (category)
     return (
-      <div className="px-2 pb-1 md:py-[2px] min-h-[calc(100vh-200px)] md:min-h-0">
+      <div className="max-w-desktop mx-auto px-2 pb-1 md:py-[2px] min-h-[calc(100vh-200px)] md:min-h-0">
         <BreadcrumbCard
           title={category.name}
           nav={category.parent ? [{ title: category.parent?.name, url: `/${category.parent.slug}?parent=true` }] : []}

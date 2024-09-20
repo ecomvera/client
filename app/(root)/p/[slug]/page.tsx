@@ -20,18 +20,16 @@ const Page = ({ params }: { params: { slug: string } }) => {
 
   if (product)
     return (
-      <div>
-        <div className="max-w-desktop mx-auto px-2">
-          <BreadcrumbCard
-            nav={[
-              { title: product.category?.parent?.name || "", url: `/${product.category?.parent?.slug}?parent=true` },
-              { title: product.category?.name || "", url: `/${product.category?.slug}` },
-            ]}
-            title={product.name}
-          />
-          <ProductDetails product={product} />
-          {/* <SimilarProducts /> */}
-        </div>
+      <div className="max-w-desktop mx-auto px-2">
+        <BreadcrumbCard
+          nav={[
+            { title: product.category?.parent?.name || "", url: `/${product.category?.parent?.slug}?parent=true` },
+            { title: product.category?.name || "", url: `/${product.category?.slug}` },
+          ]}
+          title={product.name}
+        />
+        <ProductDetails product={product} />
+        {/* <SimilarProducts /> */}
       </div>
     );
 };

@@ -26,7 +26,7 @@ export default function RootLayout({
   //   if (!isLoading && !user) return router.push(`/sign-in?src=${pathname}`);
   // }, [isLoading, user]);
   return (
-    <div className="flex py-2 md:py-5 px-3 mb-20 min-h-[calc(100vh-300px)]">
+    <div className="max-w-desktop mx-auto flex py-2 md:py-5 px-3 mb-20 min-h-[calc(100vh-300px)]">
       <SidebarNav />
       {!isLoading && !user ? (
         <div className="w-full text-center mt-28">

@@ -28,7 +28,7 @@ export default function RootLayout({
             <Toaster />
             <Header />
             <SideBar />
-            <main className="max-w-desktop mx-auto">{children}</main>
+            <main className="mx-auto">{children}</main>
             <Footer />
             <BottomBar />
           </div>
