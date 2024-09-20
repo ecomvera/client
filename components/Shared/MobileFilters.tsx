@@ -33,9 +33,6 @@ const MobileFilters = ({
   handleClearAll: () => void;
 }) => {
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
-  const isFiltersApplied =
-    subCategories?.length === 0 ? (filters.length === 0 ? false : true) : filters.length === 1 ? false : true;
-
   const isFilterSelected = (category: string) => filters.findIndex((item) => item.key === category);
 
   const handleSelectItem = (category: string, value: string) => {
@@ -62,10 +59,10 @@ const MobileFilters = ({
     <Drawer open={isFilterOpen} onOpenChange={setIsFilterOpen}>
       <DrawerTitle className="hidden">Filters</DrawerTitle>
       <DrawerTrigger className="w-full border border-border" onClick={() => setIsFilterOpen(true)}>
-        <span className={`${isFiltersApplied && "font-semibold"}`}>
+        <span className={`${filters.length > 0 && "font-semibold"}`}>
           <FiFilter className="inline mr-1 w-5 h-5" />
           Filters
-          <span className="ml-1">({subCategories?.length ? filters.length - 1 : filters.length})</span>
+          <span className="ml-1">({filters.length})</span>
         </span>
       </DrawerTrigger>
       <DrawerContent className="px-5 mb-4 max-h-[60vh] border-none" aria-describedby={undefined}>
@@ -137,7 +134,7 @@ const MobileFilters = ({
         <div className="flex gap-2">
           <Button
             onClick={handleClearAll}
-            disabled={!isFiltersApplied}
+            disabled={!filters.length}
             className="w-full mt-2 text-base"
             variant="destructive"
           >

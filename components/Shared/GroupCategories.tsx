@@ -38,7 +38,7 @@ const GroupCategories = () => {
     <ReactCarousel autoPlay={3000}>
       {categories?.data.map((category: IGroupCategory) => (
         <CarouselItem key={category.id} className="basis-[80%] md:basis-[60%] lg:basis-[40%]">
-          <Link href={`/categories/${category.id}`}>
+          <Link href={`/${category.slug}`}>
             <AspectRatio ratio={1 / 1}>
               <Image
                 src={category.image}
