@@ -16,6 +16,8 @@ import { ReloadIcon } from "@radix-ui/react-icons";
 import { GrSort } from "react-icons/gr";
 import MobileFilters from "@/components/Shared/MobileFilters";
 import SortBy from "@/components/Shared/SortBy";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import Image from "next/image";
 
 interface IFilters {
   key: string;
@@ -42,11 +44,8 @@ const Page = ({ params }: { params: { slug: string } }) => {
 
   const [filters, setFilters] = React.useState<IFilters[]>(allParams);
   const handleClearAll = () => {
-    setFilters(category?.parentId ? [] : [filters[0]]); // Set the first filter as the default for the parent category
+    setFilters([]); // Set the first filter as the default for the parent category
   };
-
-  const isFiltersApplied =
-    subCategories?.length === 0 ? (filters.length === 0 ? false : true) : filters.length === 1 ? false : true;
 
   useEffect(() => {
     // create a single string from the filters
@@ -70,9 +69,11 @@ const Page = ({ params }: { params: { slug: string } }) => {
     if (data?.category) {
       if (data?.category?.parentId) {
         setFilteredProducts(data?.category.products);
+      } else if (data?.products?.length) {
+        setFilteredProducts(data?.products || []);
+        setSubCategories(data?.subcategories);
       } else {
-        // console.log(data?.subCategories);
-        setSubCategories(data?.subCategories);
+        setSubCategories(data?.subcategories);
         const products = data?.category?.children?.reduce((acc: IProduct[], category: ICategory) => {
           // @ts-ignore
           return [...acc, ...category.products];
@@ -83,13 +84,15 @@ const Page = ({ params }: { params: { slug: string } }) => {
     }
   }, [data?.category]);
 
+  console.log("object");
+
   if (!isLoading && !data?.category) return <NotFound />;
   if (category)
     return (
       <div className="max-w-desktop mx-auto px-2 pb-1 md:py-[2px] min-h-[calc(100vh-200px)] md:min-h-0">
         <BreadcrumbCard
           title={category.name}
-          nav={category.parent ? [{ title: category.parent?.name, url: `/${category.parent.slug}?parent=true` }] : []}
+          nav={category.parent ? [{ title: category.parent?.name, url: `/${category.parent.slug}` }] : []}
         />
 
         {/* mobile design */}
@@ -99,9 +102,9 @@ const Page = ({ params }: { params: { slug: string } }) => {
           </div>
           <MobileFilters
             subCategories={subCategories}
-            sizes={filterProperties.sizes}
-            attributes={filterProperties.attributes}
-            colors={filterProperties.colors}
+            sizes={filterProperties?.sizes}
+            attributes={filterProperties?.attributes}
+            colors={filterProperties?.colors}
             filters={filters}
             setFilters={setFilters}
             handleClearAll={handleClearAll}
@@ -113,7 +116,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
           <div className="static top-12 hidden md:block tablet:w-50 laptop:w-64 ">
             <div className="flex justify-between">
               <span className="font-semibold text-muted-foreground">Filters</span>
-              {isFiltersApplied && (
+              {filters.length > 0 && (
                 <span className="font-semibold text-destructive cursor-pointer" onClick={handleClearAll}>
                   Clear All
                 </span>
@@ -142,13 +145,30 @@ const Page = ({ params }: { params: { slug: string } }) => {
             <div className="z-[2] flex justify-between items-center gap-5 sticky md:flex top-12 md:top-auto bg-background mb-3 py-3 md:p-0">
               <div className="font-semibold text-xl md:text-2xl font-sans tracking-wide">
                 {category.name}{" "}
-                {category.products && <span className="font-extralight">({category?.products?.length})</span>}
+                {(category?.products || data?.products) && (
+                  <span className="font-extralight">({category?.products?.length || data?.products?.length})</span>
+                )}
               </div>
 
               <div className="hidden md:block">
                 <SortBy items={filteredProducts} setItems={setFilteredProducts} desktop />
               </div>
             </div>
+
+            {category?.banner && (
+              <div className="mb-3">
+                <AspectRatio ratio={3.57 / 1}>
+                  <Image
+                    src={category?.banner || ""}
+                    alt="Image"
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                    className="rounded-md object-contain w-full h-full"
+                  />
+                </AspectRatio>
+              </div>
+            )}
 
             {isLoading && (
               <div className="flex items-center justify-center mt-32">
@@ -164,6 +184,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
                 </Button>
               </div>
             )}
+
             {!isLoading && filteredProducts?.length > 0 && <ProductsList products={filteredProducts} />}
           </div>
         </div>
