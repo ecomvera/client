@@ -46,12 +46,8 @@ const Page = ({ params }: { params: { slug: string } }) => {
   });
 
   const [filters, setFilters] = React.useState<IFilters[]>(allParams);
-  const handleClearAll = () => {
-    setFilters([]); // Set the first filter as the default for the parent category
-  };
-
   useEffect(() => {
-    // create a single string from the filters
+    // create a param string from the filters
     const filterString = filters.length ? filters.map((f) => `${f.key}=${f.value.join("_")}`).join("&") : "";
     router.push(`/${params.slug}?${filterString}`);
   }, [filters]);
@@ -69,21 +65,32 @@ const Page = ({ params }: { params: { slug: string } }) => {
   }, []);
 
   useEffect(() => {
-    if (data?.category) {
-      if (data?.category?.parentId) {
-        setFilteredProducts(data?.category.products);
-      } else if (data?.products?.length) {
-        setFilteredProducts(data?.products || []);
-        setSubCategories(data?.subcategories);
-      } else {
-        setSubCategories(data?.subcategories);
-        const products = data?.category?.children?.reduce((acc: IProduct[], category: ICategory) => {
-          // @ts-ignore
-          return [...acc, ...category.products];
-        }, []);
-        setFilteredProducts(products);
-      }
-      setCategory(data?.category);
+    if (!data?.category) return;
+
+    setCategory(data.category);
+    const { parentId, products, children } = data.category;
+
+    // If it's a child category (has a parentId)
+    if (parentId) {
+      setFilteredProducts(products); // Filter products of this category
+      return;
+    }
+
+    // Set the subcategories for parent category or group category
+    setSubCategories(data.subcategories);
+
+    // If it's a group category and there are products directly under this category
+    if (data?.products) {
+      setFilteredProducts(data?.products || []); // products from the group category
+      return;
+    }
+
+    // Otherwise, it's a parent category with no direct products, so fetch products from children
+    if (children?.length) {
+      const aggregatedProducts = children.reduce((acc: IProduct[], category: ICategory) => {
+        return acc.concat(category.products || []);
+      }, []);
+      setFilteredProducts(aggregatedProducts); // Set the products from subcategories
     }
   }, [data?.category]);
 
@@ -114,7 +121,6 @@ const Page = ({ params }: { params: { slug: string } }) => {
             colors={filterProperties?.colors}
             filters={filters}
             setFilters={setFilters}
-            handleClearAll={handleClearAll}
           />
         </div>
 
@@ -124,7 +130,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
             <div className="flex justify-between">
               <span className="font-semibold text-muted-foreground">Filters</span>
               {filters.length > 0 && (
-                <span className="font-semibold text-destructive cursor-pointer" onClick={handleClearAll}>
+                <span className="font-semibold text-destructive cursor-pointer" onClick={() => setFilters([])}>
                   Clear All
                 </span>
               )}
@@ -181,7 +187,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
             {!isLoading && !filteredProducts?.length && (
               <div className="flex flex-col gap-5 items-center text-muted-foreground mt-10">
                 <p className="text-lg">No products found</p>
-                <Button className="" onClick={handleClearAll}>
+                <Button className="" onClick={() => setFilters([])}>
                   Clear All
                 </Button>
               </div>

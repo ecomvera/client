@@ -21,7 +21,6 @@ const MobileFilters = ({
   colors,
   filters,
   setFilters,
-  handleClearAll,
 }: {
   subCategories?: ICategory[];
   isOffer?: boolean;
@@ -30,7 +29,6 @@ const MobileFilters = ({
   colors: string[];
   filters: ISelectedItem[];
   setFilters: ISetFilters;
-  handleClearAll: () => void;
 }) => {
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
   const isFilterSelected = (category: string) => filters.findIndex((item) => item.key === category);
@@ -133,7 +131,7 @@ const MobileFilters = ({
 
         <div className="flex gap-2">
           <Button
-            onClick={handleClearAll}
+            onClick={() => setFilters([])}
             disabled={!filters.length}
             className="w-full mt-2 text-base"
             variant="destructive"
