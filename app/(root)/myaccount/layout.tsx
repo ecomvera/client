@@ -8,7 +8,7 @@ import { PiPackage } from "react-icons/pi";
 import { BiLogOut } from "react-icons/bi";
 import { BiIdCard } from "react-icons/bi";
 import { MdOutlineLocationOn } from "react-icons/md";
-import React, { useEffect } from "react";
+import React, { Suspense } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/stores/user";
@@ -36,7 +36,9 @@ export default function RootLayout({
           </Button>
         </div>
       ) : (
-        <main className="w-full md:px-3">{children}</main>
+        <main className="w-full md:px-3">
+          <Suspense fallback={<div>Loading...</div>}> {children}</Suspense>
+        </main>
       )}
     </div>
   );
