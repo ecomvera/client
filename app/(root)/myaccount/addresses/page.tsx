@@ -12,13 +12,14 @@ import UpdateAddress from "@/components/forms/UpdateAddress";
 import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/stores/user";
 import { toast } from "@/components/ui/use-toast";
+import { Suspense } from "react";
 
 const Page = () => {
   const router = useRouter();
   const params = useSearchParams();
 
   return (
-    <div>
+    <Suspense fallback={<div>Loading...</div>}>
       <h1
         className="flex md:hidden items-center gap-2 font-semibold mb-5 text-xl font-sans cursor-pointer"
         onClick={() => router.back()}
@@ -33,7 +34,7 @@ const Page = () => {
       ) : (
         <UpdateAddress id={params.get("address") as string} />
       )}
-    </div>
+    </Suspense>
   );
 };
 
