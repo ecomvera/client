@@ -8,6 +8,7 @@ import SideBar from "@/components/Shared/SideBar";
 import Footer from "@/components/Shared/Footer";
 import { Toaster } from "@/components/ui/toaster";
 import { LoadingScreen } from "@/components/Dialogs/LoadingScreen";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,15 +26,17 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <div className="!scroll-smooth select-none relative">
-            <LoadingScreen />
-            <Toaster />
-            <Header />
-            <SideBar />
-            <main className="mx-auto">{children}</main>
-            <Footer />
-            <BottomBar />
-          </div>
+          <Suspense fallback={<div>Loading...</div>}>
+            <div className="!scroll-smooth select-none relative">
+              <LoadingScreen />
+              <Toaster />
+              <Header />
+              <SideBar />
+              <main className="mx-auto">{children}</main>
+              <Footer />
+              <BottomBar />
+            </div>
+          </Suspense>
         </ThemeProvider>
       </body>
     </html>
