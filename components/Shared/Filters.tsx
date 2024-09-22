@@ -1,7 +1,7 @@
 import React from "react";
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ImCheckboxChecked, ImCheckboxUnchecked } from "react-icons/im";
-import { ICategory } from "@/types";
+import { IAttribute, ICategory, IColor, ISize } from "@/types";
 
 interface ISelectedItem {
   key: string;
@@ -21,9 +21,9 @@ const Filters = ({
 }: {
   subCategories?: ICategory[];
   isOffer?: boolean;
-  sizes: string[];
-  attributes: { key: string; value: string[] }[];
-  colors: string[];
+  sizes: ISize[];
+  attributes: IAttribute[];
+  colors: IColor[];
   filters: ISelectedItem[];
   setFilters: ISetFilters;
 }) => {
@@ -89,19 +89,19 @@ const Filters = ({
           <AccordionContent className="flex flex-wrap gap-2 px-2">
             {colors.map((color) => (
               <div
-                key={color}
+                key={color.id}
                 className="w-7 h-7 text-center rounded cursor-pointer shadow shadow-gray-300"
                 style={{
-                  border: filters.filter((item) => item.key === "color")[0]?.value?.includes(color)
-                    ? `2px solid ${color}`
+                  border: filters.filter((item) => item.key === "color")[0]?.value?.includes(color.name)
+                    ? `2px solid ${color.name}`
                     : "none",
-                  padding: filters.filter((item) => item.key === "color")[0]?.value?.includes(color) ? "1px" : "0",
+                  padding: filters.filter((item) => item.key === "color")[0]?.value?.includes(color.name) ? "1px" : "0",
                 }}
                 onClick={() => {
-                  handleSelectItem("color", color);
+                  handleSelectItem("color", color.name);
                 }}
               >
-                <div key={color} className={`rounded w-full h-full`} style={{ backgroundColor: color }} />
+                <div key={color.id} className={`rounded w-full h-full`} style={{ backgroundColor: color.hex }} />
               </div>
             ))}
           </AccordionContent>
@@ -113,8 +113,8 @@ const Filters = ({
           <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Sizes</AccordionTrigger>
           <AccordionContent className="flex flex-col px-4 p-0">
             {sizes?.map((size) => (
-              <Item key={size} category="sizes" value={size} filters={filters} handleSelectItem={handleSelectItem}>
-                {size}
+              <Item key={size.id} category="sizes" value={size.value} filters={filters} handleSelectItem={handleSelectItem}>
+                {size.value}
               </Item>
             ))}
           </AccordionContent>

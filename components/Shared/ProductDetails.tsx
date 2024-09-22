@@ -6,67 +6,81 @@ import { IoLocationOutline } from "react-icons/io5";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import { IProduct } from "@/types";
+import { IColor, IProduct } from "@/types";
 import { useDataStore } from "@/stores/data";
 import { useUser } from "@/hooks/useUser";
 import { useData } from "@/hooks/useData";
+import { AspectRatio } from "../ui/aspect-ratio";
 
 const ProductDetails = ({ product }: { product: IProduct }) => {
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
+  const [selectedColor, setSelectedColor] = useState(product.colors[0]?.hex);
 
   return (
     <div className="mobile:py-5">
       <div className="flex flex-col items-center tablet:items-start tablet:flex-row">
-        <LeftGallaryView images={product.images} />
+        <LeftGallaryView images={product.images} currentColor={selectedColor} />
         <ProductDetail data={product} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
       </div>
     </div>
   );
 };
 
-const LeftGallaryView = ({ images }: { images: IProduct["images"] }) => {
-  const [currentSlide, setCurrentSlide] = useState(images[0]?.url || "");
+const LeftGallaryView = ({ images, currentColor }: { images: IProduct["images"]; currentColor: string }) => {
+  const [currentSlide, setCurrentSlide] = useState("");
 
-  const handleSlideChange = (index: number) => {
-    setCurrentSlide(images[index].url);
+  const handleSlideChange = (url: string) => {
+    setCurrentSlide(url);
   };
 
+  useEffect(() => {
+    setCurrentSlide(images.filter((image) => image.color === currentColor)[0].url);
+  }, [currentColor]);
+
   return (
-    <div className="flex gap-1 flex-col-reverse mobile:flex-row w-full max-w-[350px]">
+    <div className="flex gap-1 flex-col-reverse mobile:flex-row">
       <div className="relative flex justify-between mobile:flex-col w-full mobile:w-[80px] h-full">
-        {images.map((image, index) => (
-          <div
-            key={index}
-            className={`relative cursor-pointer border-2 m-[1px] h-full max-h-[80px] bg-background overflow-hidden ${
-              currentSlide === image.url ? "border-muted-foreground" : ""
-            }`}
-          >
-            <Image
-              priority
-              key={image.key}
-              src={image.url}
-              alt="product"
-              className="w-full h-full object-cover"
-              width={0}
-              height={0}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              onClick={() => handleSlideChange(index)}
-            />
-          </div>
-        ))}
+        {images
+          .filter((image) => image.color === currentColor)
+          .map((image, index) => (
+            <div
+              key={index}
+              className={`relative cursor-pointer border-2 m-[1px] h-full max-h-[80px] bg-background overflow-hidden ${
+                currentSlide === image.url ? "border-muted-foreground" : ""
+              }`}
+            >
+              <AspectRatio ratio={0.8 / 1} className="border rounded-md relative">
+                <Image
+                  priority
+                  key={image.key}
+                  src={image.url.split("/upload")[0] + "/upload/w_80/" + image.url.split("/upload")[1]}
+                  alt="product"
+                  className="w-full h-full object-cover"
+                  width={0}
+                  height={0}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  onMouseEnter={() => {
+                    if (currentSlide === image.url) return;
+                    handleSlideChange(image.url);
+                  }}
+                />
+              </AspectRatio>
+            </div>
+          ))}
       </div>
 
-      <div className="relative w-full max-w-[350px]">
-        <Image
-          priority
-          src={currentSlide}
-          quality={100}
-          className="w-full h-full object-cover"
-          alt="product"
-          width={0}
-          height={0}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
+      <div className="relative w-[500px]">
+        <AspectRatio ratio={0.8 / 1} className="border rounded-md relative">
+          <Image
+            priority
+            src={currentSlide}
+            quality={100}
+            className="w-full h-full object-cover"
+            alt="product"
+            width={0}
+            height={0}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        </AspectRatio>
       </div>
     </div>
   );
@@ -159,15 +173,15 @@ const ProductDetail = ({
       <div className="flex gap-1">
         {data.colors.map((color) => (
           <div
-            key={color}
+            key={color.id}
             className={`w-9 h-9 rounded-full items-center justify-center cursor-pointer flex`}
             style={{
-              backgroundColor: color,
-              border: selectedColor === color ? `1px solid ${color}` : "1px solid transparent",
+              backgroundColor: color.hex,
+              border: selectedColor === color.hex ? `1px solid ${color.hex}` : "1px solid transparent",
             }}
-            onClick={() => setSelectedColor(color)}
+            onClick={() => setSelectedColor(color.hex)}
           >
-            {selectedColor === color && <div className="w-8 h-8 rounded-full border-white border-2" />}
+            {selectedColor === color.hex && <div className="w-8 h-8 rounded-full border-white border-2" />}
           </div>
         ))}
       </div>

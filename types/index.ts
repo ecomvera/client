@@ -1,3 +1,20 @@
+export interface IAttribute {
+  id?: string;
+  key: string;
+  value: string[];
+}
+
+export interface ISize {
+  id: string;
+  value: string;
+}
+
+export interface IColor {
+  id: string;
+  name: string;
+  hex: string;
+}
+
 export interface IAddress {
   id?: string;
   name: string;
@@ -48,8 +65,8 @@ export interface IProduct {
   inStock: boolean;
   isNewArrival: boolean;
   isBestSeller?: boolean;
-  colors: string[];
 
+  colors: IColor[];
   sizes: IKeyValue[];
   images: IImageFile[];
   attributes: IKeyValue[];

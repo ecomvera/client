@@ -2,7 +2,7 @@ import React from "react";
 import { FiFilter } from "react-icons/fi";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
-import { ICategory } from "@/types";
+import { IAttribute, ICategory, IColor, ISize } from "@/types";
 import { ImCheckboxChecked, ImCheckboxUnchecked } from "react-icons/im";
 import { Button } from "../ui/button";
 
@@ -24,9 +24,9 @@ const MobileFilters = ({
 }: {
   subCategories?: ICategory[];
   isOffer?: boolean;
-  sizes: string[];
-  attributes: { key: string; value: string[] }[];
-  colors: string[];
+  sizes: ISize[];
+  attributes: IAttribute[];
+  colors: IColor[];
   filters: ISelectedItem[];
   setFilters: ISetFilters;
 }) => {
@@ -98,16 +98,28 @@ const MobileFilters = ({
             )}
             <TabsContent value="color">
               {colors.map((color) => (
-                <Item key={color} category="color" value={color} filters={filters} handleSelectItem={handleSelectItem}>
-                  <div className="w-5 h-5 rounded" style={{ backgroundColor: color }} />
-                  <p>{color}</p>
+                <Item
+                  key={color.id}
+                  category="color"
+                  value={color.name}
+                  filters={filters}
+                  handleSelectItem={handleSelectItem}
+                >
+                  <div className="w-5 h-5 rounded" style={{ backgroundColor: color.hex }} />
+                  <p>{color.name}</p>
                 </Item>
               ))}
             </TabsContent>
             <TabsContent value="sizes">
               {sizes.map((size) => (
-                <Item key={size} category="sizes" value={size} filters={filters} handleSelectItem={handleSelectItem}>
-                  {size}
+                <Item
+                  key={size.id}
+                  category="sizes"
+                  value={size.value}
+                  filters={filters}
+                  handleSelectItem={handleSelectItem}
+                >
+                  {size.value}
                 </Item>
               ))}
             </TabsContent>

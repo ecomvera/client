@@ -1,4 +1,4 @@
-import { ICartItem, ICategory, IProduct } from "@/types";
+import { IAttribute, ICartItem, ICategory, IColor, IProduct, ISize } from "@/types";
 import { create } from "zustand";
 
 const categories: ICategory[] = [];
@@ -7,9 +7,9 @@ const cart: ICartItem[] = [];
 const wishlist: ICartItem[] = [];
 
 interface IFilterProperties {
-  sizes: string[];
-  attributes: { key: string; value: string[] }[];
-  colors: string[];
+  sizes: ISize[];
+  attributes: IAttribute[];
+  colors: IColor[];
 }
 
 interface IDataStore {
