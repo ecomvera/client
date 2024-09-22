@@ -162,7 +162,7 @@ const Item = ({
       onClick={() => handleSelectItem(category, value.replace(" ", "-"))}
     >
       {isClicked ? <ImCheckboxChecked size={16} className="text-primary" /> : <ImCheckboxUnchecked size={16} />}
-      <p className="text-base w-full">{children}</p>
+      <div className="text-base w-full">{children}</div>
     </div>
   );
 };

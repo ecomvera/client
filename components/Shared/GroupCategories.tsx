@@ -18,7 +18,7 @@ const GroupCategories = () => {
 
   if (categories?.data.length === 1) {
     return (
-      <Link href={`/categories/${categories?.data[0].id}`}>
+      <Link href={`/${categories?.data[0].slug}`}>
         <AspectRatio ratio={3.57 / 1}>
           <Image
             src={categories?.data[0].banner}
