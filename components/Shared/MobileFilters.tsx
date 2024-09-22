@@ -14,6 +14,7 @@ interface ISelectedItem {
 interface ISetFilters extends React.Dispatch<React.SetStateAction<ISelectedItem[]>> {}
 
 const MobileFilters = ({
+  genders,
   subCategories,
   isOffer = false,
   sizes = [],
@@ -22,6 +23,7 @@ const MobileFilters = ({
   filters,
   setFilters,
 }: {
+  genders?: string[];
   subCategories?: ICategory[];
   isOffer?: boolean;
   sizes: ISize[];
@@ -72,6 +74,7 @@ const MobileFilters = ({
             {subCategories && subCategories.length > 0 && (
               <TabItem name="Categories" value="category" isFilterSelected={isFilterSelected} />
             )}
+            {genders && genders.length > 0 && <TabItem name="Genders" value="gender" isFilterSelected={isFilterSelected} />}
             <TabItem name="Colors" value="color" isFilterSelected={isFilterSelected} />
             <TabItem name="Sizes" value="sizes" isFilterSelected={isFilterSelected} />
             {attributes.map((attribute) => (
@@ -92,6 +95,22 @@ const MobileFilters = ({
                       handleSelectItem={handleSelectItem}
                     >
                       {category.name}
+                    </Item>
+                  ))}
+              </TabsContent>
+            )}
+            {genders && genders.length > 0 && (
+              <TabsContent value="gender">
+                {genders &&
+                  genders.map((gender) => (
+                    <Item
+                      key={gender}
+                      category="gender"
+                      value={gender}
+                      filters={filters}
+                      handleSelectItem={handleSelectItem}
+                    >
+                      {gender}
                     </Item>
                   ))}
               </TabsContent>

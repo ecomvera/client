@@ -32,6 +32,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
   const { filterProperties, setFilterProperties } = useDataStore();
   const { mutate: fetchFilterProperties } = useSWR(`/api/enum`, fetcher, fetchOpt);
 
+  const [genders, setGenders] = useState<string[]>([]);
   const [category, setCategory] = useState<ICategory>();
   const [subCategories, setSubCategories] = useState<ICategory[]>([]);
   const { data, isLoading } = useSWR(`/api/categories/${params.slug}?${searchParams.toString()}`, fetcher, {
@@ -71,6 +72,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
     if (!data?.category) return;
 
     setCategory(data.category);
+    setGenders(data?.genders || []);
     setShowLoadingScreen(false);
     const { parentId, products, children } = data.category;
 
@@ -114,6 +116,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
           <SortBy items={filteredProducts} setItems={setFilteredProducts} />
         </div>
         <MobileFilters
+          genders={genders}
           subCategories={subCategories}
           sizes={filterProperties?.sizes}
           attributes={filterProperties?.attributes}
@@ -142,6 +145,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
               className="w-full"
             >
               <Filters
+                genders={genders}
                 subCategories={subCategories}
                 sizes={filterProperties?.sizes}
                 attributes={filterProperties?.attributes}

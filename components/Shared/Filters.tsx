@@ -11,6 +11,7 @@ interface ISelectedItem {
 interface ISetFilters extends React.Dispatch<React.SetStateAction<ISelectedItem[]>> {}
 
 const Filters = ({
+  genders,
   subCategories,
   isOffer = false,
   sizes,
@@ -19,6 +20,7 @@ const Filters = ({
   filters,
   setFilters,
 }: {
+  genders?: string[];
   subCategories?: ICategory[];
   isOffer?: boolean;
   sizes: ISize[];
@@ -50,20 +52,6 @@ const Filters = ({
 
   return (
     <>
-      {isOffer && (
-        <AccordionItem className="border-none" value="item-1">
-          <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Gender</AccordionTrigger>
-          <AccordionContent className="flex flex-col gap-2 px-5">
-            <Item category="Gender" value="men" filters={filters} handleSelectItem={handleSelectItem}>
-              Men
-            </Item>
-            <Item category="Gender" value="women" filters={filters} handleSelectItem={handleSelectItem}>
-              Women
-            </Item>
-          </AccordionContent>
-        </AccordionItem>
-      )}
-
       {subCategories && subCategories?.length > 0 && (
         <AccordionItem className="border-none" value="item-2">
           <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Category</AccordionTrigger>
@@ -77,6 +65,19 @@ const Filters = ({
                 handleSelectItem={handleSelectItem}
               >
                 {category.name}
+              </Item>
+            ))}
+          </AccordionContent>
+        </AccordionItem>
+      )}
+
+      {genders && genders?.length > 0 && (
+        <AccordionItem className="border-none" value="item-1">
+          <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Gender</AccordionTrigger>
+          <AccordionContent className="flex flex-col px-4 p-0">
+            {genders.map((gender) => (
+              <Item key={gender} category="gender" value={gender} filters={filters} handleSelectItem={handleSelectItem}>
+                {gender}
               </Item>
             ))}
           </AccordionContent>
