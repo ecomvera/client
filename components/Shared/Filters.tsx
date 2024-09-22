@@ -85,24 +85,21 @@ const Filters = ({
 
       {colors?.length > 0 && (
         <AccordionItem className="border-none" value="item-3">
-          <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Color</AccordionTrigger>
-          <AccordionContent className="flex flex-wrap gap-2 px-2">
+          <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Colors</AccordionTrigger>
+          <AccordionContent className="flex flex-col px-4 p-0">
             {colors.map((color) => (
-              <div
+              <Item
                 key={color.id}
-                className="w-7 h-7 text-center rounded cursor-pointer shadow shadow-gray-300"
-                style={{
-                  border: filters.filter((item) => item.key === "color")[0]?.value?.includes(color.name)
-                    ? `2px solid ${color.name}`
-                    : "none",
-                  padding: filters.filter((item) => item.key === "color")[0]?.value?.includes(color.name) ? "1px" : "0",
-                }}
-                onClick={() => {
-                  handleSelectItem("color", color.name);
-                }}
+                category="colors"
+                value={color.name}
+                filters={filters}
+                handleSelectItem={handleSelectItem}
               >
-                <div key={color.id} className={`rounded w-full h-full`} style={{ backgroundColor: color.hex }} />
-              </div>
+                <div className="flex justify-between items-center">
+                  {color.name}
+                  <div className={`rounded w-5 h-5`} style={{ backgroundColor: color.hex }} />
+                </div>
+              </Item>
             ))}
           </AccordionContent>
         </AccordionItem>
@@ -165,7 +162,7 @@ const Item = ({
       onClick={() => handleSelectItem(category, value.replace(" ", "-"))}
     >
       {isClicked ? <ImCheckboxChecked size={16} className="text-primary" /> : <ImCheckboxUnchecked size={16} />}
-      <p className="text-base">{children}</p>
+      <p className="text-base w-full">{children}</p>
     </div>
   );
 };
