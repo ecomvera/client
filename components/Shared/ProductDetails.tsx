@@ -11,12 +11,14 @@ import { useDataStore } from "@/stores/data";
 import { useUser } from "@/hooks/useUser";
 import { useData } from "@/hooks/useData";
 import { AspectRatio } from "../ui/aspect-ratio";
+import ImgaeGallary from "./ImgaeGallary";
+import ReactCarousel from "./Carousel";
 
 const ProductDetails = ({ product }: { product: IProduct }) => {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]?.hex);
 
   return (
-    <div className="mobile:py-5">
+    <div className="py-2 mobile:py-5">
       <div className="flex flex-col tablet:flex-row">
         <LeftGallaryView images={product.images} currentColor={selectedColor} />
         <ProductDetail data={product} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
@@ -27,6 +29,8 @@ const ProductDetails = ({ product }: { product: IProduct }) => {
 
 const LeftGallaryView = ({ images, currentColor }: { images: IProduct["images"]; currentColor: string }) => {
   const [currentSlide, setCurrentSlide] = useState(images.filter((image) => image.color === currentColor)[0].url);
+  const [open, setOpen] = useState(false);
+  const [startWith, setStartWith] = useState(0);
 
   const handleSlideChange = (url: string) => {
     setCurrentSlide(url);
@@ -38,7 +42,14 @@ const LeftGallaryView = ({ images, currentColor }: { images: IProduct["images"];
 
   return (
     <div className="w-full tablet:w-auto flex flex-col justify-center gap-1 mobile:flex-row-reverse">
-      <div className="relative w-full mobile:w-[500px] tablet:w-[350px] laptop:w-[500px] transition-all">
+      <ImgaeGallary images={images} open={open} setOpen={setOpen} startWith={startWith} />
+      <div
+        className="relative w-full mobile:w-[500px] tablet:w-[350px] laptop:w-[500px] transition-all"
+        onClick={() => {
+          setOpen(true);
+          setStartWith(images.findIndex((image) => image.url === currentSlide));
+        }}
+      >
         <AspectRatio ratio={0.8 / 1} className="border rounded-md relative">
           <Image
             priority
@@ -68,10 +79,11 @@ const LeftGallaryView = ({ images, currentColor }: { images: IProduct["images"];
                   width={0}
                   height={0}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  onMouseEnter={() => {
+                  onClick={() => {
                     if (currentSlide === image.url) return;
                     handleSlideChange(image.url);
                   }}
+                  // onMouseEnter={() => { }}
                 />
               </AspectRatio>
             </div>

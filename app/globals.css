@@ -64,7 +64,8 @@
     @apply bg-background text-foreground;
   }
 
-  .loading button {
+  .loading,
+  .slide button {
     display: none;
   }
 }
