@@ -17,7 +17,7 @@ const ProductDetails = ({ product }: { product: IProduct }) => {
 
   return (
     <div className="mobile:py-5">
-      <div className="flex flex-col items-center tablet:items-start tablet:flex-row">
+      <div className="flex flex-col tablet:flex-row">
         <LeftGallaryView images={product.images} currentColor={selectedColor} />
         <ProductDetail data={product} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
       </div>
@@ -26,7 +26,7 @@ const ProductDetails = ({ product }: { product: IProduct }) => {
 };
 
 const LeftGallaryView = ({ images, currentColor }: { images: IProduct["images"]; currentColor: string }) => {
-  const [currentSlide, setCurrentSlide] = useState("");
+  const [currentSlide, setCurrentSlide] = useState(images.filter((image) => image.color === currentColor)[0].url);
 
   const handleSlideChange = (url: string) => {
     setCurrentSlide(url);
@@ -37,24 +37,34 @@ const LeftGallaryView = ({ images, currentColor }: { images: IProduct["images"];
   }, [currentColor]);
 
   return (
-    <div className="flex gap-1 flex-col-reverse mobile:flex-row">
-      <div className="relative flex justify-between mobile:flex-col w-full mobile:w-[80px] h-full">
+    <div className="w-full tablet:w-auto flex flex-col justify-center gap-1 mobile:flex-row-reverse">
+      <div className="relative w-full mobile:w-[500px] tablet:w-[350px] laptop:w-[500px] transition-all">
+        <AspectRatio ratio={0.8 / 1} className="border rounded-md relative">
+          <Image
+            priority
+            src={currentSlide}
+            quality={100}
+            className="w-full h-full object-cover rounded-md"
+            alt="product"
+            width={0}
+            height={0}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        </AspectRatio>
+      </div>
+
+      <div className="flex justify-between w-full h-fit mobile:flex-col mobile:w-[100px] tablet:w-[70px] laptop:w-[100px] tablet:transition-all">
         {images
           .filter((image) => image.color === currentColor)
           .map((image, index) => (
-            <div
-              key={index}
-              className={`relative cursor-pointer border-2 m-[1px] h-full max-h-[80px] bg-background overflow-hidden ${
-                currentSlide === image.url ? "border-muted-foreground" : ""
-              }`}
-            >
-              <AspectRatio ratio={0.8 / 1} className="border rounded-md relative">
+            <div key={index} className={`cursor-pointer w-full`}>
+              <AspectRatio ratio={0.8 / 1} className="border rounded-md">
                 <Image
                   priority
                   key={image.key}
                   src={image.url.split("/upload")[0] + "/upload/w_80/" + image.url.split("/upload")[1]}
                   alt="product"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover rounded-md"
                   width={0}
                   height={0}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -66,21 +76,6 @@ const LeftGallaryView = ({ images, currentColor }: { images: IProduct["images"];
               </AspectRatio>
             </div>
           ))}
-      </div>
-
-      <div className="relative w-[500px]">
-        <AspectRatio ratio={0.8 / 1} className="border rounded-md relative">
-          <Image
-            priority
-            src={currentSlide}
-            quality={100}
-            className="w-full h-full object-cover"
-            alt="product"
-            width={0}
-            height={0}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-        </AspectRatio>
       </div>
     </div>
   );
@@ -156,7 +151,7 @@ const ProductDetail = ({
   };
 
   return (
-    <div className="w-full px-2 tablet:px-5 laptop:px-10 mt-2 tablet:mt-0">
+    <div className="w-full px-2 mt-2 tablet:mt-0 laptop:px-5">
       <h2 className="head-text font-bold">{data.name}</h2>
       <p className="text-sm mobile:text-lg">{data.description}</p>
 
@@ -229,7 +224,7 @@ const ProductDetail = ({
         </span>
         <p className="text-sm mobile:text-base font-normal text-light-1">Delivering all over India</p>
 
-        <div className="border my-3 flex items-center gap-5 w-full tablet:w-[300px]">
+        <div className="border my-3 flex items-center gap-5 w-full tablet:max-w-[300px]">
           <Input
             type="text"
             placeholder="Enter Pincode"
