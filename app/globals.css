@@ -64,7 +64,9 @@
     @apply bg-background text-foreground;
   }
 
-  .loading,
+  .loading button {
+    display: none;
+  }
   .slide button {
     display: none;
   }
