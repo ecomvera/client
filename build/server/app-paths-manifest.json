@@ -2,14 +2,14 @@
   "/_not-found/page": "app/_not-found/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
   "/(root)/[slug]/page": "app/(root)/[slug]/page.js",
-  "/(root)/colors/page": "app/(root)/colors/page.js",
-  "/(root)/cart/page": "app/(root)/cart/page.js",
-  "/(root)/page": "app/(root)/page.js",
   "/(root)/checkout/page": "app/(root)/checkout/page.js",
   "/(root)/p/[slug]/page": "app/(root)/p/[slug]/page.js",
+  "/(root)/colors/page": "app/(root)/colors/page.js",
   "/(root)/sign-in/page": "app/(root)/sign-in/page.js",
+  "/(root)/page": "app/(root)/page.js",
+  "/(root)/cart/page": "app/(root)/cart/page.js",
   "/(root)/myaccount/orders/page": "app/(root)/myaccount/orders/page.js",
-  "/(root)/myaccount/profile/page": "app/(root)/myaccount/profile/page.js",
   "/(root)/myaccount/page": "app/(root)/myaccount/page.js",
-  "/(root)/myaccount/addresses/page": "app/(root)/myaccount/addresses/page.js"
+  "/(root)/myaccount/addresses/page": "app/(root)/myaccount/addresses/page.js",
+  "/(root)/myaccount/profile/page": "app/(root)/myaccount/profile/page.js"
 }
