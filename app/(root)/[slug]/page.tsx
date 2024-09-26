@@ -6,7 +6,7 @@ import Filters from "@/components/Shared/Filters";
 import ProductsList from "@/components/Shared/ProductsList";
 import React, { useEffect, useState } from "react";
 import { Accordion } from "@/components/ui/accordion";
-import { ICategory, IProduct } from "@/types";
+import { ICategory, IProduct, ISize } from "@/types";
 import { fetcher, fetchOpt } from "@/lib/utils";
 import useSWR from "swr";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -30,6 +30,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
   const searchParams = useSearchParams();
   const { setShowLoadingScreen } = useAction();
   const { filterProperties, setFilterProperties } = useDataStore();
+  const [sizes, setSizes] = useState<string[]>([]);
   const { mutate: fetchFilterProperties } = useSWR(`/api/enum`, fetcher, fetchOpt);
 
   const [genders, setGenders] = useState<string[]>([]);
@@ -71,6 +72,10 @@ const Page = ({ params }: { params: { slug: string } }) => {
   useEffect(() => {
     if (!data?.category) return;
 
+    const sizeList = data?.productSizes
+      .map((size: string) => filterProperties.sizes.find((item) => item.type === size)?.value.map((item) => item))
+      .flat();
+    setSizes(sizeList);
     setCategory(data.category);
     setGenders(data?.genders || []);
     setShowLoadingScreen(false);
@@ -82,6 +87,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
       return;
     }
 
+    console.log(data.subcategories);
     // Set the subcategories for parent category or group category
     setSubCategories(data.subcategories);
 
@@ -96,9 +102,12 @@ const Page = ({ params }: { params: { slug: string } }) => {
       const aggregatedProducts = children.reduce((acc: IProduct[], category: ICategory) => {
         return acc.concat(category.products || []);
       }, []);
+      console.log(aggregatedProducts);
       setFilteredProducts(aggregatedProducts); // Set the products from subcategories
     }
   }, [data?.category]);
+
+  // console.log(subCategories);
 
   if (!isLoading && !data?.category) return <NotFound />;
   // return <LoadingScreen />;
@@ -118,7 +127,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
         <MobileFilters
           genders={genders}
           subCategories={subCategories}
-          sizes={filterProperties?.sizes}
+          sizes={sizes}
           attributes={filterProperties?.attributes}
           colors={filterProperties?.colors}
           filters={filters}
@@ -147,7 +156,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
               <Filters
                 genders={genders}
                 subCategories={subCategories}
-                sizes={filterProperties?.sizes}
+                sizes={sizes}
                 attributes={filterProperties?.attributes}
                 colors={filterProperties?.colors}
                 filters={filters}

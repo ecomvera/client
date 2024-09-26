@@ -26,7 +26,7 @@ const MobileFilters = ({
   genders?: string[];
   subCategories?: ICategory[];
   isOffer?: boolean;
-  sizes: ISize[];
+  sizes: string[];
   attributes: IAttribute[];
   colors: IColor[];
   filters: ISelectedItem[];
@@ -65,12 +65,12 @@ const MobileFilters = ({
           <span className="ml-1">({filters.length})</span>
         </span>
       </DrawerTrigger>
-      <DrawerContent className="px-5 mb-4 max-h-[60vh] border-none" aria-describedby={undefined}>
+      <DrawerContent className="px-5 mb-4 flex flex-col border-none" aria-describedby={undefined}>
         <Tabs
           defaultValue={subCategories && subCategories.length > 0 ? "category" : "color"}
-          className="flex overflow-scroll hide-scrollbar"
+          className="flex gap-2 overflow-hidden h-[40vh]"
         >
-          <TabsList className="flex flex-col gap-2 h-full">
+          <TabsList className="flex flex-col gap-2 h-auto justify-start overflow-y-auto hide-scrollbar">
             {subCategories && subCategories.length > 0 && (
               <TabItem name="Categories" value="category" isFilterSelected={isFilterSelected} />
             )}
@@ -82,7 +82,7 @@ const MobileFilters = ({
             ))}
           </TabsList>
 
-          <div className="px-2 w-full">
+          <div className="px-2 flex-1 h-auto overflow-y-auto hide-scrollbar">
             {subCategories && subCategories.length > 0 && (
               <TabsContent value="category">
                 {subCategories &&
@@ -131,14 +131,8 @@ const MobileFilters = ({
             </TabsContent>
             <TabsContent value="sizes">
               {sizes.map((size) => (
-                <Item
-                  key={size.id}
-                  category="sizes"
-                  value={size.value}
-                  filters={filters}
-                  handleSelectItem={handleSelectItem}
-                >
-                  {size.value}
+                <Item key={size} category="sizes" value={size} filters={filters} handleSelectItem={handleSelectItem}>
+                  {size}
                 </Item>
               ))}
             </TabsContent>
@@ -189,10 +183,7 @@ const TabItem = ({
 }) => {
   const isSelected = isFilterSelected(value.toLowerCase()) > -1;
   return (
-    <TabsTrigger
-      className={`relative w-full py-2 justify-start ${isSelected && "text-primary font-semibold"}`}
-      value={value}
-    >
+    <TabsTrigger className={`relative w-full justify-start ${isSelected && "text-primary font-semibold"}`} value={value}>
       {isSelected && <span className="inline-block absolute top-1 left-1 w-2 h-2 bg-primary rounded-full"></span>}
       {name}
     </TabsTrigger>

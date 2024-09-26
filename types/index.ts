@@ -6,7 +6,8 @@ export interface IAttribute {
 
 export interface ISize {
   id: string;
-  value: string;
+  type: string;
+  value: string[];
 }
 
 export interface IColor {
@@ -66,10 +67,11 @@ export interface IProduct {
   isNewArrival: boolean;
   isBestSeller?: boolean;
 
+  sizeCategory: string;
   colors: IColor[];
-  sizes: IKeyValue[];
+  sizes: IProductSize[];
   images: IImageFile[];
-  attributes: IKeyValue[];
+  attributes: IProductAttribute[];
 
   category?: ICategory;
   categoryId: string;
@@ -87,7 +89,15 @@ export interface IImageFile {
   productId?: string;
 }
 
-export interface IKeyValue {
+export interface IProductSize {
+  id?: string;
+  key: string;
+  value: string;
+  quantity: number;
+  productId?: string;
+}
+
+export interface IProductAttribute {
   id?: string;
   key: string;
   value: string;

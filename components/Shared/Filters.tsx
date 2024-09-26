@@ -1,7 +1,8 @@
-import React from "react";
+import React, { use, useEffect, useState } from "react";
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ImCheckboxChecked, ImCheckboxUnchecked } from "react-icons/im";
-import { IAttribute, ICategory, IColor, ISize } from "@/types";
+import { IAttribute, ICategory, IColor } from "@/types";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface ISelectedItem {
   key: string;
@@ -13,7 +14,6 @@ interface ISetFilters extends React.Dispatch<React.SetStateAction<ISelectedItem[
 const Filters = ({
   genders,
   subCategories,
-  isOffer = false,
   sizes,
   attributes,
   colors,
@@ -22,8 +22,7 @@ const Filters = ({
 }: {
   genders?: string[];
   subCategories?: ICategory[];
-  isOffer?: boolean;
-  sizes: ISize[];
+  sizes: string[];
   attributes: IAttribute[];
   colors: IColor[];
   filters: ISelectedItem[];
@@ -56,17 +55,12 @@ const Filters = ({
         <AccordionItem className="border-none" value="item-2">
           <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Category</AccordionTrigger>
           <AccordionContent className="flex flex-col px-4 p-0">
-            {subCategories.map((category) => (
-              <Item
-                key={category.slug}
-                category="category"
-                value={category.slug}
-                filters={filters}
-                handleSelectItem={handleSelectItem}
-              >
-                {category.name}
-              </Item>
-            ))}
+            <CollapsibleList
+              data={subCategories}
+              category="category"
+              filters={filters}
+              handleSelectItem={handleSelectItem}
+            />
           </AccordionContent>
         </AccordionItem>
       )}
@@ -75,11 +69,7 @@ const Filters = ({
         <AccordionItem className="border-none" value="item-1">
           <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Gender</AccordionTrigger>
           <AccordionContent className="flex flex-col px-4 p-0">
-            {genders.map((gender) => (
-              <Item key={gender} category="gender" value={gender} filters={filters} handleSelectItem={handleSelectItem}>
-                {gender}
-              </Item>
-            ))}
+            <CollapsibleList data={genders} category="gender" filters={filters} handleSelectItem={handleSelectItem} />
           </AccordionContent>
         </AccordionItem>
       )}
@@ -88,20 +78,7 @@ const Filters = ({
         <AccordionItem className="border-none" value="item-3">
           <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Colors</AccordionTrigger>
           <AccordionContent className="flex flex-col px-4 p-0">
-            {colors.map((color) => (
-              <Item
-                key={color.id}
-                category="colors"
-                value={color.name}
-                filters={filters}
-                handleSelectItem={handleSelectItem}
-              >
-                <div className="flex justify-between items-center">
-                  {color.name}
-                  <div className={`rounded w-5 h-5`} style={{ backgroundColor: color.hex }} />
-                </div>
-              </Item>
-            ))}
+            <CollapsibleList data={colors} category="colors" filters={filters} handleSelectItem={handleSelectItem} />
           </AccordionContent>
         </AccordionItem>
       )}
@@ -110,11 +87,7 @@ const Filters = ({
         <AccordionItem className="border-none" value="item-4">
           <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Sizes</AccordionTrigger>
           <AccordionContent className="flex flex-col px-4 p-0">
-            {sizes?.map((size) => (
-              <Item key={size.id} category="sizes" value={size.value} filters={filters} handleSelectItem={handleSelectItem}>
-                {size.value}
-              </Item>
-            ))}
+            <CollapsibleList data={sizes} category="sizes" filters={filters} handleSelectItem={handleSelectItem} />
           </AccordionContent>
         </AccordionItem>
       )}
@@ -123,21 +96,54 @@ const Filters = ({
         <AccordionItem key={attribute.key} className="border-none" value={`item-${index + 4}`}>
           <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>{attribute.key}</AccordionTrigger>
           <AccordionContent className="flex flex-col px-4 p-0">
-            {attribute.value.map((value) => (
-              <Item
-                key={value}
-                category={attribute.key.toLowerCase()}
-                value={value}
-                filters={filters}
-                handleSelectItem={handleSelectItem}
-              >
-                {value}
-              </Item>
-            ))}
+            <CollapsibleList
+              data={attribute.value}
+              category={attribute.key}
+              filters={filters}
+              handleSelectItem={handleSelectItem}
+            />
           </AccordionContent>
         </AccordionItem>
       ))}
     </>
+  );
+};
+
+const CollapsibleList = ({
+  limit = 5,
+  data,
+  category,
+  filters,
+  handleSelectItem,
+}: {
+  limit?: number;
+  data: IColor[] | ICategory[] | string[];
+  category: string;
+  filters: ISelectedItem[];
+  handleSelectItem: (category: string, value: string) => void;
+}) => {
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      {data?.slice(0, limit).map((value, index) => (
+        <Item key={index} category={category} value={value} filters={filters} handleSelectItem={handleSelectItem} />
+      ))}
+
+      {isOpen && (
+        <CollapsibleContent>
+          {data?.slice(limit).map((value, index) => (
+            <Item key={index} category={category} value={value} filters={filters} handleSelectItem={handleSelectItem} />
+          ))}
+        </CollapsibleContent>
+      )}
+
+      {data.length > limit && (
+        <CollapsibleTrigger asChild>
+          <span className="font-semibold text-blue-600 text-base">{isOpen ? "Less" : "More"}</span>
+        </CollapsibleTrigger>
+      )}
+    </Collapsible>
   );
 };
 
@@ -146,24 +152,45 @@ const Item = ({
   handleSelectItem,
   category,
   value,
-  children,
 }: {
   filters: ISelectedItem[];
   handleSelectItem: (category: string, value: string) => void;
   category: string;
-  value: string;
-  children: React.ReactNode;
+  value: IColor | ICategory | string;
 }) => {
-  const isClicked = filters.filter((item) => item.key === category)[0]?.value?.includes(value.replace(" ", "-"));
+  // @ts-ignore
+  const { name, slug, hex } = value;
+  const [values, setValues] = useState<{ key: string; value: string; hex?: string }>({ key: "", value: "", hex: "" });
+
+  useEffect(() => {
+    if (typeof value === "object") {
+      if (category === "colors") {
+        setValues({ key: name, value: name, hex: hex });
+      } else {
+        setValues({ key: name, value: slug });
+      }
+    } else {
+      setValues({ key: value, value: value });
+    }
+  }, []);
+
+  const isClicked = filters.filter((item) => item.key === category)[0]?.value?.includes(values?.value.replace(" ", "-"));
   return (
     <div
       className={`flex gap-2 items-center px-2 py-1 cursor-pointer text-muted-foreground hover:text-foreground hover:bg-muted rounded ${
         isClicked ? "text-black font-bold" : ""
       }`}
-      onClick={() => handleSelectItem(category, value.replace(" ", "-"))}
+      onClick={() => handleSelectItem(category, values?.value?.replace(" ", "-"))}
     >
       {isClicked ? <ImCheckboxChecked size={16} className="text-primary" /> : <ImCheckboxUnchecked size={16} />}
-      <div className="text-base w-full">{children}</div>
+      {category === "colors" ? (
+        <div className="flex justify-between items-center w-full">
+          {values.key}
+          <div className={`rounded w-5 h-5`} style={{ backgroundColor: values.hex }} />
+        </div>
+      ) : (
+        <div className="text-base w-full">{values.key}</div>
+      )}
     </div>
   );
 };
