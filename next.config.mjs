@@ -12,6 +12,7 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  distDir: "build",
   images: {
     remotePatterns: [
       {
