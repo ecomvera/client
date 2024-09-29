@@ -31,7 +31,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
   const { setShowLoadingScreen } = useAction();
   const { filterProperties, setFilterProperties } = useDataStore();
   const [sizes, setSizes] = useState<string[]>([]);
-  const { mutate: fetchFilterProperties } = useSWR(`/api/enum`, fetcher, fetchOpt);
+  const { mutate: fetchFilterProperties } = useSWR(`/api/filters`, fetcher, fetchOpt);
 
   const [genders, setGenders] = useState<string[]>([]);
   const [category, setCategory] = useState<ICategory>();
@@ -73,11 +73,11 @@ const Page = ({ params }: { params: { slug: string } }) => {
     if (!data?.category) return;
 
     const sizeList = data?.productSizes
-      .map((size: string) => filterProperties.sizes.find((item) => item.type === size)?.value.map((item) => item))
+      .map((size: string) => filterProperties?.sizes?.find((item) => item.type === size)?.value.map((item) => item))
       .flat();
     setSizes(sizeList);
     setCategory(data.category);
-    setGenders(data?.genders || []);
+    if (data?.genders?.length > 1) setGenders(data?.genders || []); // set only if genders are more than 1
     setShowLoadingScreen(false);
     const { parentId, products, children } = data.category;
 
@@ -87,7 +87,6 @@ const Page = ({ params }: { params: { slug: string } }) => {
       return;
     }
 
-    console.log(data.subcategories);
     // Set the subcategories for parent category or group category
     setSubCategories(data.subcategories);
 
@@ -106,8 +105,6 @@ const Page = ({ params }: { params: { slug: string } }) => {
       setFilteredProducts(aggregatedProducts); // Set the products from subcategories
     }
   }, [data?.category]);
-
-  // console.log(subCategories);
 
   if (!isLoading && !data?.category) return <NotFound />;
   // return <LoadingScreen />;

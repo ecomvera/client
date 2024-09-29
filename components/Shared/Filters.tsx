@@ -53,7 +53,7 @@ const Filters = ({
     <>
       {subCategories && subCategories?.length > 0 && (
         <AccordionItem className="border-none" value="item-2">
-          <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Category</AccordionTrigger>
+          <AccordionTrigger className="hover:no-underline text-[16px] pb-2">Category</AccordionTrigger>
           <AccordionContent className="flex flex-col px-4 p-0">
             <CollapsibleList
               data={subCategories}
@@ -67,7 +67,7 @@ const Filters = ({
 
       {genders && genders?.length > 0 && (
         <AccordionItem className="border-none" value="item-1">
-          <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Gender</AccordionTrigger>
+          <AccordionTrigger className="hover:no-underline text-[16px] pb-2">Gender</AccordionTrigger>
           <AccordionContent className="flex flex-col px-4 p-0">
             <CollapsibleList data={genders} category="gender" filters={filters} handleSelectItem={handleSelectItem} />
           </AccordionContent>
@@ -76,7 +76,7 @@ const Filters = ({
 
       {colors?.length > 0 && (
         <AccordionItem className="border-none" value="item-3">
-          <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Colors</AccordionTrigger>
+          <AccordionTrigger className="hover:no-underline text-[16px] pb-2">Colors</AccordionTrigger>
           <AccordionContent className="flex flex-col px-4 p-0">
             <CollapsibleList data={colors} category="colors" filters={filters} handleSelectItem={handleSelectItem} />
           </AccordionContent>
@@ -85,7 +85,7 @@ const Filters = ({
 
       {sizes?.length > 0 && (
         <AccordionItem className="border-none" value="item-4">
-          <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>Sizes</AccordionTrigger>
+          <AccordionTrigger className="hover:no-underline text-[16px] pb-2">Sizes</AccordionTrigger>
           <AccordionContent className="flex flex-col px-4 p-0">
             <CollapsibleList data={sizes} category="sizes" filters={filters} handleSelectItem={handleSelectItem} />
           </AccordionContent>
@@ -94,7 +94,7 @@ const Filters = ({
 
       {attributes?.map((attribute, index) => (
         <AccordionItem key={attribute.key} className="border-none" value={`item-${index + 4}`}>
-          <AccordionTrigger style={{ textDecoration: "none", fontSize: "16px" }}>{attribute.key}</AccordionTrigger>
+          <AccordionTrigger className="hover:no-underline text-[16px] pb-2">{attribute.key}</AccordionTrigger>
           <AccordionContent className="flex flex-col px-4 p-0">
             <CollapsibleList
               data={attribute.value}
@@ -159,7 +159,7 @@ const Item = ({
   value: IColor | ICategory | string;
 }) => {
   // @ts-ignore
-  const { name, slug, hex } = value;
+  const { name, slug, hex } = value as IColor | ICategory;
   const [values, setValues] = useState<{ key: string; value: string; hex?: string }>({ key: "", value: "", hex: "" });
 
   useEffect(() => {
