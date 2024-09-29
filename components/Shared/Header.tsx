@@ -40,7 +40,7 @@ const Header = () => {
               onClick={() => setIsSidebarOpen(true)}
             />
             <Link href={isCheckoutPage ? "#" : "/"} className="z-20">
-              <h2 className="text-xl tablet:text-2xl font-bold uppercase tracking-wide">Test3</h2>
+              <h2 className="text-xl tablet:text-2xl font-bold uppercase tracking-wide">Test4</h2>
             </Link>
 
             <div className="hidden tablet:flex gap-5 ml-2">{!isCheckoutPage && <HeaderNavigation />}</div>
