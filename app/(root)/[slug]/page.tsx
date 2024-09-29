@@ -78,8 +78,8 @@ const Page = ({ params }: { params: { slug: string } }) => {
     setSizes(sizeList);
     setCategory(data.category);
     if (data?.genders?.length > 1) setGenders(data?.genders || []); // set only if genders are more than 1
-    setShowLoadingScreen(false);
-    const { parentId, products, children } = data.category;
+    setShowLoadingScreen(false); // to remove loading screen
+    const { parentId, products, children } = data.category || {};
 
     // If it's a child category (has a parentId)
     if (parentId) {
