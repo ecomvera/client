@@ -98,7 +98,7 @@ const Filters = ({
           <AccordionContent className="flex flex-col px-4 p-0">
             <CollapsibleList
               data={attribute.value}
-              category={attribute.key}
+              category={attribute.key.toLowerCase()}
               filters={filters}
               handleSelectItem={handleSelectItem}
             />
