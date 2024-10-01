@@ -42,6 +42,16 @@ export interface ICategory {
   parent?: ICategory;
 }
 
+export interface ICollection {
+  id: string;
+  name: string;
+  slug: string;
+  image: string;
+  banner: string;
+  isActive: boolean;
+  products: IProduct[];
+}
+
 export interface IGroupCategory {
   id: string;
   name: string;
