@@ -1,7 +1,7 @@
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ImCheckboxChecked, ImCheckboxUnchecked } from "react-icons/im";
-import { IAttribute, ICategory, IColor } from "@/types";
+import { IAttribute, ICategory, ICollection, IColor } from "@/types";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface ISelectedItem {
@@ -156,10 +156,10 @@ const Item = ({
   filters: ISelectedItem[];
   handleSelectItem: (category: string, value: string) => void;
   category: string;
-  value: IColor | ICategory | string;
+  value: IColor | ICategory | ICollection | string;
 }) => {
   // @ts-ignore
-  const { name, slug, hex } = value as IColor | ICategory;
+  const { name, slug, hex } = value as IColor | ICategory | ICollection;
   const [values, setValues] = useState<{ key: string; value: string; hex?: string }>({ key: "", value: "", hex: "" });
 
   useEffect(() => {

@@ -86,9 +86,9 @@ const MobileFilters = ({
             {subCategories && subCategories.length > 0 && (
               <TabsContent value="category">
                 {subCategories &&
-                  subCategories.map((category) => (
+                  subCategories.map((category, index) => (
                     <Item
-                      key={category.name}
+                      key={index}
                       category="category"
                       value={category.slug}
                       filters={filters}
@@ -138,9 +138,9 @@ const MobileFilters = ({
             </TabsContent>
             {attributes.map((attribute) => (
               <TabsContent value={attribute.key} key={attribute.key}>
-                {attribute.value.map((value) => (
+                {attribute.value.map((value, index) => (
                   <Item
-                    key={value}
+                    key={index}
                     category={attribute.key.toLowerCase()}
                     value={value}
                     filters={filters}
@@ -206,7 +206,7 @@ const Item = ({
   const isClicked = filters.filter((item) => item.key === category)[0]?.value?.includes(value.replace(" ", "-"));
   return (
     <div onClick={() => handleSelectItem(category, value.replace(" ", "-"))}>
-      <div key={value} className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-center mb-2">
         <label
           htmlFor={value}
           className="text-sm mobile:text-base flex items-center gap-2 font-semibold text-muted-foreground"
