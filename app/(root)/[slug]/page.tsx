@@ -35,7 +35,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
 
   const [genders, setGenders] = useState<string[]>([]);
   const [category, setCategory] = useState<ICategory>();
-  const [subCategories, setSubCategories] = useState<ICategory[]>([]);
+  const [productTypes, setProductTypes] = useState<string[]>([]);
   const { data, isLoading } = useSWR(`/api/categories/${params.slug}?${searchParams.toString()}`, fetcher, {
     ...fetchOpt,
     revalidateOnMount: true,
@@ -73,9 +73,11 @@ const Page = ({ params }: { params: { slug: string } }) => {
     if (!data?.category) return;
 
     const sizeList = data?.productSizes
+      .reverse()
       .map((size: string) => filterProperties?.sizes?.find((item) => item.type === size)?.value.map((item) => item))
       .flat();
-    setSizes(sizeList);
+
+    setSizes(sizeList || []);
     setCategory(data.category);
     if (data?.genders?.length > 1) setGenders(data?.genders || []); // set only if genders are more than 1
     setShowLoadingScreen(false); // to remove loading screen
@@ -88,7 +90,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
     }
 
     // Set the subcategories for parent category or group category
-    setSubCategories(data.subcategories);
+    setProductTypes(data.productTypes);
 
     // If it's a group category and there are products directly under this category
     if (data?.products) {
@@ -123,7 +125,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
         </div>
         <MobileFilters
           genders={genders}
-          subCategories={subCategories}
+          productTypes={productTypes}
           sizes={sizes}
           attributes={filterProperties?.attributes}
           colors={filterProperties?.colors}
@@ -152,7 +154,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
             >
               <Filters
                 genders={genders}
-                subCategories={subCategories}
+                productTypes={productTypes}
                 sizes={sizes}
                 attributes={filterProperties?.attributes}
                 colors={filterProperties?.colors}

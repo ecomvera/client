@@ -15,7 +15,7 @@ interface ISetFilters extends React.Dispatch<React.SetStateAction<ISelectedItem[
 
 const MobileFilters = ({
   genders,
-  subCategories,
+  productTypes,
   isOffer = false,
   sizes = [],
   attributes = [],
@@ -24,7 +24,7 @@ const MobileFilters = ({
   setFilters,
 }: {
   genders?: string[];
-  subCategories?: ICategory[];
+  productTypes?: string[];
   isOffer?: boolean;
   sizes: string[];
   attributes: IAttribute[];
@@ -67,14 +67,14 @@ const MobileFilters = ({
       </DrawerTrigger>
       <DrawerContent className="px-5 mb-4 flex flex-col border-none" aria-describedby={undefined}>
         <Tabs
-          defaultValue={subCategories && subCategories.length > 0 ? "category" : "color"}
+          defaultValue={productTypes && productTypes.length > 0 ? "category" : "color"}
           className="flex gap-2 overflow-hidden h-[40vh]"
         >
           <TabsList className="flex flex-col gap-2 h-auto justify-start overflow-y-auto hide-scrollbar">
-            {subCategories && subCategories.length > 0 && (
+            {genders && genders.length > 0 && <TabItem name="Genders" value="gender" isFilterSelected={isFilterSelected} />}
+            {productTypes && productTypes.length > 0 && (
               <TabItem name="Categories" value="category" isFilterSelected={isFilterSelected} />
             )}
-            {genders && genders.length > 0 && <TabItem name="Genders" value="gender" isFilterSelected={isFilterSelected} />}
             <TabItem name="Colors" value="color" isFilterSelected={isFilterSelected} />
             <TabItem name="Sizes" value="sizes" isFilterSelected={isFilterSelected} />
             {attributes.map((attribute) => (
@@ -83,22 +83,6 @@ const MobileFilters = ({
           </TabsList>
 
           <div className="px-2 flex-1 h-auto overflow-y-auto hide-scrollbar">
-            {subCategories && subCategories.length > 0 && (
-              <TabsContent value="category">
-                {subCategories &&
-                  subCategories.map((category, index) => (
-                    <Item
-                      key={index}
-                      category="category"
-                      value={category.slug}
-                      filters={filters}
-                      handleSelectItem={handleSelectItem}
-                    >
-                      {category.name}
-                    </Item>
-                  ))}
-              </TabsContent>
-            )}
             {genders && genders.length > 0 && (
               <TabsContent value="gender">
                 {genders &&
@@ -111,6 +95,16 @@ const MobileFilters = ({
                       handleSelectItem={handleSelectItem}
                     >
                       {gender}
+                    </Item>
+                  ))}
+              </TabsContent>
+            )}
+            {productTypes && productTypes.length > 0 && (
+              <TabsContent value="category">
+                {productTypes &&
+                  productTypes.map((type, index) => (
+                    <Item key={index} category="category" value={type} filters={filters} handleSelectItem={handleSelectItem}>
+                      {type}
                     </Item>
                   ))}
               </TabsContent>

@@ -13,7 +13,7 @@ interface ISetFilters extends React.Dispatch<React.SetStateAction<ISelectedItem[
 
 const Filters = ({
   genders,
-  subCategories,
+  productTypes,
   sizes,
   attributes,
   colors,
@@ -21,7 +21,7 @@ const Filters = ({
   setFilters,
 }: {
   genders?: string[];
-  subCategories?: ICategory[];
+  productTypes?: string[];
   sizes: string[];
   attributes: IAttribute[];
   colors: IColor[];
@@ -51,25 +51,20 @@ const Filters = ({
 
   return (
     <>
-      {subCategories && subCategories?.length > 0 && (
-        <AccordionItem className="border-none" value="item-2">
-          <AccordionTrigger className="hover:no-underline text-[16px] pb-2">Category</AccordionTrigger>
-          <AccordionContent className="flex flex-col px-4 p-0">
-            <CollapsibleList
-              data={subCategories}
-              category="category"
-              filters={filters}
-              handleSelectItem={handleSelectItem}
-            />
-          </AccordionContent>
-        </AccordionItem>
-      )}
-
       {genders && genders?.length > 0 && (
         <AccordionItem className="border-none" value="item-1">
           <AccordionTrigger className="hover:no-underline text-[16px] pb-2">Gender</AccordionTrigger>
           <AccordionContent className="flex flex-col px-4 p-0">
             <CollapsibleList data={genders} category="gender" filters={filters} handleSelectItem={handleSelectItem} />
+          </AccordionContent>
+        </AccordionItem>
+      )}
+
+      {productTypes && productTypes?.length > 0 && (
+        <AccordionItem className="border-none" value="item-2">
+          <AccordionTrigger className="hover:no-underline text-[16px] pb-2">Category</AccordionTrigger>
+          <AccordionContent className="flex flex-col px-4 p-0">
+            <CollapsibleList data={productTypes} category="category" filters={filters} handleSelectItem={handleSelectItem} />
           </AccordionContent>
         </AccordionItem>
       )}
@@ -117,7 +112,7 @@ const CollapsibleList = ({
   handleSelectItem,
 }: {
   limit?: number;
-  data: IColor[] | ICategory[] | string[];
+  data: IColor[] | string[];
   category: string;
   filters: ISelectedItem[];
   handleSelectItem: (category: string, value: string) => void;
@@ -156,10 +151,10 @@ const Item = ({
   filters: ISelectedItem[];
   handleSelectItem: (category: string, value: string) => void;
   category: string;
-  value: IColor | ICategory | ICollection | string;
+  value: IColor | ICollection | string;
 }) => {
   // @ts-ignore
-  const { name, slug, hex } = value as IColor | ICategory | ICollection;
+  const { name, slug, hex } = value as IColor | ICollection;
   const [values, setValues] = useState<{ key: string; value: string; hex?: string }>({ key: "", value: "", hex: "" });
 
   useEffect(() => {
