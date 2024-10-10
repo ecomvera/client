@@ -213,7 +213,8 @@ const ProductDetail = ({
           <div className="flex gap-1">
             {data.sizes.map(
               (size) =>
-                size.quantity > 0 && (
+                size.quantity > 0 &&
+                size.productColor === selectedColor && (
                   <div key={size.key} className="flex flex-col">
                     <div
                       className="border border-light-3 w-10 h-10 flex justify-center items-center cursor-pointer"
@@ -233,7 +234,7 @@ const ProductDetail = ({
                 )
             )}
           </div>
-          {selectedSize?.key && (
+          {selectedSize?.key && selectedSize.productColor === selectedColor && (
             <p className="text-sm">
               Size: <b>{selectedSize?.key}</b> <span className="ml-2">{formatText(selectedSize?.value as string)}</span>
             </p>
