@@ -55,7 +55,8 @@ const VerifyOTP = ({
 
       setIsLoading(false);
       const src = searchParams.get("src");
-      if (src) router.replace(src);
+      if (src) return router.replace(src);
+      router.replace("/");
     } catch (error: any) {
       console.log(error.message);
       toast({

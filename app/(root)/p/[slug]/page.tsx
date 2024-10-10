@@ -5,13 +5,13 @@ import BreadcrumbCard from "@/components/Cards/BreadcrumbCard";
 import LoadingPage from "@/components/Shared/LoadingPage";
 import ProductDetails from "@/components/Shared/ProductDetails";
 import SimilarProducts from "@/components/Shared/SimilarProducts";
-import { fetcher, fetchOpt } from "@/lib/utils";
+import { fetcher, fetchOpt, noCache } from "@/lib/utils";
 import { IProduct } from "@/types";
 import React, { useEffect } from "react";
 import useSWR from "swr";
 
 const Page = ({ params }: { params: { slug: string } }) => {
-  const fetchProduct = useSWR(`/api/products/${params.slug}`, fetcher, { ...fetchOpt, revalidateOnMount: true });
+  const fetchProduct = useSWR(`/api/products/${params.slug}`, fetcher, noCache);
   const { data, isLoading } = fetchProduct;
   const product: IProduct = data?.data;
 
