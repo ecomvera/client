@@ -13,21 +13,25 @@ import { Button } from "../ui/button";
 import { useDataStore } from "@/stores/data";
 import { useUser } from "@/hooks/useUser";
 import React from "react";
+import { useToken } from "@/hooks/useToken";
 
 const DeleteCartItem = ({ item }: { item: ICartItem }) => {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const { token } = useUser();
+  const { user } = useUser();
+  const { token } = useToken();
   const { removeFromCart } = useDataStore();
 
   const handleDelete = async () => {
     setLoading(true);
-    const res = await fetch("/api/user/cart", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
-      body: JSON.stringify({ id: item.id }),
-    });
-    if (res.ok) removeFromCart(item);
+    if (user) {
+      await fetch("/api/user/cart", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
+        body: JSON.stringify({ id: item.id }),
+      });
+    }
+    removeFromCart(item);
     setLoading(false);
     setOpen(false);
   };

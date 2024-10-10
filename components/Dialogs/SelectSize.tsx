@@ -7,13 +7,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ICartItem, IKeyValue } from "@/types";
+import { ICartItem } from "@/types";
 import { ArrowDownIcon, ChevronDownIcon } from "@radix-ui/react-icons";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { checkExistsOrAddToCart, useDataStore } from "@/stores/data";
 import { useData } from "@/hooks/useData";
 import { useUser } from "@/hooks/useUser";
+import { useToken } from "@/hooks/useToken";
 
 const SelectSize = ({
   item,
@@ -25,7 +26,8 @@ const SelectSize = ({
   deleteItem?: () => void;
 }) => {
   const { cart } = useData();
-  const { token } = useUser();
+  const { user } = useUser();
+  const { token } = useToken();
   const { setCart } = useDataStore();
   const [selectedSize, setSelectedSize] = useState(item.size);
 
@@ -41,13 +43,15 @@ const SelectSize = ({
     );
     setCart(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+    if (moveToCart && deleteItem) deleteItem();
+
+    if (!user) return;
     await fetch("/api/user/cart", {
       method: "PUT",
       headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
       body: JSON.stringify({ cart: updatedCart.map(({ product, ...rest }) => rest) }),
     });
-
-    if (moveToCart && deleteItem) deleteItem();
   };
 
   return (

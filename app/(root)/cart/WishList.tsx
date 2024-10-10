@@ -2,6 +2,7 @@ import SelectSize from "@/components/Dialogs/SelectSize";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { useData } from "@/hooks/useData";
+import { useToken } from "@/hooks/useToken";
 import { useUser } from "@/hooks/useUser";
 import { checkExistsOrAddToCart, useDataStore } from "@/stores/data";
 import { ICartItem, IProduct } from "@/types";
@@ -10,7 +11,8 @@ import Link from "next/link";
 import React from "react";
 
 const WishList = ({ cart, wishlist }: { cart: ICartItem[]; wishlist: ICartItem[] }) => {
-  const { user, token } = useUser();
+  const { user } = useUser();
+  const { token } = useToken();
   const { removeFromWishlist, setCart } = useDataStore();
 
   if (!user) return null;

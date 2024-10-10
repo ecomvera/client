@@ -8,10 +8,11 @@ import { PiPackage } from "react-icons/pi";
 import { BiLogOut } from "react-icons/bi";
 import { BiIdCard } from "react-icons/bi";
 import { MdOutlineLocationOn } from "react-icons/md";
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/stores/user";
+import { useToken } from "@/hooks/useToken";
 
 export default function RootLayout({
   children,
@@ -19,12 +20,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const { user, isLoading } = useUser();
+  const { token } = useToken();
   const pathname = usePathname();
   const router = useRouter();
 
-  // useEffect(() => {
-  //   if (!isLoading && !user) return router.push(`/sign-in?src=${pathname}`);
-  // }, [isLoading, user]);
+  useEffect(() => {
+    if (!isLoading && !user && token.access) return router.push(`/sign-in?src=${pathname}`);
+  }, [isLoading, user, token.access]);
   return (
     <div className="max-w-desktop mx-auto flex py-2 md:py-5 px-3 mb-20 min-h-[calc(100vh-300px)]">
       <SidebarNav />

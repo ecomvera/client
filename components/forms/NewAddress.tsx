@@ -15,6 +15,7 @@ import { useUser } from "@/hooks/useUser";
 import { toast } from "../ui/use-toast";
 import { useUserStore } from "@/stores/user";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useToken } from "@/hooks/useToken";
 
 const addressData: IAddress = {
   name: "",
@@ -31,7 +32,7 @@ const addressData: IAddress = {
 const NewAddress = () => {
   const params = useSearchParams();
   const router = useRouter();
-  const { token } = useUser();
+  const { token } = useToken();
   const { addAddress } = useUserStore();
   const [isLoading, setIsLoading] = useState(false);
   const [residenceType, setResidenceType] = useState("");
