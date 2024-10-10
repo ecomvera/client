@@ -21,3 +21,13 @@ export const fetchOpt = {
   dedupingInterval: 60000,
   revalidateOnMount: false,
 };
+export const noCache = {
+  revalidateOnMount: true,
+  revalidateOnFocus: true,
+  revalidateOnReconnect: true,
+  dedupingInterval: 0,
+};
+
+export function generateOrderNumber() {
+  return crypto.randomUUID().replace(/-/g, "");
+}

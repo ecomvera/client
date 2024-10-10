@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
 import Link from "next/link";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
 const SignInForm = ({
   phone,
@@ -15,6 +16,13 @@ const SignInForm = ({
 }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleFocus = () => {
+    if (inputRef.current) {
+      inputRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
 
   const handleSubmit = async () => {
     try {
@@ -68,10 +76,13 @@ const SignInForm = ({
       <div className="border border-light-1 rounded-md p-1 flex items-center w-full  mt-10">
         <span className="text-sm font-semibold">+91</span>
         <Input
+          ref={inputRef}
           type="tel"
+          id="mobile"
           placeholder="Enter Mobile Number"
           className="border-none focus-visible:ring-transparent shadow-none text-base font-semibold w-full ml-2"
           value={phone}
+          onFocus={handleFocus}
           onChange={(e) => {
             if (e.target.value.length > 10) return;
             setPhone(e.target.value.replace(/[^0-9]/g, ""));

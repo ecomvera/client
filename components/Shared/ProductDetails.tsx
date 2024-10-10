@@ -1,18 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { IoLocationOutline } from "react-icons/io5";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import { IColor, IProduct } from "@/types";
+import { IColor, IProduct, IProductSize, ISize } from "@/types";
 import { useDataStore } from "@/stores/data";
 import { useUser } from "@/hooks/useUser";
 import { useData } from "@/hooks/useData";
 import { AspectRatio } from "../ui/aspect-ratio";
 import ImgaeGallary from "./ImgaeGallary";
 import ReactCarousel from "./Carousel";
+import { useToken } from "@/hooks/useToken";
 
 const ProductDetails = ({ product }: { product: IProduct }) => {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]?.hex);
@@ -93,6 +94,13 @@ const LeftGallaryView = ({ images, currentColor }: { images: IProduct["images"];
   );
 };
 
+// make text bold with brackets <>
+const formatText = (text: string) => {
+  const regex = /<([^>]+)>/g;
+  const parts = text.split(regex);
+  return parts.map((part, index) => (index % 2 === 1 ? <strong key={index}>{part}</strong> : part));
+};
+
 const ProductDetail = ({
   data,
   selectedColor,
@@ -103,29 +111,31 @@ const ProductDetail = ({
   setSelectedColor: Dispatch<SetStateAction<string>>;
 }) => {
   const router = useRouter();
-  const { user, token } = useUser();
+  const { user } = useUser();
+  const { token } = useToken();
   const { cart, wishlist } = useData();
   const { addToCart, addToWishlist, removeFromWishlist } = useDataStore();
-  const [selectedSize, setSelectedSize] = useState<string>("");
+  const [selectedSize, setSelectedSize] = useState<IProductSize>();
   const [showSelectSizeMessage, setShowSelectSizeMessage] = useState(false);
 
   const createItemId = (key?: string) => {
-    return `${data.id}-${selectedColor}-${key === "wishlist" ? data.sizes[0].key : selectedSize}`;
+    return `${data.id}-${selectedColor}-${key === "wishlist" ? data.sizes[0].key : selectedSize?.key}`;
   };
 
   const isInWishlist = wishlist.some((item) => item.id === `${data.id}-${selectedColor}-${data.sizes[0].key}`);
   const isExistInCart = cart.some((item) => item.id === createItemId());
+  const isItemUnavailable = useMemo(() => !data.sizes.some((size) => size.quantity > 0), [data]);
 
   const item = {
     id: createItemId(),
     color: selectedColor,
-    size: selectedSize,
+    size: selectedSize?.key,
     quantity: 1,
     productId: data.id || "",
   };
 
   const handleAddToCart = async () => {
-    if (!selectedSize) return setShowSelectSizeMessage(true);
+    if (!selectedSize?.key) return setShowSelectSizeMessage(true);
     if (isExistInCart) return router.push("/cart");
 
     addToCart({ ...item, product: data });
@@ -193,41 +203,63 @@ const ProductDetail = ({
         ))}
       </div>
 
-      <p className="text-base mobile:text-lg font-semibold text-dark-3 uppercase mt-5">Select Size</p>
-      <div className="flex gap-1">
-        {data.sizes.map((size) => (
-          <div
-            key={size.key}
-            className="border border-light-3 w-10 h-10 flex justify-center items-center cursor-pointer"
-            style={{ border: selectedSize === size.key ? `2px solid black` : "2px solid lightgray" }}
-            onClick={() => setSelectedSize(size.key)}
-          >
-            <p className={`text-base mobile:text-lg font-${selectedSize === size.key ? "bold" : "semibold"} text-dark-3`}>
-              {size.key}
-            </p>
+      {isItemUnavailable ? (
+        <div className="py-5">
+          <p className="text-base mobile:text-lg font-semibold text-red-600/70 uppercase">Out of Stock</p>
+        </div>
+      ) : (
+        <>
+          <p className="text-base mobile:text-lg font-semibold text-dark-3 uppercase mt-5">Select Size</p>
+          <div className="flex gap-1">
+            {data.sizes.map(
+              (size) =>
+                size.quantity > 0 && (
+                  <div key={size.key} className="flex flex-col">
+                    <div
+                      className="border border-light-3 w-10 h-10 flex justify-center items-center cursor-pointer"
+                      style={{ border: selectedSize?.key === size.key ? `2px solid black` : "2px solid lightgray" }}
+                      onClick={() => setSelectedSize(size)}
+                    >
+                      <p
+                        className={`text-base mobile:text-lg font-${
+                          selectedSize?.key === size.key ? "bold" : "semibold"
+                        } text-dark-3`}
+                      >
+                        {size.key}
+                      </p>
+                    </div>
+                    {size.quantity < 10 && <p className="text-xs text-red-600 font-bold">{size.quantity} left</p>}
+                  </div>
+                )
+            )}
           </div>
-        ))}
-      </div>
-      {!selectedSize && showSelectSizeMessage && (
-        <div className="text-red-500 font-sans text-sm tablet:text-base tablet:font-semibold">Please select a size</div>
-      )}
+          {selectedSize?.key && (
+            <p className="text-sm">
+              Size: <b>{selectedSize?.key}</b> <span className="ml-2">{formatText(selectedSize?.value as string)}</span>
+            </p>
+          )}
+          {!selectedSize?.key && showSelectSizeMessage && (
+            <div className="text-red-500 font-sans text-sm tablet:text-base tablet:font-semibold">Please select a size</div>
+          )}
 
-      <div className="flex gap-2 py-5">
-        <button
-          className={`bg-green-600 text-white rounded-[5px] text-sm tablet:text-base font-bold p-2 px-4 flex-1 md:flex-none`}
-          onClick={handleAddToCart}
-        >
-          {isExistInCart ? "Added. Go to cart" : "Add to cart"}
-        </button>
-        <button
-          className={`${
-            isInWishlist ? "bg-red-600" : "bg-gray-600"
-          } text-white rounded-[5px] text-sm tablet:text-base font-bold p-2 px-4 flex-1 md:flex-none`}
-          onClick={handleAddToWishlist}
-        >
-          {isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
-        </button>
-      </div>
+          <div className="flex gap-2 py-5">
+            <button
+              className={`bg-green-600 text-white rounded-[5px] text-sm tablet:text-base font-bold p-2 px-4 flex-1 md:flex-none`}
+              onClick={handleAddToCart}
+            >
+              {isExistInCart ? "Added. Go to cart" : "Add to cart"}
+            </button>
+            <button
+              className={`${
+                isInWishlist ? "bg-red-600" : "bg-gray-600"
+              } text-white rounded-[5px] text-sm tablet:text-base font-bold p-2 px-4 flex-1 md:flex-none`}
+              onClick={handleAddToWishlist}
+            >
+              {isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
+            </button>
+          </div>
+        </>
+      )}
 
       <div>
         <span className="flex items-center gap-2">
