@@ -31,3 +31,11 @@ export const noCache = {
 export function generateOrderNumber() {
   return crypto.randomUUID().replace(/-/g, "");
 }
+
+export const getDiscount = (mrp: number, price: number) => {
+  return ((mrp - price / mrp) / 100).toFixed(2);
+};
+
+export function boldNumbersInString(str: string) {
+  return str.replace(/\d+/g, (match) => `<b>${match}</b>`);
+}

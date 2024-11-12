@@ -154,7 +154,7 @@ const Item = ({
   value: IColor | ICollection | string;
 }) => {
   // @ts-ignore
-  const { name, slug, hex } = value as IColor | ICollection;
+  const { name, slug, hex } = value as { name: string; slug: string; hex: string };
   const [values, setValues] = useState<{ key: string; value: string; hex?: string }>({ key: "", value: "", hex: "" });
 
   useEffect(() => {

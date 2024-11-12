@@ -19,7 +19,7 @@ const VerifyOTP = ({
   const router = useRouter();
   const searchParams = useSearchParams();
   const { setUser, setToken } = useUserStore();
-  const { setCart, setWishlist } = useDataStore();
+  const { cart, wishlist, setCart, setWishlist } = useDataStore();
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,14 +41,24 @@ const VerifyOTP = ({
         return;
       }
 
+      if (res.data.user.cart.length > 0) {
+        toast({
+          title: "Success",
+          description: "Your cart has been updated successfully",
+          variant: "success",
+        });
+      }
+      const updatedCart = [...cart, ...res.data.user.cart];
+      const updatedWishlist = [...wishlist, ...res.data.user.wishlist];
+
       setUser(res.data.user);
-      setCart(res.data.user.cart);
-      setWishlist(res.data.user.wishlist);
+      setCart(updatedCart);
+      setWishlist(updatedWishlist);
       setToken({ access: res.data.accessToken, refresh: res.data.refreshToken });
 
       localStorage.setItem("user", JSON.stringify(res.data.user));
-      localStorage.setItem("cart", JSON.stringify(res.data.user.cart));
-      localStorage.setItem("wishlist", JSON.stringify(res.data.user.wishlist));
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
 
       localStorage.setItem("accessToken", res.data.accessToken);
       localStorage.setItem("refreshToken", res.data.refreshToken);

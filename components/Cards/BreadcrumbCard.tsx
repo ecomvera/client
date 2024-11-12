@@ -9,7 +9,7 @@ import {
 
 const BreadcrumbCard = ({ nav, title }: { nav?: { title: string; url: string }[]; title: string }) => {
   return (
-    <Breadcrumb className="mt-4 hidden mobile:block">
+    <Breadcrumb className="mt-2 hidden mobile:block">
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink href="/">Home</BreadcrumbLink>

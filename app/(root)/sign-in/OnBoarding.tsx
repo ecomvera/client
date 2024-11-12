@@ -89,6 +89,8 @@ const OnBoarding = ({
           className="border-none focus-visible:ring-transparent shadow-none text-base font-semibold w-full ml-2"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          name="name"
+          autoComplete="name"
         />
       </div>
       <span className="text-sm font-semibold mt-5">Phone</span>
@@ -112,6 +114,8 @@ const OnBoarding = ({
           className="border-none focus-visible:ring-transparent shadow-none text-base font-semibold w-full ml-2"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          name="email"
+          autoComplete="email"
         />
       </div>
       <span className="text-sm font-semibold mt-5">Gender</span>

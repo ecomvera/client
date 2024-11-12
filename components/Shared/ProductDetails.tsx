@@ -5,15 +5,17 @@ import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { IoLocationOutline } from "react-icons/io5";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useRouter } from "next/navigation";
-import { IColor, IProduct, IProductSize, ISize } from "@/types";
+import { usePathname, useRouter } from "next/navigation";
+import { IProduct, IProductSize } from "@/types";
 import { useDataStore } from "@/stores/data";
 import { useUser } from "@/hooks/useUser";
 import { useData } from "@/hooks/useData";
 import { AspectRatio } from "../ui/aspect-ratio";
 import ImgaeGallary from "./ImgaeGallary";
-import ReactCarousel from "./Carousel";
 import { useToken } from "@/hooks/useToken";
+import ReturnDetails from "./ReturnDetails";
+import { boldNumbersInString, getDiscount } from "@/lib/utils";
+import { toast } from "../ui/use-toast";
 
 const ProductDetails = ({ product }: { product: IProduct }) => {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]?.hex);
@@ -21,8 +23,12 @@ const ProductDetails = ({ product }: { product: IProduct }) => {
   return (
     <div className="py-2 mobile:py-5">
       <div className="flex flex-col tablet:flex-row">
-        <LeftGallaryView images={product.images} currentColor={selectedColor} />
-        <ProductDetail data={product} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
+        <div className="h-full tablet:sticky top-16">
+          <LeftGallaryView images={product.images} currentColor={selectedColor} />
+        </div>
+        <div className="flex-1 overflow-y-auto">
+          <ProductDetail data={product} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
+        </div>
       </div>
     </div>
   );
@@ -94,13 +100,6 @@ const LeftGallaryView = ({ images, currentColor }: { images: IProduct["images"];
   );
 };
 
-// make text bold with brackets <>
-const formatText = (text: string) => {
-  const regex = /<([^>]+)>/g;
-  const parts = text.split(regex);
-  return parts.map((part, index) => (index % 2 === 1 ? <strong key={index}>{part}</strong> : part));
-};
-
 const ProductDetail = ({
   data,
   selectedColor,
@@ -111,12 +110,14 @@ const ProductDetail = ({
   setSelectedColor: Dispatch<SetStateAction<string>>;
 }) => {
   const router = useRouter();
+  const pathname = usePathname();
   const { user } = useUser();
   const { token } = useToken();
   const { cart, wishlist } = useData();
   const { addToCart, addToWishlist, removeFromWishlist } = useDataStore();
   const [selectedSize, setSelectedSize] = useState<IProductSize>();
   const [showSelectSizeMessage, setShowSelectSizeMessage] = useState(false);
+  const [showMore, setShowMore] = useState(false);
 
   const createItemId = (key?: string) => {
     return `${data.id}-${selectedColor}-${key === "wishlist" ? data.sizes[0].key : selectedSize?.key}`;
@@ -150,7 +151,12 @@ const ProductDetail = ({
   };
 
   const handleAddToWishlist = async () => {
-    if (!user) return router.push("/login");
+    if (!user) {
+      toast({
+        description: "Please sign in to add items to your wishlist",
+      });
+      return router.push(`/sign-in?src=${pathname}`);
+    }
     const id = createItemId("wishlist");
 
     if (isInWishlist) {
@@ -174,13 +180,20 @@ const ProductDetail = ({
 
   return (
     <div className="w-full px-2 mt-2 tablet:mt-0 laptop:px-5">
-      <h2 className="head-text font-bold">{data.name}</h2>
-      <p className="text-sm mobile:text-lg">{data.description}</p>
+      <h2 className="text-xl font-bold">{data.name}</h2>
+      <div>
+        <p className={`${!showMore && "line-clamp-3"}`}>{data.description}</p>
+        <span onClick={() => setShowMore(!showMore)} className="text-sm font-semibold text-blue-700 cursor-pointer">
+          {!showMore ? "Read more" : "Read less"}
+        </span>
+      </div>
 
-      <p className="head-text font-semibold mt-5">
-        Rs. {data.price} <span className="text-sm font-normal text-light-3">incl. of all taxes</span>
-      </p>
-      <p className="text-sm font-normal text-light-1 line-through">MRP {data.mrp}</p>
+      <div className="flex mt-5 items-end gap-2">
+        <p className="text-xl font-semibold">Rs. {data.price}</p>
+        <p className="text-sm font-normal text-light-3 line-through">MRP {data.mrp}</p>
+        <p className="text-lg text-green-600 font-semibold">{getDiscount(data.price, data.mrp)}% off</p>
+      </div>
+      <span className="text-sm font-normal text-light-3">incl. of all taxes</span>
 
       <div className="border w-fit border-light-3 px-3 my-5">
         <p className="text-base font-semibold text-light-1">{data.material}</p>
@@ -191,10 +204,10 @@ const ProductDetail = ({
         {data.colors.map((color) => (
           <div
             key={color.id}
-            className={`w-9 h-9 rounded-full items-center justify-center cursor-pointer flex`}
+            className={`w-9 h-9 rounded-full items-center justify-center cursor-pointer flex shadow-gray-500 shadow-sm`}
             style={{
               backgroundColor: color.hex,
-              border: selectedColor === color.hex ? `1px solid ${color.hex}` : "1px solid transparent",
+              border: selectedColor === color.hex ? `1px solid black` : "1px solid transparent",
             }}
             onClick={() => setSelectedColor(color.hex)}
           >
@@ -229,14 +242,20 @@ const ProductDetail = ({
                         {size.key}
                       </p>
                     </div>
-                    {size.quantity < 10 && <p className="text-xs text-red-600 font-bold">{size.quantity} left</p>}
+                    {size.quantity < 10 && <p className="text-xs text-red-600 font-semibold">{size.quantity} left</p>}
                   </div>
                 )
             )}
           </div>
           {selectedSize?.key && selectedSize.productColor === selectedColor && (
-            <p className="text-sm">
-              Size: <b>{selectedSize?.key}</b> <span className="ml-2">{formatText(selectedSize?.value as string)}</span>
+            <p className="text-sm font-normal mt-2">
+              <span>
+                Size: <b>{selectedSize?.key}</b>
+              </span>
+              <span
+                className="ml-2"
+                dangerouslySetInnerHTML={{ __html: boldNumbersInString(selectedSize?.value as string) }}
+              />
             </p>
           )}
           {!selectedSize?.key && showSelectSizeMessage && (
@@ -291,6 +310,8 @@ const ProductDetail = ({
           </div>
         ))}
       </div>
+
+      <ReturnDetails />
     </div>
   );
 };

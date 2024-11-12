@@ -4,33 +4,21 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useMemo } from "react";
-import { FaMinus, FaPlus } from "react-icons/fa6";
-import WishList from "./WishList";
 import { ICartItem } from "@/types";
 import SelectSize from "@/components/Dialogs/SelectSize";
 import UpdateQuantity from "@/components/Dialogs/UpdateQuantity";
 import Link from "next/link";
 import { useData } from "@/hooks/useData";
-import { Cross1Icon } from "@radix-ui/react-icons";
 import DeleteCartItem from "@/components/Dialogs/DeleteCartItem";
 import { useUser } from "@/hooks/useUser";
 import { Separator } from "@/components/ui/separator";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 const Page = () => {
-  const { cart, wishlist } = useData();
+  const { cart } = useData();
 
   return (
     <div className="max-w-desktop mx-auto px-2 py-5">
-      <Cart cart={cart} />
-      <WishList cart={cart} wishlist={wishlist} />
-    </div>
-  );
-};
-
-const Cart = ({ cart }: { cart: ICartItem[] }) => {
-  return (
-    <>
       <h1 className="font-semibold text-xl md:text-2xl font-sans text-light-1">My Cart</h1>
 
       <div className="flex flex-col tablet:flex-row justify-between py-3 gap-4 border-light-3">
@@ -47,7 +35,7 @@ const Cart = ({ cart }: { cart: ICartItem[] }) => {
         </div>
         <CartSummary cart={cart} />
       </div>
-    </>
+    </div>
   );
 };
 

@@ -1,23 +1,26 @@
+"use client";
+
 import SelectSize from "@/components/Dialogs/SelectSize";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { useData } from "@/hooks/useData";
 import { useToken } from "@/hooks/useToken";
 import { useUser } from "@/hooks/useUser";
-import { checkExistsOrAddToCart, useDataStore } from "@/stores/data";
-import { ICartItem, IProduct } from "@/types";
+import { useDataStore } from "@/stores/data";
+import { ICartItem } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const WishList = ({ cart, wishlist }: { cart: ICartItem[]; wishlist: ICartItem[] }) => {
+const Page = () => {
+  const { cart, wishlist } = useData();
   const { user } = useUser();
   const { token } = useToken();
   const { removeFromWishlist, setCart } = useDataStore();
 
   if (!user) return null;
   return (
-    <div>
+    <div className="max-w-desktop mx-auto px-2 py-5">
       <h1 className="font-semibold text-xl md:text-2xl font-sans text-light-1">WishList</h1>
 
       <div className="mt-4">
@@ -99,4 +102,4 @@ const ProductCard = ({
   );
 };
 
-export default WishList;
+export default Page;

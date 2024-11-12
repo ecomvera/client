@@ -14,9 +14,9 @@ const product = {
 const SimilarProducts = () => {
   return (
     <div className="py-5">
-      <h2 className="text-2xl text-dark-3 font-bold py-5">Related Products</h2>
+      <h2 className="text-xl font-semibold py-5">You may also like</h2>
 
-      <Carousel nodots>
+      <Carousel>
         <InfoCard {...product} />
         <InfoCard {...product} />
         <InfoCard {...product} />

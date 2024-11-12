@@ -15,6 +15,7 @@ import { checkExistsOrAddToCart, useDataStore } from "@/stores/data";
 import { useData } from "@/hooks/useData";
 import { useUser } from "@/hooks/useUser";
 import { useToken } from "@/hooks/useToken";
+import { useRouter } from "next/navigation";
 
 const SelectSize = ({
   item,
@@ -25,6 +26,7 @@ const SelectSize = ({
   moveToCart?: boolean;
   deleteItem?: () => void;
 }) => {
+  const router = useRouter();
   const { cart } = useData();
   const { user } = useUser();
   const { token } = useToken();
@@ -44,7 +46,10 @@ const SelectSize = ({
     setCart(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
 
-    if (moveToCart && deleteItem) deleteItem();
+    if (moveToCart && deleteItem) {
+      deleteItem();
+      router.push("/cart");
+    }
 
     if (!user) return;
     await fetch("/api/user/cart", {

@@ -4,7 +4,14 @@ import Link from "next/link";
 import Search from "../forms/Search";
 import HeaderNavigation from "./HeaderNavigation";
 import { useTheme } from "next-themes";
-import { IoMoonOutline, IoSunnyOutline, IoCartOutline, IoPersonOutline, IoReorderThreeOutline } from "react-icons/io5";
+import {
+  IoMoonOutline,
+  IoSunnyOutline,
+  IoCartOutline,
+  IoPersonOutline,
+  IoReorderThreeOutline,
+  IoHeartOutline,
+} from "react-icons/io5";
 import { useAction } from "@/stores/action";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
@@ -21,12 +28,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { BiLogOut } from "react-icons/bi";
 import { Button } from "../ui/button";
 import { useUserStore } from "@/stores/user";
+import { useDataStore } from "@/stores/data";
 
 const Header = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useUser();
-  const { cart } = useData();
+  const { cart, wishlist } = useData();
   const { setIsSidebarOpen } = useAction();
 
   const isCheckoutPage = pathname === "/checkout";
@@ -56,6 +64,14 @@ const Header = () => {
               <Search />
               <ThemeHandler />
 
+              <span className="relative" onClick={() => router.push("/wishlist")}>
+                {wishlist?.length > 0 && (
+                  <span className="absolute -top-2 -right-2 text-sm font-semibold text-white bg-green-600 rounded-full w-5 h-5 flex justify-center items-center">
+                    {wishlist.length}
+                  </span>
+                )}
+                <IoHeartOutline className="cursor-pointer text-2xl" />
+              </span>
               <div className="hidden tablet:flex gap-5">
                 <span className="relative" onClick={() => router.push("/cart")}>
                   {cart?.length > 0 && (
@@ -87,6 +103,7 @@ const ProfileIcon = () => {
   const [open, setOpen] = useState(false);
   const { setUser } = useUserStore();
   const [openDelete, setOpenDelete] = useState(false);
+  const { setCart, setWishlist } = useDataStore();
 
   const handleSignOut = () => {
     localStorage.removeItem("user");
@@ -94,10 +111,12 @@ const ProfileIcon = () => {
     localStorage.removeItem("wishlist");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    setCart([]);
+    setWishlist([]);
     setOpenDelete(false);
     setOpen(false);
     setUser(null);
-    router.replace("/sign-in");
+    router.replace("/");
   };
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>

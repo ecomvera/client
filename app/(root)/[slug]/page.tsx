@@ -136,7 +136,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
 
       {/* desktop design */}
       <div className="flex gap-8 md:py-5">
-        <div className="static top-12 hidden md:block tablet:w-50 laptop:w-64 ">
+        <div className="hidden md:block tablet:w-50 laptop:w-64 ">
           <div className="flex justify-between">
             <span className="font-semibold text-muted-foreground">Filters</span>
             {filters.length > 0 && (
