@@ -39,8 +39,8 @@ const LeftGallaryView = ({ images, currentColor }: { images: IProduct["images"];
   const [open, setOpen] = useState(false);
   const [startWith, setStartWith] = useState(0);
 
-  // const [showZoom, setShowZoom] = useState(false);
-  // const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
+  const [showZoom, setShowZoom] = useState(false);
+  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
 
   const handleSlideChange = (url: string) => {
     setCurrentSlide(url);
@@ -59,17 +59,18 @@ const LeftGallaryView = ({ images, currentColor }: { images: IProduct["images"];
           setOpen(true);
           setStartWith(images.findIndex((image) => image.url === currentSlide));
         }}
-        // onMouseEnter={() => setShowZoom(true)}
-        // onMouseLeave={() => setShowZoom(false)}
-        // onMouseMoveCapture={(e) => {
-        //   const rect = e.target.getBoundingClientRect();
-        //   let x = ((e.clientX - rect.left) / rect.width) * 100;
-        //   let y = ((e.clientY - rect.top) / rect.height) * 100;
-        //   x = Math.max(0, Math.min(100, x));
-        //   y = Math.max(0, Math.min(100, y));
-
-        //   setZoomPosition({ x, y });
-        // }}
+        onMouseEnter={() => setShowZoom(true)}
+        onMouseLeave={() => setShowZoom(false)}
+        onMouseMoveCapture={(e) => {
+          if (!showZoom) return;
+          // @ts-ignore
+          const rect = e.target.getBoundingClientRect();
+          let x = ((e.clientX - rect.left) / rect.width) * 100;
+          let y = ((e.clientY - rect.top) / rect.height) * 100;
+          x = Math.max(0, Math.min(100, x));
+          y = Math.max(0, Math.min(100, y));
+          setZoomPosition({ x, y });
+        }}
       >
         <AspectRatio ratio={0.8 / 1} className="border rounded-md relative">
           <Image
@@ -85,8 +86,8 @@ const LeftGallaryView = ({ images, currentColor }: { images: IProduct["images"];
         </AspectRatio>
       </div>
 
-      {/* {showZoom && (
-        <div className="w-[500px] h-auto border border-gray-300 overflow-hidden absolute top-0 right-[-500px] bg-gray-50 rounded-md">
+      {showZoom && (
+        <div className="hidden tablet:block w-[500px] h-auto border border-gray-300 overflow-hidden absolute top-0 right-[-500px] bg-gray-50 rounded-md">
           <AspectRatio ratio={0.8 / 1} className="border rounded-md relative">
             <Image
               priority
@@ -94,7 +95,7 @@ const LeftGallaryView = ({ images, currentColor }: { images: IProduct["images"];
               quality={100}
               className="absolute w-full h-full object-cover rounded-md"
               style={{
-                transformOrigin: "center center", // Keeps zoom from the center
+                transformOrigin: "center center",
                 transform: `translate(calc(-${Math.max(0, Math.min(100, zoomPosition.x))}% + 50%), 
                               calc(-${Math.max(0, Math.min(100, zoomPosition.y))}% + 50%)) scale(2)`,
               }}
@@ -104,7 +105,7 @@ const LeftGallaryView = ({ images, currentColor }: { images: IProduct["images"];
             />
           </AspectRatio>
         </div>
-      )} */}
+      )}
 
       <div className="flex justify-between w-full h-fit mobile:flex-col mobile:w-[100px] tablet:w-[70px] laptop:w-[100px] tablet:transition-all">
         {images
