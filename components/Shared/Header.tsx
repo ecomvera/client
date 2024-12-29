@@ -51,7 +51,11 @@ const Header = () => {
               <h2 className="text-xl tablet:text-2xl font-bold uppercase tracking-wide">Silkyester</h2>
             </Link>
 
-            <div className="hidden tablet:flex gap-5 ml-2">{!isCheckoutPage && <HeaderNavigation />}</div>
+            {!isCheckoutPage && (
+              <div className="hidden tablet:flex gap-5">
+                <HeaderNavigation />
+              </div>
+            )}
           </div>
 
           {isCheckoutPage ? (
@@ -60,26 +64,26 @@ const Header = () => {
               <p>{user?.email}</p>
             </div>
           ) : (
-            <div className="flex gap-5 items-center mr-2">
+            <div className="flex gap-5 items-center mr-2 flex-1 justify-end">
               <Search />
               <ThemeHandler />
 
-              <span className="relative" onClick={() => router.push("/wishlist")}>
+              <span className="relative mt-1" onClick={() => router.push("/wishlist")}>
                 {wishlist?.length > 0 && (
                   <span className="absolute -top-2 -right-2 text-sm font-semibold text-white bg-green-600 rounded-full w-5 h-5 flex justify-center items-center">
                     {wishlist.length}
                   </span>
                 )}
-                <IoHeartOutline className="cursor-pointer text-2xl" />
+                <IoHeartOutline className="cursor-pointer text-[22px]" />
               </span>
               <div className="hidden tablet:flex gap-5">
-                <span className="relative" onClick={() => router.push("/cart")}>
+                <span className="relative mt-1" onClick={() => router.push("/cart")}>
                   {cart?.length > 0 && (
                     <span className="absolute -top-2 -right-2 text-sm font-semibold text-white bg-green-600 rounded-full w-5 h-5 flex justify-center items-center">
                       {cart.length}
                     </span>
                   )}
-                  <IoCartOutline className="cursor-pointer text-xl tablet:text-2xl" />
+                  <IoCartOutline className="cursor-pointer text-[22px]" />
                 </span>
                 {pathname !== "/sign-in" &&
                   (user ? (
@@ -192,9 +196,9 @@ const ThemeHandler = () => {
   return (
     <>
       {theme === "dark" ? (
-        <IoSunnyOutline onClick={() => setTheme("light")} className="cursor-pointer text-xl tablet:text-2xl" />
+        <IoSunnyOutline onClick={() => setTheme("light")} className="cursor-pointer text-xl tablet:text-xl" />
       ) : (
-        <IoMoonOutline onClick={() => setTheme("dark")} className="cursor-pointer text-xl tablet:text-2xl" />
+        <IoMoonOutline onClick={() => setTheme("dark")} className="cursor-pointer text-xl tablet:text-xl" />
       )}
     </>
   );

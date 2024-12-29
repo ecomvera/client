@@ -29,7 +29,7 @@ function HeaderNavigation() {
   }, []);
 
   return (
-    <NavigationMenu className="absolute left-5 top-3">
+    <NavigationMenu className="absolute left-5 top-2 laptop:top-3">
       <NavigationMenuList className="pl-40 laptop:pl-44">
         {categories.map((category) => (
           <CategoryDropdown key={category.id} label={category.name} subCategories={category.children} />
