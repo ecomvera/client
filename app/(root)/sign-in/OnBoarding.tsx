@@ -21,7 +21,7 @@ const OnBoarding = ({
   const router = useRouter();
   const searchParams = useSearchParams();
   const { setUser, setToken } = useUserStore();
-  const { setCart, setWishlist } = useDataStore();
+  const { cart, wishlist, setCart, setWishlist } = useDataStore();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("");
@@ -46,8 +46,19 @@ const OnBoarding = ({
       }
 
       setUser(res.data.user);
-      setCart(res.data.user.cart);
-      setWishlist(res.data.user.wishlist);
+
+      if (res.data.user.cart.length > 0) {
+        toast({
+          title: "Success",
+          description: "Your cart has been updated successfully",
+          variant: "success",
+        });
+      }
+      const updatedCart = [...cart, ...res.data.user.cart];
+      const updatedWishlist = [...wishlist, ...res.data.user.wishlist];
+      setCart(updatedCart);
+      setWishlist(updatedWishlist);
+
       setToken({ access: res.data.accessToken, refresh: res.data.refreshToken });
 
       localStorage.setItem("user", JSON.stringify(res.data.user));

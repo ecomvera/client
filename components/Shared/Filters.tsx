@@ -173,7 +173,7 @@ const Item = ({
     }
   }, []);
 
-  const isClicked = filters.filter((item) => item.key === category)[0]?.value?.includes(values?.value.replace(" ", "-"));
+  const isClicked = filters.filter((item) => item.key === category)[0]?.value?.includes(values?.value?.replace(" ", "-"));
   return (
     <div
       className={`flex gap-2 items-center px-2 py-1 cursor-pointer text-muted-foreground hover:text-foreground hover:bg-muted rounded ${
