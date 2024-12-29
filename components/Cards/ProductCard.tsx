@@ -6,6 +6,7 @@ import { useDataStore } from "@/stores/data";
 import { useUser } from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
 import { AspectRatio } from "../ui/aspect-ratio";
+import { useToken } from "@/hooks/useToken";
 
 const ProductCard = ({
   product,
@@ -17,7 +18,8 @@ const ProductCard = ({
   showRating?: boolean;
 }) => {
   const router = useRouter();
-  const { user, token } = useUser();
+  const { user } = useUser();
+  const { token } = useToken();
   const { addToWishlist, removeFromWishlist, wishlist } = useDataStore();
 
   const createItemId = () => {
@@ -31,7 +33,7 @@ const ProductCard = ({
 
     const item = {
       id: createItemId(),
-      color: product.colors[0],
+      color: product.colors[0].name,
       quantity: 1,
       productId: product.id as string,
     };
