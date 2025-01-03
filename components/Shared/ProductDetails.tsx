@@ -317,24 +317,7 @@ const ProductDetail = ({
         </>
       )}
 
-      <div>
-        <span className="flex items-center gap-2">
-          <IoLocationOutline className="text-base" />
-          <p className="text-base font-semibold text-dark-3">Check for delivery details</p>
-        </span>
-        <p className="text-sm mobile:text-base font-normal text-light-1">Delivering all over India</p>
-
-        <div className="border my-3 flex items-center gap-5 w-full tablet:max-w-[300px]">
-          <Input
-            type="text"
-            placeholder="Enter Pincode"
-            className="border-0 focus-visible:ring-transparent shadow-none text-base "
-          />
-          <Button variant="outline" className="border-none uppercase ">
-            Check
-          </Button>
-        </div>
-      </div>
+      <CheckPincode />
 
       <p className="text-xl font-semibold text-dark-3 mt-10">Key Highlights</p>
       <div className="grid grid-cols-2 gap-5 mt-3">
@@ -348,6 +331,56 @@ const ProductDetail = ({
       </div>
 
       <ReturnDetails />
+    </div>
+  );
+};
+
+const CheckPincode = () => {
+  const [code, setCode] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  const handleCheck = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const res = await fetch(`/api/shipment/check-pincode?code=${code}`).then((res) => res.json());
+    if (!res?.ok) {
+      setError(res?.error || "Something went wrong");
+      setSuccess(null);
+      return;
+    }
+    if (res?.data) {
+      setError(null);
+      setSuccess(res.message);
+    }
+  };
+
+  useEffect(() => {
+    setError(null);
+    setSuccess(null);
+  }, [code]);
+
+  return (
+    <div>
+      <span className="flex items-center gap-2">
+        <IoLocationOutline className="text-base" />
+        <p className="text-base font-semibold text-dark-3">Check for delivery details</p>
+      </span>
+      <p className="text-sm mobile:text-base font-normal text-light-1">Delivering all over India</p>
+
+      <form onSubmit={handleCheck} className="border rounded mt-3 flex items-center gap-5 w-full tablet:max-w-[300px]">
+        <Input
+          type="text"
+          placeholder="Enter Pincode"
+          className="border-0 focus-visible:ring-transparent shadow-none text-base"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+        />
+        <Button variant="outline" type="submit" className="border-none uppercase" disabled={!code}>
+          Check
+        </Button>
+      </form>
+      {error && <p className="text-sm text-red-600 font-semibold">{error}</p>}
+      {success && <p className="text-sm text-green-600 font-semibold">{success}</p>}
     </div>
   );
 };
