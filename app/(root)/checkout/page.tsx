@@ -1,14 +1,12 @@
 "use client";
 
 import { useUser } from "@/hooks/useUser";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { IAddress, ICartItem, IUser } from "@/types";
-import { Toggle } from "@/components/ui/toggle";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { useUserStore } from "@/stores/user";
 import { useDataStore } from "@/stores/data";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
@@ -16,9 +14,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { useData } from "@/hooks/useData";
 import { Checkbox } from "@/components/ui/checkbox";
-import useSWR from "swr";
-import { fetcher, fetchOpt, generateOrderNumber } from "@/lib/utils";
-import { useStore } from "zustand";
+import { generateOrderNumber } from "@/lib/utils";
 import { useToken } from "@/hooks/useToken";
 
 const Page = () => {
@@ -190,17 +186,20 @@ const DeliveryDetails = ({
         <RadioGroup>
           {user && user.addresses.length > 0 ? (
             user.addresses.map((address) => (
-              <AccordionContent className="hover:bg-accent p-2" key={address.id}>
-                <div className="flex items-center gap-3">
-                  <RadioGroupItem value={address.id as string} id={address.id} />
-                  <Label
-                    htmlFor={address.id}
-                    className="w-full"
-                    onClick={() => {
-                      setShippngAddress(address);
-                      setCurrentItem(1);
-                    }}
-                  >
+              <AccordionContent className="inline-block hover:bg-accent p-2" key={address.id}>
+                <div
+                  className="flex items-center gap-3"
+                  onClick={() => {
+                    setShippngAddress(address);
+                    setCurrentItem(1);
+                  }}
+                >
+                  <RadioGroupItem
+                    value={address.id as string}
+                    checked={address.id === shippingAddress?.id}
+                    id={address.id}
+                  />
+                  <Label htmlFor={address.id} className="w-full cursor-pointer">
                     <AccordionContent>
                       <p className="font-semibold">{address.name}</p>
                       <p>{`${address.line1} ${address.line2} ${address.city}, ${address.state}, ${address.country}. ${address.pincode}`}</p>
@@ -231,18 +230,17 @@ const DeliveryDetails = ({
         </AccordionTrigger>
         <RadioGroup>
           <AccordionContent className="hover:bg-accent p-2">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="terms"
-                checked={shippingAddress ? shippingAddress?.id === billingAddress?.id : false}
-                onClick={() => {
-                  setBillingAddress(shippingAddress);
-                  setCurrentItem(2);
-                }}
-              />
+            <div
+              className="flex items-center space-x-2 cursor-pointer"
+              onClick={() => {
+                setBillingAddress(shippingAddress);
+                setCurrentItem(2);
+              }}
+            >
+              <Checkbox id="terms" checked={shippingAddress ? shippingAddress?.id === billingAddress?.id : false} />
               <label
                 htmlFor="terms"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 "
               >
                 Same as delivery
               </label>
@@ -251,16 +249,15 @@ const DeliveryDetails = ({
           {user && user.addresses.length > 0 ? (
             user.addresses.map((address) => (
               <AccordionContent className="hover:bg-accent p-2" key={address.id}>
-                <div className="flex items-center gap-3">
+                <div
+                  className="flex items-center gap-3"
+                  onClick={() => {
+                    setBillingAddress(address);
+                    setCurrentItem(2);
+                  }}
+                >
                   <RadioGroupItem value={address.id as string} id={address.id} checked={address.id === billingAddress?.id} />
-                  <Label
-                    htmlFor={address.id}
-                    className="w-full"
-                    onClick={() => {
-                      setBillingAddress(address);
-                      setCurrentItem(2);
-                    }}
-                  >
+                  <Label htmlFor={address.id} className="w-full cursor-pointer">
                     <AccordionContent>
                       <p className="font-semibold">{address.name}</p>
                       <p>{`${address.line1} ${address.line2} ${address.city}, ${address.state}, ${address.country}. ${address.pincode}`}</p>
