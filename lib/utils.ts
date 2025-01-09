@@ -29,7 +29,11 @@ export const noCache = {
 };
 
 export function generateOrderNumber() {
-  return crypto.randomUUID().replace(/-/g, "");
+  const timestamp = Date.now().toString().slice(-6);
+  const randomPart = Math.floor(Math.random() * 1e4)
+    .toString()
+    .padStart(4, "0");
+  return `${timestamp}${randomPart}`;
 }
 
 export const getDiscount = (mrp: number, price: number) => {
