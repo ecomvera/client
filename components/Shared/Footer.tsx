@@ -8,7 +8,7 @@ import { FaInstagram, FaFacebook } from "react-icons/fa";
 const Footer = () => {
   const pathname = usePathname();
 
-  if (["/sign-in", "/cart", "/checkout"].includes(pathname)) return null;
+  if (["/sign-in", "/cart", "/checkout", "/payment"].includes(pathname)) return null;
   return (
     <div className="py-10 px-10 laptp:px-20 bg-secondary">
       <div className="max-w-desktop mx-auto text-light-1">

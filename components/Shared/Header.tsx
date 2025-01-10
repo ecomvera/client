@@ -37,7 +37,7 @@ const Header = () => {
   const { cart, wishlist } = useData();
   const { setIsSidebarOpen } = useAction();
 
-  const isCheckoutPage = pathname === "/checkout";
+  const isCheckoutPage = pathname === "/checkout" || pathname === "/payment";
   return (
     <div className="w-full sticky top-0 bg-background z-10 border-b-2">
       <div className="max-w-desktop mx-auto px-2 w-full sticky top-0 bg-background">
@@ -47,7 +47,7 @@ const Header = () => {
               className="text-3xl tablet:hidden cursor-pointer"
               onClick={() => setIsSidebarOpen(true)}
             />
-            <Link href={isCheckoutPage ? "#" : "/"} className="z-20">
+            <Link href={isCheckoutPage ? "" : "/"} className="z-20">
               <h2 className="text-xl tablet:text-2xl font-bold uppercase tracking-wide">Silkyester</h2>
             </Link>
 
@@ -59,10 +59,12 @@ const Header = () => {
           </div>
 
           {isCheckoutPage ? (
-            <div className="hidden tablet:flex flex-col items-center text-sm">
-              <p>Signed as</p>
-              <p>{user?.email}</p>
-            </div>
+            user && (
+              <div className="hidden tablet:flex flex-col items-center text-sm">
+                <p>Signed as</p>
+                <p>{user?.email}</p>
+              </div>
+            )
           ) : (
             <div className="flex gap-5 items-center mr-2 flex-1 justify-end">
               <Search />

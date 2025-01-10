@@ -80,6 +80,9 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
+      lucide:
+        specifier: ^0.470.0
+        version: 0.470.0
       mongoose:
         specifier: ^8.5.4
         version: 8.5.4
@@ -1804,6 +1807,9 @@ packages:
 
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
+
+  lucide@0.470.0:
+    resolution: {integrity: sha512-btC7BMJQYzBGVM0hkwh9c0y3ZzAEv+q0nTKvPWIAZwXUEErUIzLTXA5pBe6jFitKVx5QCxaZ/aDjzC6/CgGumQ==}
 
   memory-pager@1.5.0:
     resolution: {integrity: sha512-ZS4Bp4r/Zoeq6+NLJpP+0Zzm0pR8whtGPf1XExKLJBAczGMnSi3It14OiNCStjQjM6NU1okjQGSxgEZN8eBYKg==}
@@ -4317,6 +4323,8 @@ snapshots:
       js-tokens: 4.0.0
 
   lru-cache@10.4.3: {}
+
+  lucide@0.470.0: {}
 
   memory-pager@1.5.0: {}
 

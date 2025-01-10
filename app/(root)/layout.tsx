@@ -9,6 +9,7 @@ import Footer from "@/components/Shared/Footer";
 import { Toaster } from "@/components/ui/toaster";
 import { LoadingScreen } from "@/components/Dialogs/LoadingScreen";
 import { Suspense } from "react";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,6 +37,7 @@ export default function RootLayout({
               <Footer />
               <BottomBar />
             </div>
+            <Script src="https://checkout.razorpay.com/v1/checkout.js" />
           </Suspense>
         </ThemeProvider>
       </body>

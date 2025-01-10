@@ -43,3 +43,33 @@ export const getDiscount = (mrp: number, price: number) => {
 export function boldNumbersInString(str: string) {
   return str.replace(/\d+/g, (match) => `<b>${match}</b>`);
 }
+
+export function formatDate(dateString: string) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+export function formatTime(dateString: string) {
+  const date = new Date(dateString);
+  return date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+}
+
+export function formatDateTime(dateString: string) {
+  const date = new Date(dateString);
+  return date.toLocaleString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+}

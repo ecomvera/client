@@ -16,6 +16,14 @@ import { useData } from "@/hooks/useData";
 import { Checkbox } from "@/components/ui/checkbox";
 import { generateOrderNumber } from "@/lib/utils";
 import { useToken } from "@/hooks/useToken";
+import Script from "next/script";
+import { makePayment } from "@/lib/razorpay";
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 const Page = () => {
   const router = useRouter();
@@ -65,7 +73,7 @@ const Page = () => {
       shippingId: shippingAddress?.id,
       billingId: billingAddress?.id,
       items,
-      status: "PENDING",
+      status: "PAYMENT_PENDING",
       totalPrice: cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0),
     };
 
@@ -97,15 +105,10 @@ const Page = () => {
       return;
     }
 
-    setCart([]);
-    toast({
-      title: "Order Placed",
-      description: "Your order has been placed successfully",
-      variant: "success",
-    });
-    setLoading(false);
-    router.push("/myaccount/orders");
     localStorage.removeItem("cart");
+    // setCart([]);
+    // setLoading(false);
+    router.push(`/payment?id=${res.data.id}&amount=${res.data.totalAmount}`);
   };
 
   useEffect(() => {
@@ -133,6 +136,7 @@ const Page = () => {
             className={`w-full mt-10 py-2 text-lg font-bold ${
               currentItem < totalAccordion ? "" : "bg-[#ffd248] hover:bg-[#ffd248] text-gray-800"
             } `}
+            disabled={loading}
             onClick={handleCheckout}
           >
             {currentItem < totalAccordion ? "Next" : loading ? "Loading..." : "Place Order"}
