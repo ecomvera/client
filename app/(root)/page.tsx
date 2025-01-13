@@ -1,5 +1,3 @@
-"use client";
-
 import Banner from "@/components/Cards/Banner";
 import BestSellers from "@/components/Shared/BestSellers";
 import NewArrivals from "@/components/Shared/NewArrivals";
@@ -8,8 +6,11 @@ import { CarouselItem } from "@/components/ui/carousel";
 import LoadingPage from "@/components/Shared/LoadingPage";
 import { useEffect } from "react";
 import GroupCategories from "@/components/Shared/GroupCategories";
+import { getData } from "@/lib/utils";
 
-export default function Home() {
+export default async function Home() {
+  const newArrivals = await getData(`/api/products?new-arrivals`);
+
   // const [isMounted, setIsMounted] = useState(false);
 
   // useEffect(() => {
@@ -25,7 +26,7 @@ export default function Home() {
       {/* <Banner /> */}
       <GroupCategories />
 
-      <NewArrivals />
+      <NewArrivals data={newArrivals} />
       <BestSellers />
 
       {/* <ReactCarousel showArrows>

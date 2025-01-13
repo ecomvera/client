@@ -1,9 +1,13 @@
 import { useDataStore } from "@/stores/data";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export const useData = () => {
-  const { cart, setCart, wishlist, setWishlist } = useDataStore();
+  const { cart, setCart, wishlist, setWishlist, deliveryCost, freeDeliveryAt } = useDataStore();
   const [isLoading, setIsLoading] = useState(true);
+
+  const totalMRP = useMemo(() => cart && cart.reduce((acc, item) => acc + item.product.mrp * item.quantity, 0), [cart]);
+  const totalPrice = useMemo(() => cart && cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0), [cart]);
+  const finalPrice = totalPrice && (totalPrice > freeDeliveryAt ? totalPrice : totalPrice + deliveryCost);
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -21,5 +25,5 @@ export const useData = () => {
     if (typeof window !== "undefined") fetchCart();
   }, []);
 
-  return { cart, wishlist, isLoading };
+  return { cart, wishlist, isLoading, totalMRP, totalPrice, finalPrice };
 };

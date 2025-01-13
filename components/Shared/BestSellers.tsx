@@ -1,3 +1,5 @@
+"use client";
+
 import useSWR from "swr";
 import { CarouselItem } from "../ui/carousel";
 import ReactCarousel from "./Carousel";

@@ -73,6 +73,8 @@ export interface IProduct {
   mrp: number;
   material: string;
   quantity: number;
+  weight: number;
+  hasDeliveryFee: boolean;
   inStock: boolean;
   isNewArrival: boolean;
   isBestSeller?: boolean;
@@ -82,11 +84,27 @@ export interface IProduct {
   sizes: IProductSize[];
   images: IImageFile[];
   attributes: IProductAttribute[];
+  warehouses: IWarehouseProduct[];
 
   category?: ICategory;
   categoryId: string;
 
   subCategory?: { id: string; name: string; slug?: string } | string;
+}
+
+export interface IWarehouse {
+  id: string;
+  name: string;
+  pincode: string;
+}
+
+export interface IWarehouseProduct {
+  id: string;
+  quantity: number;
+  productId: string;
+  product: IProduct;
+  warehouseId: string;
+  warehouse: IWarehouse;
 }
 
 export interface IImageFile {

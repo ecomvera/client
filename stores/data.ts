@@ -6,6 +6,9 @@ const filterProperties = { sizes: [], attributes: [], colors: [] };
 const cart: ICartItem[] = [];
 const wishlist: ICartItem[] = [];
 
+const deliveryCost = 49;
+const freeDeliveryAt = 999;
+
 interface IFilterProperties {
   sizes: ISize[];
   attributes: IAttribute[];
@@ -17,6 +20,9 @@ interface IDataStore {
   setFilterProperties: (filterProperties: IFilterProperties) => void;
   categories: ICategory[];
   setCategories: (categories: ICategory[]) => void;
+
+  deliveryCost: number;
+  freeDeliveryAt: number;
 
   cart: ICartItem[];
   setCart: (data: ICartItem[]) => void;
@@ -49,6 +55,9 @@ export const useDataStore = create<IDataStore>((set) => ({
   setFilterProperties: (filterProperties: IFilterProperties) => set({ filterProperties }),
   categories: categories,
   setCategories: (categories: ICategory[]) => set({ categories }),
+
+  deliveryCost: deliveryCost,
+  freeDeliveryAt: freeDeliveryAt,
 
   cart: cart,
   setCart: (data: ICartItem[]) => set({ cart: data }),

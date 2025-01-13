@@ -29,9 +29,10 @@ const Page = () => {
   const router = useRouter();
   const { user, isLoading: userLoading } = useUser();
   const { token } = useToken();
-  const { cart, isLoading: cartLoading } = useData();
-  const { setCart } = useDataStore();
+  const { cart, isLoading: cartLoading, totalMRP, totalPrice, finalPrice } = useData();
+  const { deliveryCost, freeDeliveryAt } = useDataStore();
   const [loading, setLoading] = React.useState(false);
+  const [paymentMode, setPaymentMode] = React.useState<"PREPAID" | "COD">("PREPAID");
   const [shippingAddress, setShippngAddress] = React.useState<IAddress | null>(null);
   const [billingAddress, setBillingAddress] = React.useState<IAddress | null>(null);
   const [missingItems, setMissingItems] = React.useState<{ productId: string; availableQuantity: number }[]>([]);
@@ -73,8 +74,8 @@ const Page = () => {
       shippingId: shippingAddress?.id,
       billingId: billingAddress?.id,
       items,
-      status: "PAYMENT_PENDING",
-      totalPrice: cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0),
+      status: paymentMode === "PREPAID" ? "PAYMENT_PENDING" : "PROCESSING",
+      totalPrice: finalPrice,
     };
 
     setLoading(true);
@@ -108,18 +109,67 @@ const Page = () => {
     localStorage.removeItem("cart");
     // setCart([]);
     // setLoading(false);
-    router.push(`/payment?id=${res.data.id}&amount=${res.data.totalAmount}`);
+
+    if (paymentMode === "PREPAID") router.push(`/payment?id=${res.data.id}&amount=${res.data.totalAmount}`);
+
+    if (paymentMode === "COD") {
+      toast({
+        description: "Order placed successfully",
+        variant: "success",
+      });
+      router.replace(`/myaccount/orders`);
+    }
   };
 
+  // useEffect(() => {
+  // const getData = async (shippingAddress: IAddress) => {
+  // // calculate delivery charges & delivery date
+  // const deliveryPincode = shippingAddress.pincode;
+  // const getNearestWarehouse = (deliveryPincode: string, pickupPincodes: string[]) => {
+  //   if (pickupPincodes.length === 1) return pickupPincodes[0];
+  //   // get nearest warehouse pincode
+  //   // here will be a api that will return the distance between two pincodes [pickupPincode, deliveryPincode]
+  //   // and will return the nearest warehouse
+  //   return pickupPincodes[0]; // for now
+  // };
+  // const shipmentDetails = cart.map((item) => ({
+  //   id: item.product.id,
+  //   weight: item.product.weight,
+  //   hasDeliveryFee: item.product.hasDeliveryFee,
+  //   pickupPincode: getNearestWarehouse(
+  //     deliveryPincode,
+  //     item.product.warehouses.map((pw) => pw.warehouse.pincode)
+  //   ),
+  // }));
+  // // remove items that don't have delivery fee
+  // const filteredShipmentDetails = shipmentDetails.filter((item) => item.hasDeliveryFee);
+  // // group items by warehouse pincode
+  // const groupedShipmentDetails = filteredShipmentDetails.reduce((acc, item) => {
+  //   if (!acc[item.pickupPincode]) acc[item.pickupPincode] = [];
+  //   acc[item.pickupPincode].push(item);
+  //   return acc;
+  // }, {} as Record<string, typeof filteredShipmentDetails>);
+  // // calculate delivery charges
+  // for await (const pincode of Object.keys(groupedShipmentDetails)) {
+  //   const data = await fetch(
+  //     `http://localhost:3001/api/shipment/courier-list?p_pin=${pincode}&d_pin=${deliveryPincode}&dm=s&pm=${}&sv=1000&w=1000&bl=1&bw=1&bh=1`
+  //   ).then((res) => res.json());
+  // }
+  // console.log(groupedShipmentDetails);
+  // };
+  // if (shippingAddress && paymentMode) getData(shippingAddress);
+  // }, [shippingAddress, paymentMode]);
+
   useEffect(() => {
-    if ((!user && !userLoading) || (!cartLoading && !cart.length)) return router.replace("/sign-in?src=/checkout");
+    if (!user && !userLoading) return router.replace("/sign-in?src=/checkout");
+    if (!cart.length && !cartLoading) return router.replace("/");
   }, [userLoading, cartLoading]);
   return (
     <div className="max-w-desktop mx-auto px-2 tablet:py-5">
       <h1 className="text-2xl font-semibold text-light-1">Checkout</h1>
 
       <div className="flex flex-col-reverse tablet:flex-row justify-between py-3 gap-4 border-light-3">
-        <div className="w-full">
+        <div className="w-full tablet:w-tablet">
           <DeliveryDetails
             user={user}
             cart={cart}
@@ -131,6 +181,13 @@ const Page = () => {
             setCurrentItem={setCurrentItem}
             missingItems={missingItems}
             setMissingItems={setMissingItems}
+            paymentMode={paymentMode}
+            setPaymentMode={setPaymentMode}
+            deliveryCost={deliveryCost}
+            freeDeliveryAt={freeDeliveryAt}
+            totalMRP={totalMRP}
+            totalPrice={totalPrice}
+            finalPrice={finalPrice}
           />
           <Button
             className={`w-full mt-10 py-2 text-lg font-bold ${
@@ -142,7 +199,7 @@ const Page = () => {
             {currentItem < totalAccordion ? "Next" : loading ? "Loading..." : "Place Order"}
           </Button>
         </div>
-        <PaymentDetails />
+        {/* <PaymentDetails /> */}
       </div>
     </div>
   );
@@ -159,6 +216,13 @@ const DeliveryDetails = ({
   setCurrentItem,
   missingItems,
   setMissingItems,
+  paymentMode,
+  setPaymentMode,
+  freeDeliveryAt,
+  deliveryCost,
+  totalMRP,
+  totalPrice,
+  finalPrice,
 }: {
   user: IUser | null;
   cart: ICartItem[];
@@ -170,176 +234,219 @@ const DeliveryDetails = ({
   setCurrentItem: React.Dispatch<React.SetStateAction<number>>;
   missingItems: { productId: string; availableQuantity: number }[];
   setMissingItems: React.Dispatch<React.SetStateAction<{ productId: string; availableQuantity: number }[]>>;
+  paymentMode: string;
+  setPaymentMode: React.Dispatch<React.SetStateAction<"PREPAID" | "COD">>;
+  freeDeliveryAt: number;
+  deliveryCost: number;
+  totalMRP: number;
+  totalPrice: number;
+  finalPrice: number;
 }) => {
-  const totalMRP = useMemo(() => cart && cart.reduce((acc, item) => acc + item.product.mrp * item.quantity, 0), [cart]);
-  const totalPrice = useMemo(() => cart && cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0), [cart]);
-
   return (
-    <Accordion type="single" defaultValue={"item-1"} value={`item-${currentItem}`}>
-      <AccordionItem value="item-1">
-        <AccordionTrigger className="text-base hover:no-underline" onClick={() => setCurrentItem(1)}>
-          {!shippingAddress ? (
-            <p className="font-semibold">Delivery address</p>
-          ) : (
-            <p className="font-normal">
-              Delivering to <span className="font-semibold">{shippingAddress?.name}</span>{" "}
-              <span className="ml-2 bg-blue-400 text-white rounded px-2">{shippingAddress?.residenceType}</span>
-            </p>
-          )}
-        </AccordionTrigger>
-        <RadioGroup>
-          {user && user.addresses.length > 0 ? (
-            user.addresses.map((address) => (
-              <AccordionContent className="inline-block hover:bg-accent p-2" key={address.id}>
-                <div
-                  className="flex items-center gap-3"
+    <>
+      <div>
+        <h1 className="font-semibold text-light-1 mt-3">Payment Mode</h1>
+        {/* <span className="text-xs">
+          Choose <b>Online</b> mode for less delivery charges*
+        </span> */}
+        <RadioGroup value={paymentMode} className="flex justify-between h-10">
+          {["PREPAID", "COD"].map((mode) => (
+            <div
+              key={mode}
+              className="flex gap-2 w-full items-center hover:bg-accent p-2 cursor-pointer"
+              onClick={() => setPaymentMode(mode as "PREPAID" | "COD")}
+            >
+              <RadioGroupItem value={mode} id={mode}>
+                {mode}
+              </RadioGroupItem>
+              <Label htmlFor={mode} className="text-sm">
+                {mode === "PREPAID" ? (
+                  <>
+                    Online
+                    {/* <span className="text-xs">(UPI, Credit/Debit Card, Netbanking, etc)</span> */}
+                  </>
+                ) : (
+                  "Cash On Delivery"
+                )}
+              </Label>
+            </div>
+          ))}
+        </RadioGroup>
+      </div>
+      <Accordion type="single" defaultValue={"item-1"} value={`item-${currentItem}`}>
+        <AccordionItem value="item-1">
+          <AccordionTrigger className="text-base hover:no-underline" onClick={() => setCurrentItem(1)}>
+            {!shippingAddress ? (
+              <p className="font-semibold">Delivery address</p>
+            ) : (
+              <p className="font-normal">
+                Delivering to <span className="font-semibold">{shippingAddress?.name}</span>{" "}
+                <span className="ml-2 bg-blue-400 text-white rounded px-2">{shippingAddress?.residenceType}</span>
+              </p>
+            )}
+          </AccordionTrigger>
+          <RadioGroup>
+            {user && user.addresses.length > 0 ? (
+              user.addresses.map((address) => (
+                <AccordionContent
+                  id={"shipping" + address.id}
+                  className="hover:bg-accent p-2 flex items-center gap-3 cursor-pointer"
+                  key={address.id}
                   onClick={() => {
-                    setShippngAddress(address);
-                    setCurrentItem(1);
+                    if (address.id === shippingAddress?.id) {
+                      setShippngAddress(null);
+                    } else {
+                      setShippngAddress(address);
+                      setCurrentItem(1);
+                    }
                   }}
                 >
                   <RadioGroupItem
                     value={address.id as string}
                     checked={address.id === shippingAddress?.id}
-                    id={address.id}
+                    id={"shipping" + address.id}
                   />
-                  <Label htmlFor={address.id} className="w-full cursor-pointer">
-                    <AccordionContent>
-                      <p className="font-semibold">{address.name}</p>
-                      <p>{`${address.line1} ${address.line2} ${address.city}, ${address.state}, ${address.country}. ${address.pincode}`}</p>
-                      <p>{address.landmark}</p>
-                      <p className="font-semibold">+91 {address.phone}</p>
-                    </AccordionContent>
+                  <Label htmlFor={"shipping" + address.id} className="flex flex-col gap-1 cursor-pointer">
+                    <p className="font-semibold mb-1">{address.name}</p>
+                    <p>{`${address.line1} ${address.line2} ${address.city}, ${address.state}, ${address.country}. ${address.pincode}`}</p>
+                    <p>{address.landmark}</p>
+                    <p className="font-semibold">+91 {address.phone}</p>
                   </Label>
-                </div>
+                </AccordionContent>
+              ))
+            ) : (
+              <AccordionContent>
+                <p className="text-light-1 px-2">No address found</p>
               </AccordionContent>
-            ))
-          ) : (
-            <AccordionContent>
-              <p className="text-light-1 px-2">No address found</p>
-            </AccordionContent>
-          )}
-        </RadioGroup>
-      </AccordionItem>
-      <AccordionItem value="item-2">
-        <AccordionTrigger className="text-base hover:no-underline" onClick={() => setCurrentItem(2)}>
-          {!billingAddress ? (
-            <p className="font-semibold">Shipping address</p>
-          ) : (
-            <p className="font-normal">
-              Billing to <span className="font-semibold">{billingAddress?.name}</span>{" "}
-              <span className="ml-2 bg-blue-400 text-white rounded px-2">{billingAddress?.residenceType}</span>
-            </p>
-          )}
-        </AccordionTrigger>
-        <RadioGroup>
+            )}
+          </RadioGroup>
+        </AccordionItem>
+        <AccordionItem value="item-2">
+          <AccordionTrigger className="text-base hover:no-underline" onClick={() => setCurrentItem(2)}>
+            {!billingAddress ? (
+              <p className="font-semibold">Billing address</p>
+            ) : (
+              <p className="font-normal">
+                Billing to <span className="font-semibold">{billingAddress?.name}</span>{" "}
+                <span className="ml-2 bg-blue-400 text-white rounded px-2">{billingAddress?.residenceType}</span>
+              </p>
+            )}
+          </AccordionTrigger>
           <AccordionContent className="hover:bg-accent p-2">
-            <div
-              className="flex items-center space-x-2 cursor-pointer"
-              onClick={() => {
-                setBillingAddress(shippingAddress);
-                setCurrentItem(2);
-              }}
-            >
+            <div className="flex items-center space-x-2 cursor-pointer">
               <Checkbox id="terms" checked={shippingAddress ? shippingAddress?.id === billingAddress?.id : false} />
               <label
                 htmlFor="terms"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 "
+                onClick={() => {
+                  setBillingAddress(shippingAddress);
+                  setCurrentItem(2);
+                }}
               >
                 Same as delivery
               </label>
             </div>
           </AccordionContent>
-          {user && user.addresses.length > 0 ? (
-            user.addresses.map((address) => (
-              <AccordionContent className="hover:bg-accent p-2" key={address.id}>
-                <div
-                  className="flex items-center gap-3"
+          <RadioGroup>
+            {user && user.addresses.length > 0 ? (
+              user.addresses.map((address) => (
+                <AccordionContent
+                  id={"billing" + address.id}
+                  className="hover:bg-accent p-2 flex items-center gap-3 cursor-pointer w-full"
+                  key={address.id}
                   onClick={() => {
-                    setBillingAddress(address);
-                    setCurrentItem(2);
+                    if (address.id === billingAddress?.id) {
+                      setBillingAddress(null);
+                    } else {
+                      setBillingAddress(address);
+                      setCurrentItem(2);
+                    }
                   }}
                 >
-                  <RadioGroupItem value={address.id as string} id={address.id} checked={address.id === billingAddress?.id} />
-                  <Label htmlFor={address.id} className="w-full cursor-pointer">
-                    <AccordionContent>
-                      <p className="font-semibold">{address.name}</p>
-                      <p>{`${address.line1} ${address.line2} ${address.city}, ${address.state}, ${address.country}. ${address.pincode}`}</p>
-                      <p>{address.landmark}</p>
-                      <p className="font-semibold">+91 {address.phone}</p>
-                    </AccordionContent>
+                  <RadioGroupItem
+                    value={address.id as string}
+                    id={"billing" + address.id}
+                    checked={address.id === billingAddress?.id}
+                  />
+                  <Label htmlFor={"billing" + address.id} className="flex flex-col gap-1 cursor-pointer">
+                    <p className="font-semibold mb-1">{address.name}</p>
+                    <p>{`${address.line1} ${address.line2} ${address.city}, ${address.state}, ${address.country}. ${address.pincode}`}</p>
+                    <p>{address.landmark}</p>
+                    <p className="font-semibold">+91 {address.phone}</p>
                   </Label>
-                </div>
+                </AccordionContent>
+              ))
+            ) : (
+              <AccordionContent>
+                <p className="text-light-1 px-2">No address found</p>
               </AccordionContent>
-            ))
-          ) : (
-            <AccordionContent>
-              <p className="text-light-1 px-2">No address found</p>
-            </AccordionContent>
-          )}
-        </RadioGroup>
-      </AccordionItem>
-      <AccordionItem value="item-3" onClick={() => setCurrentItem(3)}>
-        <AccordionTrigger className="text-base font-semibold hover:no-underline">
-          Item{cart && cart.length > 1 ? "s" : ""} ({cart && cart.length})
-        </AccordionTrigger>
-        <AccordionContent className="px-2">
-          {missingItems.length > 0 && (
-            <p className="text-blue-600 text-base font-semibold">We are sorry for the inconvenience.</p>
-          )}
-          {cart && cart.length > 0 ? (
-            cart.map((item) => (
-              <div key={item.id} className="py-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Image
-                      src={item.product.images[0].url}
-                      alt={item.product.name}
-                      width={0}
-                      height={0}
-                      sizes="100vw"
-                      className="w-20 rounded-md"
-                    />
-                    <p>{item.product.name}</p>
+            )}
+          </RadioGroup>
+        </AccordionItem>
+        <AccordionItem value="item-3" onClick={() => setCurrentItem(3)}>
+          <AccordionTrigger className="text-base font-semibold hover:no-underline">
+            Item{cart && cart.length > 1 ? "s" : ""} ({cart && cart.length})
+          </AccordionTrigger>
+          <AccordionContent className="px-2">
+            {missingItems.length > 0 && (
+              <p className="text-blue-600 text-base font-semibold">We are sorry for the inconvenience.</p>
+            )}
+            {cart && cart.length > 0 ? (
+              cart.map((item) => (
+                <div key={item.id} className="py-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Image
+                        src={item.product.images[0].url}
+                        alt={item.product.name}
+                        width={0}
+                        height={0}
+                        sizes="100vw"
+                        className="w-20 rounded-md"
+                      />
+                      <p>{item.product.name}</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <p>₹{item.product.price}</p>
+                      <p className="font-semibold">x {item.quantity}</p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <p>₹{item.product.price}</p>
-                    <p className="font-semibold">x {item.quantity}</p>
-                  </div>
+                  <MissingItemDetails item={item} missingItems={missingItems} setMissingItems={setMissingItems} />
                 </div>
-                <MissingItemDetails item={item} missingItems={missingItems} setMissingItems={setMissingItems} />
-              </div>
-            ))
-          ) : (
-            <AccordionContent>
-              <p className="text-light-1 px-2">No items found</p>
-            </AccordionContent>
-          )}
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="item-4" className="border-none" onClick={() => setCurrentItem(4)}>
-        <AccordionTrigger className="text-base font-semibold hover:no-underline">Price Summary</AccordionTrigger>
-        <AccordionContent className="">
-          <div className="text-base flex items-center justify-between py-2">
-            <p>Total MRP (incl. of all taxes)</p>
-            <p className="font-semibold">₹{totalMRP}</p>
-          </div>
-          <div className="text-base flex items-center justify-between py-2">
-            <p>Discount</p>
-            <p className="font-normal text-green-600">₹{totalPrice - totalMRP}</p>
-          </div>
-          <div className="flex items-center justify-between py-2">
-            <p>Delivery Charge</p>
-            <p className="font-semibold">₹0</p>
-          </div>
-          <Separator />
-          <div className="text-base flex items-center justify-between py-2">
-            <p>Total</p>
-            <p className="font-semibold">₹{totalPrice}</p>
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+              ))
+            ) : (
+              <AccordionContent>
+                <p className="text-light-1 px-2">No items found</p>
+              </AccordionContent>
+            )}
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="item-4" className="border-none" onClick={() => setCurrentItem(4)}>
+          <AccordionTrigger className="text-base font-semibold hover:no-underline">Price Summary</AccordionTrigger>
+          <AccordionContent className="">
+            <div className="text-base flex items-center justify-between py-2">
+              <p>Total MRP (incl. of all taxes)</p>
+              <p className="font-semibold">₹{totalMRP}</p>
+            </div>
+            <div className="text-base flex items-center justify-between py-2">
+              <p>Discount</p>
+              <p className="font-normal text-green-600">₹{finalPrice - totalMRP}</p>
+            </div>
+            <div className="flex items-center justify-between py-2">
+              <p>
+                Delivery Charge <span className="text-xs">(Free for orders above ₹{freeDeliveryAt})</span>
+              </p>
+              <p className="font-semibold">₹{totalPrice > freeDeliveryAt ? 0 : deliveryCost}</p>
+            </div>
+            <Separator />
+            <div className="text-base flex items-center justify-between py-2">
+              <p>Total</p>
+              <p className="font-semibold">₹{finalPrice}</p>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+    </>
   );
 };
 
@@ -416,16 +523,16 @@ const MissingItemDetails = ({
   );
 };
 
-const PaymentDetails = () => {
-  return (
-    <div className="w-full !tablet:w-[500px] px-2">
-      <p className="text-lg font-semibold text-dark-3">Payment Method</p>
-      <div className="flex items-center gap-3">
-        <input type="radio" id="cod" name="payment" value="cod" className="accent-success" />
-        <label htmlFor="cod">Cash on Delivery</label>
-      </div>
-    </div>
-  );
-};
+// const PaymentDetails = () => {
+//   return (
+//     <div className="w-full !tablet:w-[500px] px-2">
+//       <p className="text-lg font-semibold text-dark-3">Payment Method</p>
+//       <div className="flex items-center gap-3">
+//         <input type="radio" id="cod" name="payment" value="cod" className="accent-success" />
+//         <label htmlFor="cod">Cash on Delivery</label>
+//       </div>
+//     </div>
+//   );
+// };
 
 export default Page;

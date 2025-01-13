@@ -13,9 +13,10 @@ import DeleteCartItem from "@/components/Dialogs/DeleteCartItem";
 import { useUser } from "@/hooks/useUser";
 import { Separator } from "@/components/ui/separator";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { useDataStore } from "@/stores/data";
 
 const Page = () => {
-  const { cart } = useData();
+  const { cart, totalMRP, totalPrice, finalPrice } = useData();
 
   return (
     <div className="max-w-desktop mx-auto px-2 py-5">
@@ -33,7 +34,7 @@ const Page = () => {
             </div>
           )}
         </div>
-        <CartSummary cart={cart} />
+        {cart.length > 0 && <CartSummary cart={cart} totalMRP={totalMRP} totalPrice={totalPrice} finalPrice={finalPrice} />}
       </div>
     </div>
   );
@@ -82,33 +83,48 @@ const CartProduct = ({ item }: { item: ICartItem }) => {
   );
 };
 
-const CartSummary = ({ cart }: { cart: ICartItem[] }) => {
+const CartSummary = ({
+  cart,
+  totalMRP,
+  totalPrice,
+  finalPrice,
+}: {
+  cart: ICartItem[];
+  totalMRP: number;
+  totalPrice: number;
+  finalPrice: number;
+}) => {
   const router = useRouter();
   const { user } = useUser();
-  const totalMRP = useMemo(() => cart && cart.reduce((acc, item) => acc + item.product.mrp * item.quantity, 0), [cart]);
-  const totalPrice = useMemo(() => cart && cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0), [cart]);
+  const { deliveryCost, freeDeliveryAt } = useDataStore();
 
   return (
     <div className="w-full tablet:w-[300px] px-2">
       <div className="flex justify-between items-center py-3">
-        <p className="text-sm">Total MRP (incl. of all taxes)</p>
+        <p className="text-sm">Total MRP</p>
         <p className="text-sm font-semibold">₹ {totalMRP}</p>
       </div>
       <div className="flex justify-between items-center py-3">
         <p className="text-sm">Discount</p>
         <p className="text-sm font-semibold text-green-600">₹ {totalPrice - totalMRP}</p>
       </div>
+      <Separator />
       <div className="flex justify-between items-center py-3">
-        <p className="text-sm">Delivery Charge</p>
-        <p className="text-sm font-semibold">₹ 0</p>
+        <p className="text-sm">Total Price (incl. of all taxes)</p>
+        <p className="text-sm font-semibold">₹ {totalPrice}</p>
       </div>
+      <div className="flex justify-between items-center pt-3">
+        <p className="text-sm">Delivery Charge</p>
+        <p className="text-sm font-semibold">₹ {totalPrice > freeDeliveryAt ? 0 : deliveryCost}</p>
+      </div>
+      <span className="text-xs text-gray-500">Get free delivery above ₹ {freeDeliveryAt}</span>
       <Separator />
       <div className="flex justify-between items-center py-3">
         <p className="text-sm font-semibold">Total</p>
-        <p className="text-sm font-semibold">₹ {totalPrice}</p>
+        <p className="text-sm font-semibold">₹ {finalPrice}</p>
       </div>
 
-      <div className="w-full flex justify-center py-5">
+      <div className="w-full flex justify-center pt-5">
         <Button
           className="w-full bg-[#ffd248] py-2 text-gray-800 text-lg font-bold hover:bg-[#ffd248]"
           onClick={() =>
@@ -123,6 +139,7 @@ const CartSummary = ({ cart }: { cart: ICartItem[] }) => {
           Proceed
         </Button>
       </div>
+      <p className="text-xs text-gray-500 mt-2">Delivery charge will be calculated at the time of checkout</p>
     </div>
   );
 };
