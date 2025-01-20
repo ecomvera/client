@@ -12,6 +12,7 @@ import UpdateAddress from "@/components/forms/UpdateAddress";
 import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/stores/user";
 import { toast } from "@/components/ui/use-toast";
+import { useToken } from "@/hooks/useToken";
 
 const Page = () => {
   const router = useRouter();
@@ -38,7 +39,8 @@ const Page = () => {
 };
 
 const AddressList = () => {
-  const { user, token } = useUser();
+  const { user } = useUser();
+  const { token } = useToken();
   const { deleteAddress } = useUserStore();
 
   const handleDelete = async (id: string) => {

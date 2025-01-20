@@ -20,6 +20,7 @@ import { useToken } from "@/hooks/useToken";
 const addressData: IAddress = {
   name: "",
   phone: "",
+  email: "",
   line1: "",
   line2: "",
   landmark: "",
@@ -85,6 +86,7 @@ const NewAddress = () => {
           placeholder="0123456789"
           leftElement={<p>+91</p>}
         />
+        <InputField control={form.control} name="email" label="Email" placeholder="Enter your email" />
         <InputField
           control={form.control}
           name="line1"

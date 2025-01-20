@@ -33,30 +33,22 @@ const Page = () => {
   const { deliveryCost, freeDeliveryAt } = useDataStore();
   const [loading, setLoading] = React.useState(false);
   const [paymentMode, setPaymentMode] = React.useState<"PREPAID" | "COD">("PREPAID");
-  const [shippingAddress, setShippngAddress] = React.useState<IAddress | null>(null);
-  const [billingAddress, setBillingAddress] = React.useState<IAddress | null>(null);
+  const [deliveryAddress, setDeliveryAddress] = React.useState<IAddress | null>(null);
   const [missingItems, setMissingItems] = React.useState<{ productId: string; availableQuantity: number }[]>([]);
   const [currentItem, setCurrentItem] = React.useState(1);
-  const totalAccordion = 4;
+  const totalAccordion = 3;
 
   const handleCheckout = async () => {
-    // check if address is selected
     if (currentItem < totalAccordion) {
-      if (currentItem === 1 && !shippingAddress) {
-        toast({
-          description: "Please select an Delivery address",
-          variant: "destructive",
-        });
-        return;
-      }
-      if (currentItem === 2 && !billingAddress) {
-        toast({
-          description: "Please select an Shipping address",
-          variant: "destructive",
-        });
-        return;
-      }
       return setCurrentItem(currentItem + 1);
+    }
+
+    if (!deliveryAddress) {
+      toast({
+        description: "Please select an Delivery address",
+        variant: "destructive",
+      });
+      return;
     }
 
     const items = cart.map((item) => ({
@@ -71,11 +63,13 @@ const Page = () => {
     const data = {
       orderNumber: generateOrderNumber(),
       userId: user?.id,
-      shippingId: shippingAddress?.id,
-      billingId: billingAddress?.id,
+      deliveryId: deliveryAddress?.id,
       items,
       status: paymentMode === "PREPAID" ? "PAYMENT_PENDING" : "PROCESSING",
-      totalPrice: finalPrice,
+      totalAmount: totalPrice,
+      deliveryCharge: totalPrice < freeDeliveryAt ? deliveryCost : 0,
+      giftWrapCharge: 0,
+      subTotal: finalPrice,
     };
 
     setLoading(true);
@@ -122,9 +116,9 @@ const Page = () => {
   };
 
   // useEffect(() => {
-  // const getData = async (shippingAddress: IAddress) => {
+  // const getData = async (deliveryAddress: IAddress) => {
   // // calculate delivery charges & delivery date
-  // const deliveryPincode = shippingAddress.pincode;
+  // const deliveryPincode = deliveryAddress.pincode;
   // const getNearestWarehouse = (deliveryPincode: string, pickupPincodes: string[]) => {
   //   if (pickupPincodes.length === 1) return pickupPincodes[0];
   //   // get nearest warehouse pincode
@@ -157,8 +151,8 @@ const Page = () => {
   // }
   // console.log(groupedShipmentDetails);
   // };
-  // if (shippingAddress && paymentMode) getData(shippingAddress);
-  // }, [shippingAddress, paymentMode]);
+  // if (deliveryAddress && paymentMode) getData(deliveryAddress);
+  // }, [deliveryAddress, paymentMode]);
 
   useEffect(() => {
     if (!user && !userLoading) return router.replace("/sign-in?src=/checkout");
@@ -173,10 +167,8 @@ const Page = () => {
           <DeliveryDetails
             user={user}
             cart={cart}
-            shippingAddress={shippingAddress}
-            setShippngAddress={setShippngAddress}
-            billingAddress={billingAddress}
-            setBillingAddress={setBillingAddress}
+            deliveryAddress={deliveryAddress}
+            setDeliveryAddress={setDeliveryAddress}
             currentItem={currentItem}
             setCurrentItem={setCurrentItem}
             missingItems={missingItems}
@@ -208,10 +200,8 @@ const Page = () => {
 const DeliveryDetails = ({
   user,
   cart,
-  shippingAddress,
-  setShippngAddress,
-  billingAddress,
-  setBillingAddress,
+  deliveryAddress,
+  setDeliveryAddress,
   currentItem,
   setCurrentItem,
   missingItems,
@@ -226,10 +216,8 @@ const DeliveryDetails = ({
 }: {
   user: IUser | null;
   cart: ICartItem[];
-  shippingAddress: IAddress | null;
-  setShippngAddress: React.Dispatch<React.SetStateAction<IAddress | null>>;
-  billingAddress: IAddress | null;
-  setBillingAddress: React.Dispatch<React.SetStateAction<IAddress | null>>;
+  deliveryAddress: IAddress | null;
+  setDeliveryAddress: React.Dispatch<React.SetStateAction<IAddress | null>>;
   currentItem: number;
   setCurrentItem: React.Dispatch<React.SetStateAction<number>>;
   missingItems: { productId: string; availableQuantity: number }[];
@@ -276,12 +264,12 @@ const DeliveryDetails = ({
       <Accordion type="single" defaultValue={"item-1"} value={`item-${currentItem}`}>
         <AccordionItem value="item-1">
           <AccordionTrigger className="text-base hover:no-underline" onClick={() => setCurrentItem(1)}>
-            {!shippingAddress ? (
+            {!deliveryAddress ? (
               <p className="font-semibold">Delivery address</p>
             ) : (
               <p className="font-normal">
-                Delivering to <span className="font-semibold">{shippingAddress?.name}</span>{" "}
-                <span className="ml-2 bg-blue-400 text-white rounded px-2">{shippingAddress?.residenceType}</span>
+                Delivering to <span className="font-semibold">{deliveryAddress?.name}</span>{" "}
+                <span className="ml-2 bg-blue-400 text-white rounded px-2">{deliveryAddress?.residenceType}</span>
               </p>
             )}
           </AccordionTrigger>
@@ -293,17 +281,17 @@ const DeliveryDetails = ({
                   className="hover:bg-accent p-2 flex items-center gap-3 cursor-pointer"
                   key={address.id}
                   onClick={() => {
-                    if (address.id === shippingAddress?.id) {
-                      setShippngAddress(null);
+                    if (address.id === deliveryAddress?.id) {
+                      setDeliveryAddress(null);
                     } else {
-                      setShippngAddress(address);
+                      setDeliveryAddress(address);
                       setCurrentItem(1);
                     }
                   }}
                 >
                   <RadioGroupItem
                     value={address.id as string}
-                    checked={address.id === shippingAddress?.id}
+                    checked={address.id === deliveryAddress?.id}
                     id={"shipping" + address.id}
                   />
                   <Label htmlFor={"shipping" + address.id} className="flex flex-col gap-1 cursor-pointer">
@@ -321,7 +309,7 @@ const DeliveryDetails = ({
             )}
           </RadioGroup>
         </AccordionItem>
-        <AccordionItem value="item-2">
+        {/* <AccordionItem value="item-2">
           <AccordionTrigger className="text-base hover:no-underline" onClick={() => setCurrentItem(2)}>
             {!billingAddress ? (
               <p className="font-semibold">Billing address</p>
@@ -334,12 +322,12 @@ const DeliveryDetails = ({
           </AccordionTrigger>
           <AccordionContent className="hover:bg-accent p-2">
             <div className="flex items-center space-x-2 cursor-pointer">
-              <Checkbox id="terms" checked={shippingAddress ? shippingAddress?.id === billingAddress?.id : false} />
+              <Checkbox id="terms" checked={deliveryAddress ? deliveryAddress?.id === billingAddress?.id : false} />
               <label
                 htmlFor="terms"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 "
                 onClick={() => {
-                  setBillingAddress(shippingAddress);
+                  setBillingAddress(deliveryAddress);
                   setCurrentItem(2);
                 }}
               >
@@ -382,8 +370,8 @@ const DeliveryDetails = ({
               </AccordionContent>
             )}
           </RadioGroup>
-        </AccordionItem>
-        <AccordionItem value="item-3" onClick={() => setCurrentItem(3)}>
+        </AccordionItem> */}
+        <AccordionItem value="item-2" onClick={() => setCurrentItem(2)}>
           <AccordionTrigger className="text-base font-semibold hover:no-underline">
             Item{cart && cart.length > 1 ? "s" : ""} ({cart && cart.length})
           </AccordionTrigger>
@@ -421,7 +409,7 @@ const DeliveryDetails = ({
             )}
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem value="item-4" className="border-none" onClick={() => setCurrentItem(4)}>
+        <AccordionItem value="item-3" className="border-none" onClick={() => setCurrentItem(3)}>
           <AccordionTrigger className="text-base font-semibold hover:no-underline">Price Summary</AccordionTrigger>
           <AccordionContent className="">
             <div className="text-base flex items-center justify-between py-2">
@@ -430,7 +418,7 @@ const DeliveryDetails = ({
             </div>
             <div className="text-base flex items-center justify-between py-2">
               <p>Discount</p>
-              <p className="font-normal text-green-600">₹{finalPrice - totalMRP}</p>
+              <p className="font-normal text-green-600">₹{totalPrice - totalMRP}</p>
             </div>
             <div className="flex items-center justify-between py-2">
               <p>

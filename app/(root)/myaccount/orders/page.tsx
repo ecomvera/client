@@ -62,7 +62,7 @@ const Page = () => {
                 <div className="w-[60px]">
                   <AspectRatio ratio={0.8 / 1}>
                     <Image
-                      src={item.item.images[0].url}
+                      src={item.product.images[0].url}
                       quality={10}
                       priority
                       alt="image"
@@ -74,8 +74,8 @@ const Page = () => {
                   </AspectRatio>
                 </div>
                 <div className="flex flex-1 flex-col">
-                  <Link href={`/p/${item.item.slug}`} className="w-fit">
-                    <p className="text-[15px] font-semibold line-clamp-2 leading-5">{item.item.name}</p>
+                  <Link href={`/p/${item.product.slug}`} className="w-fit">
+                    <p className="text-[15px] font-semibold line-clamp-2 leading-5">{item.product.name}</p>
                   </Link>
                   <div className="flex flex-col mt-1">
                     <p className="text-xs">

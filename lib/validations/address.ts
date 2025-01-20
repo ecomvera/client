@@ -5,6 +5,7 @@ import { z } from "zod";
 export const addressSchema = z.object({
   name: z.string().min(3, { message: "Name must be at least 3 characters" }),
   phone: z.string().min(10, { message: "Invalid phone number" }).max(10, { message: "Invalid phone number" }),
+  email: z.string().email({ message: "Invalid email" }),
   line1: z.string().min(3, { message: "required" }),
   line2: z.string().min(3, { message: "required" }),
   landmark: z.string().min(3, { message: "required" }),
