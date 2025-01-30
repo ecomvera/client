@@ -88,7 +88,7 @@ const Filters = ({
       )}
 
       {attributes?.map((attribute, index) => (
-        <AccordionItem key={attribute.key} className="border-none" value={`item-${index + 4}`}>
+        <AccordionItem key={attribute.id} className="border-none" value={`item-${index + 5}`}>
           <AccordionTrigger className="hover:no-underline text-[16px] pb-2">{attribute.key}</AccordionTrigger>
           <AccordionContent className="flex flex-col px-4 p-0">
             <CollapsibleList
@@ -135,7 +135,7 @@ const CollapsibleList = ({
 
       {data.length > limit && (
         <CollapsibleTrigger asChild>
-          <span className="font-semibold text-blue-600 text-base">{isOpen ? "Less" : "More"}</span>
+          <span className="font-semibold text-[--c1] text-base">{isOpen ? "Less" : "More"}</span>
         </CollapsibleTrigger>
       )}
     </Collapsible>

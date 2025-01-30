@@ -53,7 +53,7 @@ const DeleteCartItem = ({ item }: { item: ICartItem }) => {
               Close
             </Button>
           </DialogTrigger>
-          <Button className="bg-red-500 font-semibold hover:bg-red-600" onClick={handleDelete}>
+          <Button className="bg-[--c2] hover:bg-[--c3] font-semibold" onClick={handleDelete}>
             {loading ? "Removing..." : "Remove"}
           </Button>
         </DialogFooter>

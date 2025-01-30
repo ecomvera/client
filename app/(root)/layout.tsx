@@ -10,6 +10,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { LoadingScreen } from "@/components/Dialogs/LoadingScreen";
 import { Suspense } from "react";
 import Script from "next/script";
+import Fonts from "../fonts/Montserrat";
+import Others from "../fonts/others";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,10 +27,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body
+        className={`${Others.logoFont} ${Fonts.Thin} ${Fonts.ExtraLight} ${Fonts.Light} ${Fonts.Regular} ${Fonts.Medium} ${Fonts.SemiBold} ${Fonts.Bold} ${Fonts.ExtraBold} ${Fonts.Black} antialiased`}
+      >
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <Suspense fallback={<div>Loading...</div>}>
-            <div className="!scroll-smooth select-none relative">
+            <div className="!scroll-smooth select-none relative bg-[--white] text-[--black]">
               <LoadingScreen />
               <Toaster />
               <Header />

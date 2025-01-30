@@ -6,7 +6,7 @@ import Filters from "@/components/Shared/Filters";
 import ProductsList from "@/components/Shared/ProductsList";
 import React, { useEffect, useState } from "react";
 import { Accordion } from "@/components/ui/accordion";
-import { ICategory, IProduct, ISize } from "@/types";
+import { IAttribute, ICategory, IProduct, ISize } from "@/types";
 import { fetcher, fetchOpt } from "@/lib/utils";
 import useSWR from "swr";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -30,6 +30,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
   const searchParams = useSearchParams();
   const { setShowLoadingScreen } = useAction();
   const { filterProperties, setFilterProperties } = useDataStore();
+  const [attributes, setAttributes] = useState<IAttribute[]>([]);
   const [sizes, setSizes] = useState<string[]>([]);
   const { mutate: fetchFilterProperties } = useSWR(`/api/filters`, fetcher, fetchOpt);
 
@@ -69,6 +70,20 @@ const Page = ({ params }: { params: { slug: string } }) => {
     fetch();
   }, []);
 
+  const setProductAttributes = ({ products }: { products: IProduct[] }) => {
+    // console.log(products);
+    const productTypeIds = [...new Set(products?.map((i: IProduct) => i.productType?.id).flat())];
+    // console.log(productTypeIds);
+    setAttributes(
+      filterProperties?.attributes?.reduce((acc: IAttribute[], curr) => {
+        if (productTypeIds.includes(curr.productTypeId)) {
+          return [...acc, curr];
+        }
+        return acc;
+      }, [])
+    );
+  };
+
   useEffect(() => {
     if (!data?.category) return;
 
@@ -86,6 +101,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
     // If it's a child category (has a parentId)
     if (parentId) {
       setFilteredProducts(products); // Filter products of this category
+      setProductAttributes({ products });
       return;
     }
 
@@ -95,6 +111,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
     // If it's a group category and there are products directly under this category
     if (data?.products) {
       setFilteredProducts(data?.products || []); // products from the group category
+      setProductAttributes({ products: data?.products || [] });
       return;
     }
 
@@ -105,6 +122,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
       }, []);
       console.log(aggregatedProducts);
       setFilteredProducts(aggregatedProducts); // Set the products from subcategories
+      setProductAttributes({ products: aggregatedProducts });
     }
   }, [data?.category]);
 
@@ -127,7 +145,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
           genders={genders}
           productTypes={productTypes}
           sizes={sizes}
-          attributes={filterProperties?.attributes}
+          attributes={attributes}
           colors={filterProperties?.colors}
           filters={filters}
           setFilters={setFilters}
@@ -147,16 +165,12 @@ const Page = ({ params }: { params: { slug: string } }) => {
           </div>
 
           <div className="flex flex-col gap-3">
-            <Accordion
-              type="multiple"
-              defaultValue={Array.from({ length: 10 }).map((_, i) => `item-${i + 1}`)}
-              className="w-full"
-            >
+            <Accordion type="multiple" defaultValue={["item-2", "item-3"]} className="w-full">
               <Filters
                 genders={genders}
                 productTypes={productTypes}
                 sizes={sizes}
-                attributes={filterProperties?.attributes}
+                attributes={attributes}
                 colors={filterProperties?.colors}
                 filters={filters}
                 setFilters={setFilters}

@@ -88,7 +88,7 @@ const SidebarNav = () => {
   };
 
   return (
-    <div className="border rounded-lg p-5 flex-col gap-5 w-48 h-fit laptop:w-64 hidden tablet:flex sticky top-16">
+    <div className="border rounded-lg p-5 flex-col gap-5 w-48 h-fit laptop:w-64 hidden tablet:flex sticky top-20">
       {nav.map((item) => (
         <Link key={item.name} href={item.href} className={`my-3 text-light-1`}>
           <div

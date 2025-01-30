@@ -20,12 +20,22 @@ const Page = () => {
 
   return (
     <div className="max-w-desktop mx-auto px-2 py-5">
-      <h1 className="font-semibold text-xl md:text-2xl font-sans text-light-1">My Cart</h1>
+      <h1 className="text-xl md:text-2xl">My Cart</h1>
 
       <div className="flex flex-col tablet:flex-row justify-between py-3 gap-4 border-light-3">
         <div className="tablet:px-2 flex-1 tablet:min-h-[300px]">
           {cart.length === 0 ? (
-            <div className="text-light-1">No items in your cart</div>
+            <div>
+              <div className="text-light-1">No items in your cart</div>
+              <Image
+                src="/assets/shopping-cart.png"
+                alt="empty"
+                width={0}
+                height={0}
+                sizes="100vw"
+                className="mx-auto py-16 w-52 tablet:w-64 laptop:w-96"
+              />
+            </div>
           ) : (
             <div>
               {cart.map((item) => (
@@ -46,7 +56,7 @@ const CartProduct = ({ item }: { item: ICartItem }) => {
       <Link href={`/p/${item.product.slug}`} className="relative w-[60px] tablet:w-[100px]">
         <AspectRatio ratio={0.8 / 1}>
           <Image
-            src={item.product.images[0].url}
+            src={item.product.images.filter((image) => image.color === item.color)[0]?.url}
             alt="product"
             width={0}
             height={0}
@@ -106,7 +116,7 @@ const CartSummary = ({
       </div>
       <div className="flex justify-between items-center py-3">
         <p className="text-sm">Discount</p>
-        <p className="text-sm font-semibold text-green-600">₹ {totalPrice - totalMRP}</p>
+        <p className="text-sm font-semibold text-[--c6]">₹ {totalPrice - totalMRP}</p>
       </div>
       <Separator />
       <div className="flex justify-between items-center py-3">
@@ -126,7 +136,7 @@ const CartSummary = ({
 
       <div className="w-full flex justify-center pt-5">
         <Button
-          className="w-full bg-[#ffd248] py-2 text-gray-800 text-lg font-bold hover:bg-[#ffd248]"
+          className="w-full bg-[--c1] py-2 text-[--black] text-lg font-bold hover:bg-[--c1]"
           onClick={() =>
             user
               ? user.addresses.length > 0

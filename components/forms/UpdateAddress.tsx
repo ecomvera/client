@@ -15,10 +15,12 @@ import { useUser } from "@/hooks/useUser";
 import { toast } from "../ui/use-toast";
 import { useUserStore } from "@/stores/user";
 import { useRouter } from "next/navigation";
+import { useToken } from "@/hooks/useToken";
 
 const addressData: IAddress = {
   name: "",
   phone: "",
+  email: "",
   line1: "",
   line2: "",
   landmark: "",
@@ -30,7 +32,8 @@ const addressData: IAddress = {
 
 const UpdateAddress = ({ id }: { id: string }) => {
   const router = useRouter();
-  const { user, token } = useUser();
+  const { user } = useUser();
+  const { token } = useToken();
   const userAddress = user?.addresses?.find((address) => address.id === id);
   const { updateAddress } = useUserStore();
   const [isLoading, setIsLoading] = useState(false);

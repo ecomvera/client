@@ -123,13 +123,13 @@ const MobileFilters = ({
                 </Item>
               ))}
             </TabsContent>
-            <TabsContent value="sizes">
+            {/* <TabsContent value="sizes">
               {sizes.map((size) => (
                 <Item key={size} category="sizes" value={size} filters={filters} handleSelectItem={handleSelectItem}>
                   {size}
                 </Item>
               ))}
-            </TabsContent>
+            </TabsContent> */}
             {attributes.map((attribute) => (
               <TabsContent value={attribute.key} key={attribute.key}>
                 {attribute.value.map((value, index) => (

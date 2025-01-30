@@ -11,29 +11,18 @@ import {
 import { useDataStore } from "@/stores/data";
 import { useEffect, useState } from "react";
 import { ICategory } from "@/types";
-import useSWR from "swr";
-import { fetcher, fetchOpt } from "@/lib/utils";
 
 function HeaderNavigation() {
-  const { categories, setCategories } = useDataStore();
-  const { mutate: fetchCategories, isLoading: fetchCategoriesLoading } = useSWR("/api/categories", fetcher, fetchOpt);
-
-  useEffect(() => {
-    const fetch = async () => {
-      if (!categories.length) {
-        const res = await fetchCategories();
-        setCategories(res?.data || []);
-      }
-    };
-    fetch();
-  }, []);
+  const { categories } = useDataStore();
 
   return (
-    <NavigationMenu className="absolute left-5 top-2 laptop:top-3">
-      <NavigationMenuList className="pl-40 laptop:pl-44">
-        {categories.map((category) => (
-          <CategoryDropdown key={category.id} label={category.name} subCategories={category.children} />
-        ))}
+    <NavigationMenu className="absolute left-5 top-2">
+      <NavigationMenuList className="pl-48">
+        {categories
+          .filter((category) => category.children?.length)
+          .map((category) => (
+            <CategoryDropdown key={category.id} label={category.name} subCategories={category.children} />
+          ))}
       </NavigationMenuList>
     </NavigationMenu>
   );
@@ -59,15 +48,20 @@ const CategoryDropdown = ({ label, subCategories }: { label: string; subCategori
 
   return (
     <NavigationMenuItem>
-      <NavigationMenuTrigger className="text-base px-2">{label.split("'")[0]}</NavigationMenuTrigger>
-      <NavigationMenuContent>
+      <NavigationMenuTrigger
+        className="text-base px-2 bg-transparent hover:text-[--white]"
+        style={{ backgroundColor: "transparent" }}
+      >
+        {label.split("'")[0]}
+      </NavigationMenuTrigger>
+      <NavigationMenuContent className="bg-[--white]">
         <ul className="flex w-[715px] gap-10 p-5 px-8">
           {Object.keys(arr).map((item) => (
             <div key={item}>
               <h3 className="text-base font-semibold">{item}</h3>
               <ul role="list" className="mt-5 space-y-1">
                 {arr[item].map((category: ICategory) => (
-                  <Link href={`/${category.slug}`} key={category.slug}>
+                  <Link href={`/${category.slug}`} key={category.slug} className="underline">
                     <div className="text-light-3 my-3 text-sm">
                       <p className="text-nowrap">{category.name}</p>
                     </div>

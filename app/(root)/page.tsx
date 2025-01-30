@@ -7,9 +7,13 @@ import LoadingPage from "@/components/Shared/LoadingPage";
 import { useEffect } from "react";
 import GroupCategories from "@/components/Shared/GroupCategories";
 import { getData } from "@/lib/utils";
+import Client from "@/components/Shared/client";
+import Loader from "@/components/Shared/loader";
 
 export default async function Home() {
+  const collections = await getData(`/api/collections?active=true`);
   const newArrivals = await getData(`/api/products?new-arrivals`);
+  const categories = await getData(`/api/categories`);
 
   // const [isMounted, setIsMounted] = useState(false);
 
@@ -23,11 +27,14 @@ export default async function Home() {
 
   return (
     <div className="h-full min-h-[calc(100vh-100px)]">
+      <Client categories={categories} />
       {/* <Banner /> */}
-      <GroupCategories />
+      <GroupCategories collections={collections} />
 
       <NewArrivals data={newArrivals} />
       <BestSellers />
+
+      <Loader />
 
       {/* <ReactCarousel showArrows>
         {Array.from({ length: 10 }).map((_, index) => (

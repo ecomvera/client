@@ -4,7 +4,7 @@ import Filters from "@/components/Shared/Filters";
 import ProductsList from "@/components/Shared/ProductsList";
 import React, { useEffect, useState } from "react";
 import { Accordion } from "@/components/ui/accordion";
-import { ICategory, IProduct, ISize } from "@/types";
+import { IAttribute, ICategory, IProduct, ISize } from "@/types";
 import { fetcher, fetchOpt } from "@/lib/utils";
 import useSWR from "swr";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -16,6 +16,9 @@ import SortBy from "@/components/Shared/SortBy";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import Image from "next/image";
 import { useAction } from "@/stores/action";
+import NewArrivals from "@/components/Shared/NewArrivals";
+import BestSellers from "@/components/Shared/BestSellers";
+import DefaultPage from "./DefaultPage";
 
 interface IFilters {
   key: string;
@@ -28,6 +31,7 @@ const Page = () => {
   const { setShowLoadingScreen } = useAction();
   const { filterProperties, setFilterProperties } = useDataStore();
   const [sizes, setSizes] = useState<string[]>([]);
+  const [attributes, setAttributes] = useState<IAttribute[]>([]);
   const { mutate: fetchFilterProperties } = useSWR(`/api/filters`, fetcher, fetchOpt);
 
   const [genders, setGenders] = useState<string[]>([]);
@@ -51,6 +55,7 @@ const Page = () => {
 
   const [filters, setFilters] = React.useState<IFilters[]>(allParams);
   useEffect(() => {
+    if (!query) return;
     // create a param string from the filters
     const filterString = filters.length ? filters.map((f) => `${f.key}=${f.value.join("_")}`).join("&") : "";
     if (filterString) {
@@ -65,10 +70,8 @@ const Page = () => {
   // fetch filter properties from DB
   useEffect(() => {
     const fetch = async () => {
-      if (!filterProperties.sizes.length) {
-        const res = await fetchFilterProperties();
-        setFilterProperties(res?.data || {});
-      }
+      const res = await fetchFilterProperties();
+      setFilterProperties(res?.data || {});
     };
     fetch();
   }, []);
@@ -82,8 +85,18 @@ const Page = () => {
       .map((size: string) => filterProperties?.sizes?.find((item) => item.type === size)?.value.map((item) => item))
       .flat();
 
-    setSizes(sizeList || []);
+    setSizes(sizeList ?? []);
     if (data?.genders?.length > 1) setGenders(data?.genders || []); // set only if genders are more than 1
+
+    const productTypeIds = [...new Set(data?.products?.map((i: IProduct) => i.productType?.id).flat())];
+    setAttributes(
+      filterProperties?.attributes?.reduce((acc: IAttribute[], curr) => {
+        if (productTypeIds.includes(curr.productTypeId)) {
+          return [...acc, curr];
+        }
+        return acc;
+      }, [])
+    );
 
     setFilteredProducts(data?.products || []);
   }, [data]);
@@ -99,7 +112,7 @@ const Page = () => {
           genders={genders}
           productTypes={productTypes}
           sizes={sizes}
-          attributes={filterProperties?.attributes}
+          attributes={attributes}
           colors={filterProperties?.colors}
           filters={filters}
           setFilters={setFilters}
@@ -107,78 +120,78 @@ const Page = () => {
       </div>
 
       {/* desktop design */}
-      <div className="flex gap-8 md:py-5">
-        <div className="hidden md:block tablet:w-50 laptop:w-64 ">
-          <div className="flex justify-between">
-            <span className="font-semibold text-muted-foreground">Filters</span>
-            {filters.length > 0 && (
-              <span className="font-semibold text-destructive cursor-pointer" onClick={() => setFilters([])}>
-                Clear All
-              </span>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <Accordion
-              type="multiple"
-              defaultValue={Array.from({ length: 10 }).map((_, i) => `item-${i + 1}`)}
-              className="w-full"
-            >
-              <Filters
-                genders={genders}
-                productTypes={productTypes}
-                sizes={sizes}
-                attributes={filterProperties?.attributes}
-                colors={filterProperties?.colors}
-                filters={filters}
-                setFilters={setFilters}
-              />
-            </Accordion>
-          </div>
-        </div>
-
-        <div className="flex flex-col w-full mt-[-5px]">
-          <div className="z-[2] flex justify-between items-center gap-5 sticky md:flex top-12 md:top-auto bg-background mb-3 py-3 md:p-0">
-            <div className="font-semibold text-xl md:text-2xl font-sans tracking-wide">
-              {category?.name}{" "}
-              {(category?.products || data?.products) && (
-                <span className="font-extralight">({category?.products?.length || data?.products?.length})</span>
+      {query && (
+        <div className="flex gap-8 md:py-5">
+          <div className="hidden md:block tablet:w-50 laptop:w-64 ">
+            <div className="flex justify-between">
+              <span className="font-semibold text-muted-foreground">Filters</span>
+              {filters.length > 0 && (
+                <span className="font-semibold text-destructive cursor-pointer" onClick={() => setFilters([])}>
+                  Clear All
+                </span>
               )}
             </div>
 
-            <div className="hidden md:block">
-              <SortBy items={filteredProducts} setItems={setFilteredProducts} desktop />
+            <div className="flex flex-col gap-3">
+              <Accordion type="multiple" defaultValue={["item-1", "item-2", "item-3"]} className="w-full">
+                <Filters
+                  genders={genders}
+                  productTypes={productTypes}
+                  sizes={sizes}
+                  attributes={attributes}
+                  colors={filterProperties?.colors}
+                  filters={filters}
+                  setFilters={setFilters}
+                />
+              </Accordion>
             </div>
           </div>
 
-          {category?.banner && (
-            <div className="mb-3">
-              <AspectRatio ratio={3.57 / 1}>
-                <Image
-                  src={category?.banner || ""}
-                  alt="Image"
-                  width={0}
-                  height={0}
-                  sizes="100vw"
-                  className="rounded-md object-contain w-full h-full"
-                />
-              </AspectRatio>
-            </div>
-          )}
+          <div className="flex flex-col w-full mt-[-5px]">
+            <div className="z-[2] flex justify-between items-center gap-5 sticky md:flex top-12 md:top-auto bg-background mb-3 py-3 md:p-0">
+              <div className="font-semibold text-xl md:text-2xl font-sans tracking-wide">
+                {category?.name}{" "}
+                {(category?.products || data?.products) && (
+                  <span className="font-extralight">({category?.products?.length || data?.products?.length})</span>
+                )}
+              </div>
 
-          {/* {isLoading && <Fetching />} */}
-          {!isLoading && !filteredProducts?.length && (
-            <div className="flex flex-col gap-5 items-center text-muted-foreground mt-10">
-              <p className="text-lg">No products found</p>
-              <Button className="" onClick={() => setFilters([])}>
-                Clear All
-              </Button>
+              <div className="hidden md:block">
+                <SortBy items={filteredProducts} setItems={setFilteredProducts} desktop />
+              </div>
             </div>
-          )}
 
-          {filteredProducts?.length > 0 && <ProductsList products={filteredProducts} />}
+            {category?.banner && (
+              <div className="mb-3">
+                <AspectRatio ratio={3.57 / 1}>
+                  <Image
+                    src={category?.banner || ""}
+                    alt="Image"
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                    className="rounded-md object-contain w-full h-full"
+                  />
+                </AspectRatio>
+              </div>
+            )}
+
+            {!isLoading && !filteredProducts?.length && (
+              <div className="flex flex-col gap-5 items-center text-muted-foreground mt-10">
+                <p className="text-lg">No products found</p>
+                <Button className="" onClick={() => router.push("/search")}>
+                  Clear All
+                </Button>
+              </div>
+            )}
+
+            {filteredProducts?.length > 0 && <ProductsList products={filteredProducts} />}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* show when no query is provided */}
+      {!query && <DefaultPage />}
     </div>
   );
 };

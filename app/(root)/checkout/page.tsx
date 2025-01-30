@@ -100,11 +100,14 @@ const Page = () => {
       return;
     }
 
-    localStorage.removeItem("cart");
+    // localStorage.removeItem("cart");
     // setCart([]);
-    // setLoading(false);
+    setLoading(false);
 
-    if (paymentMode === "PREPAID") router.push(`/payment?id=${res.data.id}&amount=${res.data.totalAmount}`);
+    // if (paymentMode === "PREPAID") router.push(`/payment?id=${res.data.id}&amount=${res.data.totalAmount}`);
+    if (paymentMode === "PREPAID") {
+      await makePayment(res.data.id, parseInt(res.data.totalAmount));
+    }
 
     if (paymentMode === "COD") {
       toast({
@@ -183,7 +186,7 @@ const Page = () => {
           />
           <Button
             className={`w-full mt-10 py-2 text-lg font-bold ${
-              currentItem < totalAccordion ? "" : "bg-[#ffd248] hover:bg-[#ffd248] text-gray-800"
+              currentItem < totalAccordion ? "" : "bg-[--c1] hover:bg-[--c1] text-gray-800"
             } `}
             disabled={loading}
             onClick={handleCheckout}
@@ -385,7 +388,7 @@ const DeliveryDetails = ({
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <Image
-                        src={item.product.images[0].url}
+                        src={item.product.images.filter((image) => image.color === item.color)[0].url}
                         alt={item.product.name}
                         width={0}
                         height={0}

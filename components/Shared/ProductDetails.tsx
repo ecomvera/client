@@ -21,12 +21,12 @@ const ProductDetails = ({ product }: { product: IProduct }) => {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]?.hex);
 
   return (
-    <div className="py-2 mobile:py-5">
-      <div className="flex flex-col tablet:flex-row">
-        <div className="h-full tablet:sticky top-16">
+    <div className="py-2 mobile:py-5 max-w-laptop mx-auto">
+      <div className="grid grid-temps-1 tablet:grid-cols-2 gap-2">
+        <div className="h-fit tablet:sticky top-20">
           <LeftGallaryView images={product.images} currentColor={selectedColor} />
         </div>
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1">
           <ProductDetail data={product} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
         </div>
       </div>
@@ -216,10 +216,10 @@ const ProductDetail = ({
 
   return (
     <div className="w-full px-2 mt-2 tablet:mt-0 laptop:px-5">
-      <h2 className="text-xl font-bold">{data.name}</h2>
-      <div>
+      <h2 className="text-xl font-medium leading-[1.2]">{data.name}</h2>
+      <div className="mt-3">
         <p className={`${!showMore && "line-clamp-3"}`}>{data.description}</p>
-        <span onClick={() => setShowMore(!showMore)} className="text-sm font-semibold text-blue-700 cursor-pointer">
+        <span onClick={() => setShowMore(!showMore)} className="text-base font-bold text-[--c1] cursor-pointer">
           {!showMore ? "Read more" : "Read less"}
         </span>
       </div>
@@ -227,7 +227,7 @@ const ProductDetail = ({
       <div className="flex mt-5 items-end gap-2">
         <p className="text-xl font-semibold">Rs. {data.price}</p>
         <p className="text-sm font-normal text-light-3 line-through">MRP {data.mrp}</p>
-        <p className="text-lg text-green-600 font-semibold">{getDiscount(data.price, data.mrp)}% off</p>
+        <p className="text-lg text-[--c1] font-bold leading-5">{getDiscount(data.mrp, data.price)}% off</p>
       </div>
       <span className="text-sm font-normal text-light-3">incl. of all taxes</span>
 
@@ -240,14 +240,14 @@ const ProductDetail = ({
         {data.colors.map((color) => (
           <div
             key={color.id}
-            className={`w-9 h-9 rounded-full items-center justify-center cursor-pointer flex shadow-gray-500 shadow-sm`}
+            className={`w-9 h-9 rounded-full items-center justify-center cursor-pointer flex shadow-[--black] shadow-sm`}
             style={{
               backgroundColor: color.hex,
-              border: selectedColor === color.hex ? `1px solid black` : "1px solid transparent",
+              // border: selectedColor === color.hex ? `1px solid var(--c5)` : "1px solid transparent",
             }}
             onClick={() => setSelectedColor(color.hex)}
           >
-            {selectedColor === color.hex && <div className="w-8 h-8 rounded-full border-white border-2" />}
+            {selectedColor === color.hex && <div className="w-8 h-8 rounded-full border-[--white] border-2" />}
           </div>
         ))}
       </div>
@@ -266,17 +266,15 @@ const ProductDetail = ({
                 size.productColor === selectedColor && (
                   <div key={size.key} className="flex flex-col">
                     <div
-                      className="border border-light-3 w-10 h-10 flex justify-center items-center cursor-pointer"
-                      style={{ border: selectedSize?.key === size.key ? `2px solid black` : "2px solid lightgray" }}
+                      className="border w-10 h-10 rounded flex justify-center items-center cursor-pointer"
+                      style={{
+                        // border: selectedSize?.key === size.key ? `2px solid gray` : "2px solid lightgray",
+                        backgroundColor: selectedSize?.key === size.key ? "var(--c1)" : "transparent",
+                        color: selectedSize?.key === size.key ? "white" : "black",
+                      }}
                       onClick={() => setSelectedSize(size)}
                     >
-                      <p
-                        className={`text-base mobile:text-lg font-${
-                          selectedSize?.key === size.key ? "bold" : "semibold"
-                        } text-dark-3`}
-                      >
-                        {size.key}
-                      </p>
+                      <p className={`text-base mobile:text-lg `}>{size.key}</p>
                     </div>
                     {size.quantity < 10 && <p className="text-xs text-red-600 font-semibold">{size.quantity} left</p>}
                   </div>
@@ -298,31 +296,27 @@ const ProductDetail = ({
             <div className="text-red-500 font-sans text-sm tablet:text-base tablet:font-semibold">Please select a size</div>
           )}
 
-          <div className="flex gap-2 py-5">
-            <button
-              className={`bg-green-600 text-white rounded-[5px] text-sm tablet:text-base font-bold p-2 px-4 flex-1 md:flex-none`}
-              onClick={handleAddToCart}
-            >
+          <div className="flex gap-2 py-5 w-full">
+            <Button className={`bg-[--c2] hover:bg-[--c3] rounded tablet:text-base p-2 w-full`} onClick={handleAddToCart}>
               {isExistInCart ? "Added. Go to cart" : "Add to cart"}
-            </button>
-            <button
-              className={`${
-                isInWishlist ? "bg-red-600" : "bg-gray-600"
-              } text-white rounded-[5px] text-sm tablet:text-base font-bold p-2 px-4 flex-1 md:flex-none`}
+            </Button>
+            <Button
+              variant={isInWishlist ? "destructive" : "outline"}
+              className={`rounded tablet:text-base p-2 w-full`}
               onClick={handleAddToWishlist}
             >
               {isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
-            </button>
+            </Button>
           </div>
         </>
       )}
 
       <CheckPincode />
 
-      <p className="text-xl font-semibold text-dark-3 mt-10">Key Highlights</p>
-      <div className="grid grid-cols-2 gap-5 mt-3">
+      <p className="text-xl font-semibold mt-10">Key Highlights</p>
+      <div className="grid grid-cols-2 gap-5 mt-3 w-full">
         {data.attributes.map((item, index) => (
-          <div key={index} className="text-lg text-dark-3">
+          <div key={index} className="">
             <p className="font-semibold">{item.key}</p>
             <p>{item.value}</p>
             <div className="w-full mobile:w-1/2 h-[1px] bg-light-3"></div>
@@ -362,12 +356,12 @@ const CheckPincode = () => {
   return (
     <div>
       <span className="flex items-center gap-2">
-        <IoLocationOutline className="text-base" />
+        <IoLocationOutline className="text-2xl text-[--c3]" />
         <p className="text-base font-semibold text-dark-3">Check for delivery details</p>
       </span>
       <p className="text-sm mobile:text-base font-normal text-light-1">Delivering all over India</p>
 
-      <form onSubmit={handleCheck} className="border rounded mt-3 flex items-center gap-5 w-full tablet:max-w-[300px]">
+      <form onSubmit={handleCheck} className="border rounded mt-3 flex items-center gap-5 w-full tablet:max-w-[400px]">
         <Input
           type="text"
           placeholder="Enter Pincode"
@@ -375,7 +369,7 @@ const CheckPincode = () => {
           value={code}
           onChange={(e) => setCode(e.target.value)}
         />
-        <Button variant="outline" type="submit" className="border-none uppercase" disabled={!code}>
+        <Button variant="link" type="submit" className="border-none uppercase decoration-transparent" disabled={!code}>
           Check
         </Button>
       </form>

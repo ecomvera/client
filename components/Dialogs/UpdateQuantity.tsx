@@ -49,7 +49,7 @@ const UpdateQuantity = ({ item }: { item: ICartItem }) => {
               <div
                 key={i + 1}
                 className={`border border-primary rounded-md px-2 py-1 w-10 h-10 flex items-center justify-center cursor-pointer font-semibold ${
-                  i + 1 === currentQnt ? "bg-primary text-white" : ""
+                  i + 1 === currentQnt ? "bg-[--c1] text-[--white] border-[--c1]" : ""
                 }`}
                 onClick={() => setCurrentQnt(i + 1)}
               >
@@ -64,7 +64,7 @@ const UpdateQuantity = ({ item }: { item: ICartItem }) => {
           )}
         </DialogHeader>
         <DialogTrigger asChild>
-          <Button className="w-full text-lg" onClick={handleQuantity}>
+          <Button className="w-full text-lg bg-[--c2] hover:bg-[--c3]" onClick={handleQuantity}>
             Confirm
           </Button>
         </DialogTrigger>

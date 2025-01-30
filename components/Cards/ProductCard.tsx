@@ -88,14 +88,14 @@ const ProductCard = ({
 
           {showRating && (
             <div className="absolute bottom-2 rounded-l right-0 bg-light-1 text-background px-1 flex gap-1 items-center text-xs">
-              <IoStar fill="#FFC107" /> 4.5
+              <IoStar fill="var(--c1)" /> 4.5
             </div>
           )}
         </AspectRatio>
 
         <div className="p-1">
-          <p className="text-sm tablet:text-lg font-bold text-ellipsis truncate">{product.name}</p>
-          <p className="text-sm tablet:text-lg  font-semibold">
+          <p className="text-sm tablet:text-lg text-ellipsis truncate">{product.name}</p>
+          <p className="text-sm tablet:text-lg font-semibold">
             ₹{product.price}{" "}
             <span className="text-xs font-extralight tablet:text-sm line-through text-">₹{product.mrp}</span>
           </p>

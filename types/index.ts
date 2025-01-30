@@ -2,6 +2,7 @@ export interface IAttribute {
   id?: string;
   key: string;
   value: string[];
+  productTypeId: string;
 }
 
 export interface ISize {
@@ -80,6 +81,8 @@ export interface IProduct {
   isNewArrival: boolean;
   isBestSeller?: boolean;
 
+  productType: IProductType;
+
   sizeCategory: string;
   colors: IColor[];
   sizes: IProductSize[];
@@ -91,6 +94,12 @@ export interface IProduct {
   categoryId: string;
 
   subCategory?: { id: string; name: string; slug?: string } | string;
+}
+
+export interface IProductType {
+  id: string;
+  name: string;
+  attributes: IAttribute[];
 }
 
 export interface IWarehouse {

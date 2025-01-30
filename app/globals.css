@@ -59,6 +59,61 @@
   }
 }
 
+body {
+  --white: #fffdfa;
+  --black: #171717;
+  --c1: #f2a139;
+  --c2: #652d19;
+  --c3: #581716;
+  --c4: #430f17;
+  --c5: #3a150e;
+  --c6: #3b9d50;
+}
+
+body {
+  font-family: var(--font-regular);
+}
+
+.font-thin {
+  font-family: var(--font-thin);
+}
+
+.font-extralight {
+  font-family: var(--font-extralight);
+}
+
+.font-light {
+  font-family: var(--font-light);
+}
+
+.font-regular {
+  font-family: var(--font-regular);
+}
+
+.font-medium {
+  font-family: var(--font-medium);
+}
+
+.font-semibold {
+  font-family: var(--font-semibold);
+}
+
+.font-bold {
+  font-family: var(--font-bold);
+}
+
+.font-extrabold {
+  font-family: var(--font-extrabold);
+}
+
+.font-black {
+  font-family: var(--font-black);
+}
+
+.font-logo {
+  font-family: var(--font-logo);
+}
+
 @layer {
   body {
     @apply bg-background text-foreground;

@@ -31,7 +31,7 @@ const SelectSize = ({
   const { user } = useUser();
   const { token } = useToken();
   const { setCart } = useDataStore();
-  const [selectedSize, setSelectedSize] = useState(item.size);
+  const [selectedSize, setSelectedSize] = useState(item.size || "");
 
   const createItemId = () => {
     return `${item.product.id}-${item.color}-${selectedSize}`;
@@ -60,14 +60,16 @@ const SelectSize = ({
   };
 
   return (
-    <Dialog onOpenChange={() => setSelectedSize(item?.size)}>
-      <DialogTrigger className="flex items-center text-xs tablet:text-base">
+    <Dialog onOpenChange={() => setSelectedSize(item?.size || "")}>
+      <DialogTrigger className="flex items-center text-xs tablet:text-base" asChild>
         {moveToCart ? (
-          <span className="w-full hover:bg-primary-foreground border py-[6px] px-6 rounded-md">Move to Cart</span>
+          <Button variant={"outline"} className="py-[6px] rounded-md w-full">
+            Move to Cart
+          </Button>
         ) : (
-          <>
+          <Button variant={"link"} className="py-[6px] rounded-md w-full decoration-transparent">
             Size: <span className="font-semibold ml-1 ">{item?.size}</span> <ChevronDownIcon className="w-5 h-5" />
-          </>
+          </Button>
         )}
       </DialogTrigger>
       <DialogContent>
@@ -79,7 +81,7 @@ const SelectSize = ({
               <div
                 key={size.key}
                 className={`border border-primary rounded-md px-2 py-1 w-10 h-10 flex items-center justify-center cursor-pointer font-semibold ${
-                  size.key === selectedSize ? "bg-primary text-white" : ""
+                  size.key === selectedSize ? "bg-[--c1] text-[--white] border-[--c1]" : ""
                 }`}
                 onClick={() => setSelectedSize(size.key)}
               >
@@ -89,7 +91,11 @@ const SelectSize = ({
           </div>
         </DialogHeader>
         <DialogTrigger asChild>
-          <Button className="w-full text-lg" onClick={handleChangeSize}>
+          <Button
+            className="w-full text-lg bg-[--c2] hover:bg-[--c3]"
+            onClick={handleChangeSize}
+            disabled={selectedSize === "" || selectedSize === item?.size}
+          >
             Confirm
           </Button>
         </DialogTrigger>

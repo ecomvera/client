@@ -29,6 +29,7 @@ import { BiLogOut } from "react-icons/bi";
 import { Button } from "../ui/button";
 import { useUserStore } from "@/stores/user";
 import { useDataStore } from "@/stores/data";
+import Image from "next/image";
 
 const Header = () => {
   const router = useRouter();
@@ -39,16 +40,38 @@ const Header = () => {
 
   const isCheckoutPage = pathname === "/checkout" || pathname === "/payment";
   return (
-    <div className="w-full sticky top-0 bg-background z-10 border-b-2">
-      <div className="max-w-desktop mx-auto px-2 w-full sticky top-0 bg-background">
-        <div className="flex justify-between gap-3 py-3 tablet:py-2 items-center">
+    <div className="w-full sticky top-0 bg-[--c2] text-[--white] z-10">
+      <div className="bg-[#f1f1f1]">
+        <div className="max-w-desktop mx-auto px-3 w-full">
+          <div className="flex justify-between gap-3 items-center">
+            <div className="flex gap-4">
+              <HeadLink href="/about" label="About" />
+              <HeadLink href="/blog" label="Blog" />
+            </div>
+            <div className="flex gap-4">
+              <HeadLink href="/contact" label="Contact" />
+              <HeadLink href="/myaccount/orders" label="Track Order" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="max-w-desktop mx-auto w-full sticky top-0 ">
+        <div className="flex justify-between gap-3 px-2 items-center">
           <div className="flex gap-3 items-center">
             <IoReorderThreeOutline
               className="text-3xl tablet:hidden cursor-pointer"
               onClick={() => setIsSidebarOpen(true)}
             />
-            <Link href={isCheckoutPage ? "" : "/"} className="z-20">
-              <h2 className="text-xl tablet:text-2xl font-bold uppercase tracking-wide">Silkyester</h2>
+            <Link href={"/"} className="z-20 overflow-hidden">
+              {/* <h2 className="text-xl tablet:text-2xl font-bold uppercase tracking-wide">Silkyester</h2> */}
+              <Image
+                src="/assets/logo_bg.png"
+                alt="logo"
+                className="object-cover w-44 h-full scale-125 zoom-in-90 transition-transform duration-300"
+                width="0"
+                height="0"
+                sizes="100vw"
+              />
             </Link>
 
             {!isCheckoutPage && (
@@ -68,24 +91,24 @@ const Header = () => {
           ) : (
             <div className="flex gap-5 items-center mr-2 flex-1 justify-end">
               <Search />
-              <ThemeHandler />
+              {/* <ThemeHandler /> */}
 
               <span className="relative mt-1" onClick={() => router.push("/wishlist")}>
                 {wishlist?.length > 0 && (
-                  <span className="absolute -top-2 -right-2 text-sm font-semibold text-white bg-green-600 rounded-full w-5 h-5 flex justify-center items-center">
+                  <span className="absolute -top-2 -right-2 text-sm font-semibold text-[--white] bg-[--c1] rounded-full w-5 h-5 flex justify-center items-center">
                     {wishlist.length}
                   </span>
                 )}
-                <IoHeartOutline className="cursor-pointer text-[22px]" />
+                <IoHeartOutline className="cursor-pointer text-[25px]" />
               </span>
               <div className="hidden tablet:flex gap-5">
                 <span className="relative mt-1" onClick={() => router.push("/cart")}>
                   {cart?.length > 0 && (
-                    <span className="absolute -top-2 -right-2 text-sm font-semibold text-white bg-green-600 rounded-full w-5 h-5 flex justify-center items-center">
+                    <span className="absolute -top-2 -right-2 text-sm font-semibold text-[--white] bg-[--c1] rounded-full w-5 h-5 flex justify-center items-center">
                       {cart.length}
                     </span>
                   )}
-                  <IoCartOutline className="cursor-pointer text-[22px]" />
+                  <IoCartOutline className="cursor-pointer text-[25px]" />
                 </span>
                 {pathname !== "/sign-in" &&
                   (user ? (
@@ -101,6 +124,14 @@ const Header = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const HeadLink = ({ href, label }: { href: string; label: string }) => {
+  return (
+    <Link href={href} className="text-[10px] text-[--black] py-1">
+      {label}
+    </Link>
   );
 };
 
@@ -159,7 +190,7 @@ const ProfileIcon = () => {
           </DialogTrigger>
           <DialogContent aria-describedby={undefined}>
             <DialogHeader>
-              <DialogTitle className="mb-10">Are you sure you want to log out?</DialogTitle>
+              <DialogTitle className="mb-10 font-normal">Are you sure you want to log out?</DialogTitle>
 
               <div className="flex gap-2 justify-end">
                 <Button
@@ -196,13 +227,13 @@ const ThemeHandler = () => {
   }
 
   return (
-    <>
+    <div className="hidden tablet:flex">
       {theme === "dark" ? (
         <IoSunnyOutline onClick={() => setTheme("light")} className="cursor-pointer text-xl tablet:text-xl" />
       ) : (
         <IoMoonOutline onClick={() => setTheme("dark")} className="cursor-pointer text-xl tablet:text-xl" />
       )}
-    </>
+    </div>
   );
 };
 

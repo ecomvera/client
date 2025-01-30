@@ -18,14 +18,19 @@ const Page = () => {
   const { token } = useToken();
   const { removeFromWishlist, setCart } = useDataStore();
 
-  if (!user) return null;
+  console.log(wishlist);
+
+  // if (!user) return null;
   return (
     <div className="max-w-desktop mx-auto px-2 py-5">
-      <h1 className="font-semibold text-xl md:text-2xl font-sans text-light-1">WishList</h1>
+      <h1 className=" text-xl md:text-2xl text-[--black]">WishList</h1>
 
       <div className="mt-4">
-        {wishlist.length === 0 ? (
-          <div className="text-light-1">No items in your wishlist</div>
+        {wishlist.length === 0 || !user ? (
+          <div>
+            <div className="text-light-1">No items in your wishlist</div>
+            <Image src="/assets/bag__.png" alt="empty" width={400} height={400} className="mx-auto py-16" />
+          </div>
         ) : (
           <div className="grid grid-cols-[repeat(auto-fit,minmax(100px,150px))] gap-4">
             {wishlist.map((i) => (
@@ -85,7 +90,7 @@ const ProductCard = ({
         </CardHeader>
 
         <CardContent className="p-1">
-          <p className="text-sm tablet:text-base font-semibold text-ellipsis truncate">{item.product.name}</p>
+          <p className="text-sm tablet:text-base text-ellipsis truncate">{item.product.name}</p>
           <p className="text-sm tablet:text-base font-semibold">
             ₹{item.product.price}{" "}
             <span className="text-xs font-extralight tablet:text-sm line-through text-">₹{item.product.mrp}</span>
@@ -94,7 +99,7 @@ const ProductCard = ({
       </Link>
       <CardFooter className="flex flex-col gap-1 p-0 m-0">
         <SelectSize item={item} moveToCart deleteItem={handleDeleteItem} />
-        <Button className="w-full hover:bg-red-300" variant="outline" onClick={handleDeleteItem}>
+        <Button className="w-full hover:bg-[--c2] hover:text-[--white]" variant="outline" onClick={handleDeleteItem}>
           Remove
         </Button>
       </CardFooter>

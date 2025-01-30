@@ -53,7 +53,7 @@ export function generateOrderNumber() {
 }
 
 export const getDiscount = (mrp: number, price: number) => {
-  return ((mrp - price / mrp) / 100).toFixed(2);
+  return (((mrp - price) / mrp) * 100).toFixed(2);
 };
 
 export function boldNumbersInString(str: string) {
