@@ -101,7 +101,7 @@ const SidebarNav = () => {
           </div>
         </Link>
       ))}
-      <div
+      {/* <div
         className="flex gap-3 items-center mt-3 text-light-1 text-red-600 font-semibold cursor-pointer"
         onClick={() => {}}
       >
@@ -124,7 +124,7 @@ const SidebarNav = () => {
             </DialogHeader>
           </DialogContent>
         </Dialog>
-      </div>
+      </div> */}
     </div>
   );
 };

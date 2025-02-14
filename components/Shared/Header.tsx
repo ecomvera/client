@@ -41,7 +41,7 @@ const Header = () => {
   const isCheckoutPage = pathname === "/checkout" || pathname === "/payment";
   return (
     <div className="w-full sticky top-0 bg-[--c2] text-[--white] z-10">
-      <div className="bg-[#f1f1f1]">
+      <div className="bg-[#f1f1f1] hidden tablet:block">
         <div className="max-w-desktop mx-auto px-3 w-full">
           <div className="flex justify-between gap-3 items-center">
             <div className="flex gap-4">

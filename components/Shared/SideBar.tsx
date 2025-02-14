@@ -10,6 +10,10 @@ import { useEffect, useState } from "react";
 import { ICategory } from "@/types";
 import { usePathname } from "next/navigation";
 import { useUser } from "@/hooks/useUser";
+import Image from "next/image";
+import ReactCarousel from "./Carousel";
+import { CarouselItem } from "../ui/carousel";
+import { startCase } from "lodash";
 
 const SideBar = () => {
   const pathname = usePathname();
@@ -45,7 +49,10 @@ const SideBar = () => {
             </Accordion>
           </div>
         </div>
-        <div className="bg-border w-full p-3">
+
+        <LinkSlider />
+
+        <div className="w-full p-3 ">
           <div className="text-sm text-muted-foreground">Contact Us</div>
           <div className="flex flex-col mt-2">
             <Link href={"#"} className="flex gap-3 p-2">
@@ -116,12 +123,12 @@ const Item = ({
         <Accordion type="single" collapsible>
           {Object.keys(arr).map((item) => (
             <AccordionItem key={item} value={item} className="border-none">
-              <AccordionTrigger style={{ textDecoration: "none" }}>{item}</AccordionTrigger>
+              <AccordionTrigger style={{ textDecoration: "none" }}>{startCase(item)}</AccordionTrigger>
               <AccordionContent className="px-2">
                 <Accordion type="single" collapsible>
                   {arr[item].map((i) => (
                     <Link href={`/${i.slug}`} onClick={() => setIsSidebarOpen(false)} key={i.id} className="flex gap-3 p-2">
-                      <div className="text-sm font-semibold">{i.name}</div>
+                      <div className="text-sm">{i.name}</div>
                     </Link>
                   ))}
                 </Accordion>
@@ -131,6 +138,50 @@ const Item = ({
         </Accordion>
       </AccordionContent>
     </AccordionItem>
+  );
+};
+
+const LinkSlider = () => {
+  return (
+    <div>
+      <div className="line-break"></div>
+      <ReactCarousel>
+        <div className="flex gap-2 p-4">
+          <CarouselItem className="basis-auto">
+            <Link href={"/myaccount"} className="flex flex-col gap-2 items-center">
+              <div className="border rounded w-16 h-16 flex items-center justify-center">
+                <Image src="/assets/icons/user.png" alt="user" width={0} height={0} sizes="100vw" className="w-8 h-8" />
+              </div>
+              <p className="text-xs text-muted-foreground">My Account</p>
+            </Link>
+          </CarouselItem>
+          <CarouselItem className="basis-auto">
+            <Link href={"/orders"} className="flex flex-col gap-2 items-center">
+              <div className="border rounded w-16 h-16 flex items-center justify-center">
+                <Image src="/assets/icons/shipped.png" alt="user" width={0} height={0} sizes="100vw" className="w-8 h-8" />
+              </div>
+              <p className="text-xs text-muted-foreground">Orders</p>
+            </Link>
+          </CarouselItem>
+          <CarouselItem className="basis-auto">
+            <Link href={"/myaccount"} className="flex flex-col gap-2 items-center">
+              <div className="border rounded w-16 h-16 flex items-center justify-center">
+                <Image
+                  src="/assets/icons/wishlist-icon.png"
+                  alt="user"
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                  className="w-8 h-8"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">Wishlist</p>
+            </Link>
+          </CarouselItem>
+        </div>
+      </ReactCarousel>
+      <div className="line-break"></div>
+    </div>
   );
 };
 

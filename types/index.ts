@@ -48,6 +48,8 @@ export interface ICollection {
   id: string;
   name: string;
   slug: string;
+  isGallery: boolean;
+  icon: string;
   image: string;
   banner: string;
   isActive: boolean;
@@ -173,4 +175,11 @@ export interface IUser {
 
   createdAt: string;
   updatedAt: string;
+}
+
+export interface IPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
 }

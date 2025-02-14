@@ -28,13 +28,18 @@ const Page = () => {
             <div>
               <div className="text-light-1">No items in your cart</div>
               <Image
-                src="/assets/shopping-cart.png"
+                src="/assets/bag.png"
                 alt="empty"
                 width={0}
                 height={0}
                 sizes="100vw"
-                className="mx-auto py-16 w-52 tablet:w-64 laptop:w-96"
+                className="mx-auto py-16 w-44 tablet:w-52 laptop:w-64"
               />
+              <div className="flex items-center justify-center">
+                <Button onClick={() => window.location.replace("/")} className="bg-[--c2]">
+                  Continue Shopping
+                </Button>
+              </div>
             </div>
           ) : (
             <div>

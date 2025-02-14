@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import ProductCard from "../Cards/ProductCard";
 import { IProduct } from "@/types";

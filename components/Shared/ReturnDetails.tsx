@@ -1,6 +1,7 @@
 import React from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { CgArrowsExchange } from "react-icons/cg";
+import Link from "next/link";
 
 const ReturnDetails = () => {
   return (
@@ -15,7 +16,12 @@ const ReturnDetails = () => {
             </div>
           </div>
         </AccordionTrigger>
-        <AccordionContent>Easy returns upto 24 hours of delivery.</AccordionContent>
+        <AccordionContent>
+          Easy returns upto 24 hours of delivery.{" "}
+          <Link href="/return-policy" className="text-blue-800">
+            Read more
+          </Link>
+        </AccordionContent>
       </AccordionItem>
     </Accordion>
   );

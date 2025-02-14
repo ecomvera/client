@@ -29,7 +29,19 @@ const Page = () => {
         {wishlist.length === 0 || !user ? (
           <div>
             <div className="text-light-1">No items in your wishlist</div>
-            <Image src="/assets/bag__.png" alt="empty" width={400} height={400} className="mx-auto py-16" />
+            <Image
+              src="/assets/bag__.png"
+              alt="empty"
+              width={0}
+              height={0}
+              sizes="100vw"
+              className="mx-auto py-16 w-56 tablet:w-64 laptop:w-80"
+            />
+            <div className="flex items-center justify-center py-10">
+              <Button onClick={() => window.location.replace("/")} className="bg-[--c2]">
+                Continue Shopping
+              </Button>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-[repeat(auto-fit,minmax(100px,150px))] gap-4">

@@ -9,6 +9,8 @@ import GroupCategories from "@/components/Shared/GroupCategories";
 import { getData } from "@/lib/utils";
 import Client from "@/components/Shared/client";
 import Loader from "@/components/Shared/loader";
+import GalleryCollections from "@/components/Shared/GalleryCollections";
+import _ from "lodash";
 
 export default async function Home() {
   const collections = await getData(`/api/collections?active=true`);
@@ -28,8 +30,8 @@ export default async function Home() {
   return (
     <div className="h-full min-h-[calc(100vh-100px)]">
       <Client categories={categories} />
-      {/* <Banner /> */}
-      <GroupCategories collections={collections} />
+      <GalleryCollections collections={_.filter(collections, { isGallery: true })} />
+      <GroupCategories collections={_.filter(collections, { isGallery: false })} />
 
       <NewArrivals data={newArrivals} />
       <BestSellers />

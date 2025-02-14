@@ -6,6 +6,7 @@ import ReactCarousel from "./Carousel";
 import { fetcher, fetchOpt } from "@/lib/utils";
 import { IProduct } from "@/types";
 import ProductCard from "../Cards/ProductCard";
+import _ from "lodash";
 
 const BestSellers = () => {
   const fetchProducts = useSWR("/api/products?best-sellers", fetcher, { ...fetchOpt, revalidateOnMount: true });
@@ -18,7 +19,7 @@ const BestSellers = () => {
       <h2 className="text-center text-xl mobile:text-2xl text-light-1 font-semibold uppercase pb-3">Best Sellers</h2>
 
       <ReactCarousel showArrows autoPlay={5000}>
-        {products?.data.map((product: IProduct) => (
+        {_.map(products?.data, (product: IProduct) => (
           <CarouselItem key={product.id} className="sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
             <ProductCard product={product} showHeart={false} />
           </CarouselItem>

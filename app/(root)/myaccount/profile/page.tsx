@@ -3,6 +3,7 @@
 import InputField from "@/components/forms/InputField";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
+import { useToken } from "@/hooks/useToken";
 import { useUser } from "@/hooks/useUser";
 import { useUserStore } from "@/stores/user";
 import { IUser } from "@/types";
@@ -13,7 +14,8 @@ import { IoFemaleOutline, IoMaleOutline, IoTransgenderOutline } from "react-icon
 
 const Page = () => {
   const router = useRouter();
-  const { user, token } = useUser();
+  const { user } = useUser();
+  const { token } = useToken();
   const { setUser } = useUserStore();
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");

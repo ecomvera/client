@@ -4,7 +4,7 @@ import Filters from "@/components/Shared/Filters";
 import ProductsList from "@/components/Shared/ProductsList";
 import React, { useEffect, useState } from "react";
 import { Accordion } from "@/components/ui/accordion";
-import { IAttribute, ICategory, IProduct, ISize } from "@/types";
+import { IAttribute, ICategory, IPagination, IProduct, ISize } from "@/types";
 import { fetcher, fetchOpt } from "@/lib/utils";
 import useSWR from "swr";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -19,10 +19,27 @@ import { useAction } from "@/stores/action";
 import NewArrivals from "@/components/Shared/NewArrivals";
 import BestSellers from "@/components/Shared/BestSellers";
 import DefaultPage from "./DefaultPage";
+import ProductCard from "@/components/Cards/ProductCard";
 
 interface IFilters {
   key: string;
   value: string[];
+}
+
+interface ProductSearchResult {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  images: { url: string }[];
+  sizes: { size: string }[];
+  attributes: { key: string; value: string }[];
+  colors: { color: string }[];
+  category: { name: string; slug: string };
+  productType: {
+    name: string;
+    attributes: { key: string; value: string }[];
+  };
 }
 
 const Page = () => {
@@ -37,6 +54,22 @@ const Page = () => {
   const [genders, setGenders] = useState<string[]>([]);
   const [category, setCategory] = useState<ICategory>();
   const [productTypes, setProductTypes] = useState<string[]>([]);
+
+  //// Fetching Data with Pagination
+  // const [page, setPage] = useState(1);
+  // const [results, setResults] = useState([]);
+  // const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
+
+  // const fetchResults = async (query, page) => {
+  //   const res = await fetch(`/api/search?q=${query}&page=${page}&limit=10`);
+  //   const data = await res.json();
+  //   setResults(data.data);
+  //   setPagination(data.pagination);
+  // };
+
+  // useEffect(() => {
+  //   fetchResults(query, page);
+  // }, [query, page]);
 
   const { data, isLoading } = useSWR(`/api/search?${searchParams}`, fetcher, {
     ...fetchOpt,
@@ -195,6 +228,39 @@ const Page = () => {
     </div>
   );
 };
+
+function SearchResults({
+  results,
+  pagination,
+  onPageChange,
+}: {
+  results: IProduct[];
+  pagination: IPagination;
+  onPageChange: (page: number) => void;
+}) {
+  return (
+    <div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {results.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="mt-8 flex justify-center gap-2">
+        {Array.from({ length: pagination.totalPages }, (_, i) => (
+          <button
+            key={i + 1}
+            onClick={() => onPageChange(i + 1)}
+            className={`px-4 py-2 ${pagination.page === i + 1 ? "bg-blue-500 text-white" : "bg-gray-200"} rounded`}
+          >
+            {i + 1}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 const Fetching = () => {
   return (

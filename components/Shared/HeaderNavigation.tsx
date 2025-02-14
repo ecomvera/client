@@ -11,6 +11,7 @@ import {
 import { useDataStore } from "@/stores/data";
 import { useEffect, useState } from "react";
 import { ICategory } from "@/types";
+import { startCase } from "lodash";
 
 function HeaderNavigation() {
   const { categories } = useDataStore();
@@ -58,10 +59,10 @@ const CategoryDropdown = ({ label, subCategories }: { label: string; subCategori
         <ul className="flex w-[715px] gap-10 p-5 px-8">
           {Object.keys(arr).map((item) => (
             <div key={item}>
-              <h3 className="text-base font-semibold">{item}</h3>
+              <h3 className="text-base font-semibold text-[--c5]">{startCase(item)}</h3>
               <ul role="list" className="mt-5 space-y-1">
                 {arr[item].map((category: ICategory) => (
-                  <Link href={`/${category.slug}`} key={category.slug} className="underline">
+                  <Link href={`/${category.slug}`} key={category.slug} className="">
                     <div className="text-light-3 my-3 text-sm">
                       <p className="text-nowrap">{category.name}</p>
                     </div>
