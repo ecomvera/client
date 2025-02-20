@@ -2,7 +2,7 @@
 
 import { useUser } from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { GoArrowLeft } from "react-icons/go";
 import { capitalize } from "lodash";
 import Link from "next/link";
@@ -14,6 +14,10 @@ import { Icons } from "next/dist/lib/metadata/types/metadata-types";
 import { Button } from "@/components/ui/button";
 import { makePayment } from "@/lib/razorpay";
 import { formatDateTime } from "@/lib/utils";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { StarFilledIcon, StarIcon } from "@radix-ui/react-icons";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/use-toast";
 
 const Page = () => {
   const router = useRouter();
@@ -74,9 +78,16 @@ const Page = () => {
                   </AspectRatio>
                 </div>
                 <div className="flex flex-1 flex-col">
-                  <Link href={`/p/${item.product.slug}`} className="w-fit">
-                    <p className="text-[15px] font-semibold line-clamp-2 leading-5">{item.product.name}</p>
-                  </Link>
+                  <div className="flex justify-between">
+                    <Link href={`/p/${item.product.slug}`} className="w-fit bg-red-400">
+                      <p className="text-[15px] font-semibold line-clamp-2 leading-5">{item.product.name}</p>
+                    </Link>
+                    {order.ProductReviews.length > 0 ? (
+                      <EditProductReview review={order.ProductReviews[0]} />
+                    ) : (
+                      <AddProductReview productId={item.product.id} orderId={order.id} />
+                    )}
+                  </div>
                   <div className="flex flex-col mt-1">
                     <p className="text-xs">
                       Quantity: <b>{item.quantity}</b>
@@ -92,6 +103,153 @@ const Page = () => {
         ))}
       </div>
     </div>
+  );
+};
+
+const AddProductReview = ({ productId, orderId }: { productId: string; orderId: string }) => {
+  const { token } = useToken();
+  const [open, setOpen] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleReview = async () => {
+    setLoading(true);
+    const data = await fetch("/api/review", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
+      body: JSON.stringify({ rating, comment, productId, orderId }),
+    }).then((res) => res.json());
+    if (!data.ok) {
+      toast({
+        title: "Error",
+        description: data.error,
+        variant: "destructive",
+      });
+      return;
+    }
+    setLoading(false);
+    setOpen(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger onClick={() => setOpen(true)}>
+        <p className="text-xs underline text-[--c3]">Add Product Review</p>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add Product Review</DialogTitle>
+          <DialogDescription>Write your product review here.</DialogDescription>
+        </DialogHeader>
+        <div className="flex flex-col gap-4">
+          <div>
+            <p className="text-xl">Rating:</p>
+            <div className="flex gap-1 justify-center">
+              {[1, 2, 3, 4, 5].map((item) => (
+                <button
+                  key={item}
+                  className="cursor-pointer"
+                  onClick={() => setRating(item)}
+                  onMouseMove={() => setRating(item)}
+                >
+                  {item <= rating ? (
+                    <StarFilledIcon color={rating >= item ? "var(--c2)" : "gray"} width={"40px"} height={"40px"} />
+                  ) : (
+                    <StarIcon color={rating >= item ? "var(--c2)" : "gray"} width={"40px"} height={"40px"} />
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <Textarea
+              rows={5}
+              placeholder="Write your experience here"
+              onChange={(e) => setComment(e.target.value)}
+              value={comment}
+            />
+          </div>
+          <Button className="bg-[--c2] hover:bg-[--c3]" onClick={handleReview} disabled={rating === 0}>
+            {loading ? "Loading..." : "Submit"}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const EditProductReview = ({ review }: { review: any }) => {
+  const { token } = useToken();
+  const [open, setOpen] = useState(false);
+  const [rating, setRating] = useState(review.rating || 0);
+  const [comment, setComment] = useState(review.comment || "");
+  const [loading, setLoading] = useState(false);
+
+  const handleReview = async () => {
+    setLoading(true);
+    const data = await fetch("/api/review?reviewId=" + review.id, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
+      body: JSON.stringify({ rating, comment }),
+    }).then((res) => res.json());
+    if (!data.ok) {
+      toast({
+        title: "Error",
+        description: data.error,
+        variant: "destructive",
+      });
+      return;
+    }
+    toast({ title: "Success", description: "Successfully updated!" });
+    setLoading(false);
+    setOpen(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger onClick={() => setOpen(true)}>
+        <p className="text-xs underline text-[--c3]">Edit Product Review</p>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Edit Product Review</DialogTitle>
+          <DialogDescription>Update your product review here.</DialogDescription>
+        </DialogHeader>
+        <div className="flex flex-col gap-4">
+          <div>
+            <p className="text-xl">Rating:</p>
+            <div className="flex gap-1 justify-center">
+              {[1, 2, 3, 4, 5].map((item) => (
+                <button
+                  key={item}
+                  className="cursor-pointer"
+                  onClick={() => setRating(item)}
+                  onMouseMove={() => setRating(item)}
+                >
+                  {item <= rating ? (
+                    <StarFilledIcon color={rating >= item ? "var(--c2)" : "gray"} width={"40px"} height={"40px"} />
+                  ) : (
+                    <StarIcon color={rating >= item ? "var(--c2)" : "gray"} width={"40px"} height={"40px"} />
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <Textarea
+              rows={5}
+              placeholder="Write your experience here"
+              onChange={(e) => setComment(e.target.value)}
+              value={comment}
+            />
+          </div>
+          <Button className="bg-[--c2] hover:bg-[--c3]" onClick={handleReview} disabled={rating === 0}>
+            {loading ? "Loading..." : "Update"}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

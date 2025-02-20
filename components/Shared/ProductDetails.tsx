@@ -16,6 +16,11 @@ import { useToken } from "@/hooks/useToken";
 import ReturnDetails from "./ReturnDetails";
 import { boldNumbersInString, getDiscount } from "@/lib/utils";
 import { toast } from "../ui/use-toast";
+import Reviews from "./Reviews";
+import ProductImageSlider from "./ProductImageSlider";
+
+import { Card, CardContent } from "@/components/ui/card";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 const ProductDetails = ({ product }: { product: IProduct }) => {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]?.hex);
@@ -24,7 +29,7 @@ const ProductDetails = ({ product }: { product: IProduct }) => {
     <div className="py-2 mobile:py-5 max-w-laptop mx-auto">
       <div className="grid grid-temps-1 tablet:grid-cols-2 gap-2">
         <div className="h-fit tablet:sticky top-20">
-          <LeftGallaryView images={product.images} currentColor={selectedColor} />
+          <LeftGallaryView images={product.images} currentColor={selectedColor} video={product.video} />
         </div>
         <div className="flex-1">
           <ProductDetail data={product} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
@@ -34,20 +39,34 @@ const ProductDetails = ({ product }: { product: IProduct }) => {
   );
 };
 
-const LeftGallaryView = ({ images, currentColor }: { images: IProduct["images"]; currentColor: string }) => {
-  const [currentSlide, setCurrentSlide] = useState(images.filter((image) => image.color === currentColor)[0].url);
+const LeftGallaryView = ({
+  images,
+  currentColor,
+  video,
+}: {
+  images: IProduct["images"];
+  currentColor: string;
+  video: string;
+}) => {
+  const [currentSlide, setCurrentSlide] = useState({
+    type: "image",
+    url: images.filter((image) => image.color === currentColor)[0].url,
+  });
   const [open, setOpen] = useState(false);
   const [startWith, setStartWith] = useState(0);
 
   const [showZoom, setShowZoom] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
 
-  const handleSlideChange = (url: string) => {
-    setCurrentSlide(url);
+  const handleSlideChange = (type: string, url: string) => {
+    setCurrentSlide({ type, url });
   };
 
   useEffect(() => {
-    setCurrentSlide(images.filter((image) => image.color === currentColor)[0].url);
+    setCurrentSlide({
+      type: "image",
+      url: images.filter((image) => image.color === currentColor)[0].url,
+    });
   }, [currentColor]);
 
   return (
@@ -56,10 +75,11 @@ const LeftGallaryView = ({ images, currentColor }: { images: IProduct["images"];
       <div
         className="relative w-full mobile:w-[500px] tablet:w-[350px] laptop:w-[500px] transition-all"
         onClick={() => {
+          if (currentSlide.type !== "image") return;
           setOpen(true);
-          setStartWith(images.findIndex((image) => image.url === currentSlide));
+          setStartWith(images.findIndex((image) => image.url === currentSlide.url));
         }}
-        onMouseEnter={() => setShowZoom(true)}
+        onMouseEnter={() => currentSlide.type === "image" && setShowZoom(true)}
         onMouseLeave={() => setShowZoom(false)}
         onMouseMoveCapture={(e) => {
           if (!showZoom) return;
@@ -73,16 +93,28 @@ const LeftGallaryView = ({ images, currentColor }: { images: IProduct["images"];
         }}
       >
         <AspectRatio ratio={0.8 / 1} className="border rounded-md relative">
-          <Image
-            priority
-            src={currentSlide}
-            quality={100}
-            className="w-full h-full object-cover rounded-md"
-            alt="product"
-            width={0}
-            height={0}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
+          {currentSlide.type === "image" ? (
+            <Image
+              priority
+              src={currentSlide.url}
+              quality={100}
+              className="w-full h-full object-cover rounded-md"
+              alt="product"
+              width={0}
+              height={0}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          ) : (
+            <video
+              controls
+              controlsList="nodownload nofullscreen noremoteplayback noplaybackrate "
+              autoPlay
+              muted
+              className="w-full h-full"
+            >
+              <source src={video} type="video/mp4" />
+            </video>
+          )}
         </AspectRatio>
       </div>
 
@@ -91,7 +123,7 @@ const LeftGallaryView = ({ images, currentColor }: { images: IProduct["images"];
           <AspectRatio ratio={0.8 / 1} className="border rounded-md relative">
             <Image
               priority
-              src={currentSlide}
+              src={currentSlide.url}
               quality={100}
               className="absolute w-full h-full object-cover rounded-md"
               style={{
@@ -107,8 +139,63 @@ const LeftGallaryView = ({ images, currentColor }: { images: IProduct["images"];
         </div>
       )}
 
-      <div className="flex justify-between w-full h-fit mobile:flex-col mobile:w-[100px] tablet:w-[70px] laptop:w-[100px] tablet:transition-all">
-        {images
+      <div className="flex justify-between w-full h-fit mt-12 mobile:flex-col mobile:w-[100px] tablet:w-[70px] laptop:w-[100px] tablet:transition-all">
+        <Carousel
+          opts={{
+            align: "start",
+          }}
+          orientation="vertical"
+          className="w-full max-w-xs"
+        >
+          <CarouselContent className="-mt-1 h-[430px]">
+            {images
+              .filter((image) => image.color === currentColor)
+              .map((image, index) => (
+                <CarouselItem key={index} className="pt-1 md:basis-1/6">
+                  <div key={index} className={`cursor-pointer w-full`}>
+                    <AspectRatio ratio={0.8 / 1} className="border rounded-md">
+                      <Image
+                        priority
+                        key={image.key}
+                        src={image.url.split("/upload")[0] + "/upload/w_80/" + image.url.split("/upload")[1]}
+                        alt="product"
+                        className="w-full h-full object-cover rounded-md"
+                        width={0}
+                        height={0}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        onMouseEnter={() => {
+                          if (currentSlide.url === image.url) return;
+                          handleSlideChange("image", image.url);
+                        }}
+                        // onMouseEnter={() => { }}
+                      />
+                    </AspectRatio>
+                  </div>
+                </CarouselItem>
+              ))}
+            {video && (
+              <CarouselItem className="pt-1 md:basis-1/5">
+                <div className={`cursor-pointer w-full`}>
+                  <AspectRatio ratio={0.8 / 1} className="border rounded-md">
+                    <video
+                      className="w-full h-full"
+                      onMouseEnter={() => {
+                        if (currentSlide.url === video) return;
+                        handleSlideChange("video", video);
+                      }}
+                    >
+                      <source src={video} type="video/mp4" />
+                    </video>
+                  </AspectRatio>
+                </div>
+              </CarouselItem>
+            )}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
+
+        {/* {images
           .filter((image) => image.color === currentColor)
           .map((image, index) => (
             <div key={index} className={`cursor-pointer w-full`}>
@@ -122,15 +209,30 @@ const LeftGallaryView = ({ images, currentColor }: { images: IProduct["images"];
                   width={0}
                   height={0}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  onClick={() => {
-                    if (currentSlide === image.url) return;
-                    handleSlideChange(image.url);
+                  onMouseEnter={() => {
+                    if (currentSlide.url === image.url) return;
+                    handleSlideChange("image", image.url);
                   }}
                   // onMouseEnter={() => { }}
                 />
               </AspectRatio>
             </div>
           ))}
+        {video && (
+          <div className={`cursor-pointer w-full`}>
+            <AspectRatio ratio={0.8 / 1} className="border rounded-md">
+              <video
+                className="w-full h-full"
+                onMouseEnter={() => {
+                  if (currentSlide.url === video) return;
+                  handleSlideChange("video", video);
+                }}
+              >
+                <source src={video} type="video/mp4" />
+              </video>
+            </AspectRatio>
+          </div>
+        )} */}
       </div>
     </div>
   );
@@ -325,6 +427,8 @@ const ProductDetail = ({
       </div>
 
       <ReturnDetails />
+
+      <Reviews data={data.ProductReviews || []} />
     </div>
   );
 };

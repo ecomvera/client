@@ -89,8 +89,10 @@ export interface IProduct {
   colors: IColor[];
   sizes: IProductSize[];
   images: IImageFile[];
+  video: string;
   attributes: IProductAttribute[];
   warehouses: IWarehouseProduct[];
+  ProductReviews: any;
 
   category?: ICategory;
   categoryId: string;
