@@ -4,8 +4,17 @@ import { useData } from "@/hooks/useData";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useMemo } from "react";
-import { IoCartOutline, IoHomeOutline, IoPersonOutline, IoSearchOutline } from "react-icons/io5";
-import { PiPackageLight } from "react-icons/pi";
+import {
+  IoCart,
+  IoCartOutline,
+  IoHome,
+  IoHomeOutline,
+  IoPerson,
+  IoPersonOutline,
+  IoSearch,
+  IoSearchOutline,
+} from "react-icons/io5";
+import { PiPackageFill, PiPackageLight } from "react-icons/pi";
 
 const BottomBar = () => {
   const router = useRouter();
@@ -18,13 +27,21 @@ const BottomBar = () => {
       <div className="bg-background h-12 mobile:h-14 w-full">
         <div className="flex justify-around items-center h-full">
           <NavLink href="/">
-            <IoHomeOutline className="text-2xl" />
+            {pathname === "/" ? <IoHome className="text-2xl text-[--c2]" /> : <IoHomeOutline className="text-2xl" />}
           </NavLink>
           <NavLink href="/myaccount/orders">
-            <PiPackageLight className="text-2xl" />
+            {pathname === "/myaccount/orders" ? (
+              <PiPackageFill className="text-2xl text-[--c2]" />
+            ) : (
+              <PiPackageLight className="text-2xl" />
+            )}
           </NavLink>
           <NavLink href="/search">
-            <IoSearchOutline className="text-2xl" />
+            {pathname === "/search" ? (
+              <IoSearch className="text-2xl text-[--c2]" />
+            ) : (
+              <IoSearchOutline className="text-2xl" />
+            )}
           </NavLink>
           <NavLink href="/cart">
             <span className="relative" onClick={() => router.push("/cart")}>
@@ -33,11 +50,15 @@ const BottomBar = () => {
                   {cart.length}
                 </span>
               )}
-              <IoCartOutline className="text-2xl" />
+              {pathname === "/cart" ? <IoCart className="text-2xl text-[--c2]" /> : <IoCartOutline className="text-2xl" />}
             </span>
           </NavLink>
           <NavLink href="/myaccount">
-            <IoPersonOutline className="text-2xl" />
+            {pathname === "/myaccount" ? (
+              <IoPerson className="text-2xl text-[--c2]" />
+            ) : (
+              <IoPersonOutline className="text-2xl" />
+            )}
           </NavLink>
         </div>
       </div>
@@ -50,8 +71,8 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
   return (
     <Link
       href={href}
-      className={`border-b-4 border-transparent hover:border-primary`}
-      style={{ borderColor: pathname === href ? "var(--primary)" : "" }}
+      // className={`border-b-4 border-transparent hover:border-primary`}
+      // style={{ borderColor: pathname === href ? "var(--primary)" : "" }}
     >
       {children}
     </Link>

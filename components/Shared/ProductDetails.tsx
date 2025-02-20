@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import { IoLocationOutline } from "react-icons/io5";
+import { IoHeart, IoHeartOutline, IoLocationOutline } from "react-icons/io5";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { usePathname, useRouter } from "next/navigation";
@@ -22,6 +22,9 @@ import ProductImageSlider from "./ProductImageSlider";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import ReactCarousel from "./Carousel";
+import { HeartIcon, Share1Icon } from "@radix-ui/react-icons";
+import { FaCartPlus } from "react-icons/fa";
+import Link from "next/link";
 
 const ProductDetails = ({ product }: { product: IProduct }) => {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]?.hex);
@@ -72,7 +75,7 @@ const LeftGallaryView = ({
 
   return (
     <div className="w-full tablet:w-auto flex flex-col justify-center gap-1 mobile:flex-row-reverse">
-      <ImgaeGallary images={images} open={open} setOpen={setOpen} startWith={startWith} />
+      {/* <ImgaeGallary images={images} open={open} setOpen={setOpen} startWith={startWith} /> */}
 
       {/* main image  */}
       <div
@@ -337,7 +340,7 @@ const ProductDetail = ({
       method: "POST",
       headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
       body: JSON.stringify({ item }),
-    }).then((res) => res.json());
+    });
   };
 
   const handleAddToWishlist = async () => {
@@ -354,7 +357,7 @@ const ProductDetail = ({
         method: "DELETE",
         headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
         body: JSON.stringify({ id }),
-      }).then((res) => res.json());
+      });
       if (res.ok) removeFromWishlist(id);
       return;
     }
@@ -364,13 +367,23 @@ const ProductDetail = ({
       method: "POST",
       headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
       body: JSON.stringify({ item: { ...item, id } }),
-    }).then((res) => res.json());
+    });
     if (!res.ok) removeFromWishlist(id);
   };
 
   return (
-    <div className="w-full px-2 mt-2 tablet:mt-0 laptop:px-5">
-      <h2 className="text-xl font-medium leading-[1.2]">{data.name}</h2>
+    <div className="w-full px-2 relative tablet:static mt-2 tablet:mt-0 laptop:px-5">
+      <div className="absolute right-0 top-[-30px] flex justify-end gap-3 mt-2">
+        {isInWishlist ? (
+          <IoHeart className="cursor-pointer w-6 h-6 text-red-500" onClick={handleAddToWishlist} />
+        ) : (
+          <IoHeartOutline className="cursor-pointer w-6 h-6" onClick={handleAddToWishlist} />
+        )}
+        <Share1Icon className="cursor-pointer w-6 h-6" />
+      </div>
+      <h2 className="text-xl font-medium leading-[1.2] mobile:mt-10 tablet:mt-0">
+        {data.name} Voluptatem aut id placeat vitae officia. Est aut quia optio.
+      </h2>
       <div className="mt-3">
         <p className={`${!showMore && "line-clamp-3"}`}>{data.description}</p>
         <span onClick={() => setShowMore(!showMore)} className="text-base font-bold text-[--c1] cursor-pointer">
@@ -451,23 +464,24 @@ const ProductDetail = ({
           )}
 
           <div className="flex gap-2 py-5 w-full">
-            <Button className={`bg-[--c2] hover:bg-[--c3] rounded tablet:text-base p-2 w-full`} onClick={handleAddToCart}>
+            <Button
+              className={` rounded tablet:text-base p-2 w-full flex items-center`}
+              variant={"outline"}
+              onClick={handleAddToCart}
+            >
+              <FaCartPlus className="mr-2 mt-[-2px]" />
               {isExistInCart ? "Added. Go to cart" : "Add to cart"}
             </Button>
-            <Button
-              variant={isInWishlist ? "destructive" : "outline"}
-              className={`rounded tablet:text-base p-2 w-full`}
-              onClick={handleAddToWishlist}
-            >
-              {isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
-            </Button>
+            <Link href="/checkout" className={`rounded tablet:text-base w-full bg-[--c2] hover:bg-[--c3]`}>
+              <Button className={`rounded tablet:text-base p-2 w-full bg-[--c2] hover:bg-[--c3]`}>Buy Now</Button>
+            </Link>
           </div>
         </>
       )}
 
       <CheckPincode />
 
-      <p className="text-xl font-semibold mt-10">Key Highlights</p>
+      <p className="text-xl font-semibold mt-10">Product Highlights</p>
       <div className="grid grid-cols-2 gap-5 mt-3 w-full">
         {data.attributes.map((item, index) => (
           <div key={index} className="">
