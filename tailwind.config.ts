@@ -55,13 +55,13 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       spacing: {
-        mobile: "480px",
+        mobile: "485px",
         tablet: "768px",
         laptop: "1024px",
         desktop: "1440px",
       },
       screens: {
-        mobile: "480px",
+        mobile: "485px",
         tablet: "768px",
         laptop: "1024px",
         desktop: "1440px",

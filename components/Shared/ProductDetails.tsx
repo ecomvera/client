@@ -21,6 +21,7 @@ import ProductImageSlider from "./ProductImageSlider";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import ReactCarousel from "./Carousel";
 
 const ProductDetails = ({ product }: { product: IProduct }) => {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]?.hex);
@@ -72,8 +73,10 @@ const LeftGallaryView = ({
   return (
     <div className="w-full tablet:w-auto flex flex-col justify-center gap-1 mobile:flex-row-reverse">
       <ImgaeGallary images={images} open={open} setOpen={setOpen} startWith={startWith} />
+
+      {/* main image  */}
       <div
-        className="relative w-full mobile:w-[500px] tablet:w-[350px] laptop:w-[500px] transition-all"
+        className="relative w-[370px] hidden mobile:block tablet:w-[460px] laptop:w-[500px] transition-all"
         onClick={() => {
           if (currentSlide.type !== "image") return;
           setOpen(true);
@@ -139,7 +142,8 @@ const LeftGallaryView = ({
         </div>
       )}
 
-      <div className="flex justify-between w-full h-fit mt-12 mobile:flex-col mobile:w-[100px] tablet:w-[70px] laptop:w-[100px] tablet:transition-all">
+      {/* side gallary  */}
+      <div className=" hidden mobile:flex justify-between h-fit mobile:mt-10 tablet:mt-10 laptop:mt-11 w-full mobile:w-[80px] tablet:w-[80px] laptop:w-[100px] ">
         <Carousel
           opts={{
             align: "start",
@@ -147,11 +151,11 @@ const LeftGallaryView = ({
           orientation="vertical"
           className="w-full max-w-xs"
         >
-          <CarouselContent className="-mt-1 h-[430px]">
+          <CarouselContent className="-mt-1 mobile:h-[380px] tablet:h-[350px] laptop:h-[440px]">
             {images
               .filter((image) => image.color === currentColor)
               .map((image, index) => (
-                <CarouselItem key={index} className="pt-1 md:basis-1/6">
+                <CarouselItem key={index} className="pt-1 basis-1/6">
                   <div key={index} className={`cursor-pointer w-full`}>
                     <AspectRatio ratio={0.8 / 1} className="border rounded-md">
                       <Image
@@ -174,7 +178,7 @@ const LeftGallaryView = ({
                 </CarouselItem>
               ))}
             {video && (
-              <CarouselItem className="pt-1 md:basis-1/5">
+              <CarouselItem className="pt-1 basis-1/5">
                 <div className={`cursor-pointer w-full`}>
                   <AspectRatio ratio={0.8 / 1} className="border rounded-md">
                     <video
@@ -233,6 +237,54 @@ const LeftGallaryView = ({
             </AspectRatio>
           </div>
         )} */}
+      </div>
+
+      {/* mobile view  */}
+      <div className="mobile:hidden">
+        <ReactCarousel showDots autoPlay={3000}>
+          {images
+            .filter((image) => image.color === currentColor)
+            .map((image, index) => (
+              <CarouselItem key={index} className="pt-1">
+                <div key={index} className={`cursor-pointer w-full`}>
+                  <AspectRatio ratio={0.8 / 1} className="border rounded-md">
+                    <Image
+                      priority
+                      key={image.key}
+                      src={image.url.split("/upload")[0] + "/upload/" + image.url.split("/upload")[1]}
+                      alt="product"
+                      className="w-full h-full object-cover rounded-md"
+                      width={0}
+                      height={0}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      onMouseEnter={() => {
+                        if (currentSlide.url === image.url) return;
+                        handleSlideChange("image", image.url);
+                      }}
+                      // onMouseEnter={() => { }}
+                    />
+                  </AspectRatio>
+                </div>
+              </CarouselItem>
+            ))}
+          {video && (
+            <CarouselItem className="pt-1">
+              <div className={`cursor-pointer w-full`}>
+                <AspectRatio ratio={0.8 / 1} className="border rounded-md">
+                  <video
+                    className="w-full h-full"
+                    onMouseEnter={() => {
+                      if (currentSlide.url === video) return;
+                      handleSlideChange("video", video);
+                    }}
+                  >
+                    <source src={video} type="video/mp4" />
+                  </video>
+                </AspectRatio>
+              </div>
+            </CarouselItem>
+          )}
+        </ReactCarousel>
       </div>
     </div>
   );
