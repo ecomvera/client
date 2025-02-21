@@ -26,34 +26,34 @@ const BottomBar = () => {
     <div className="fixed bottom-0 left-0 right-0 tablet:hidden border-t border-border z-10">
       <div className="bg-background h-12 mobile:h-14 w-full">
         <div className="flex justify-around items-center h-full">
-          <NavLink href="/">
+          <NavLink href="/" label="Home">
             {pathname === "/" ? <IoHome className="text-2xl text-[--c2]" /> : <IoHomeOutline className="text-2xl" />}
           </NavLink>
-          <NavLink href="/myaccount/orders">
+          <NavLink href="/myaccount/orders" label="Orders">
             {pathname === "/myaccount/orders" ? (
               <PiPackageFill className="text-2xl text-[--c2]" />
             ) : (
               <PiPackageLight className="text-2xl" />
             )}
           </NavLink>
-          <NavLink href="/search">
+          <NavLink href="/search" label="Search">
             {pathname === "/search" ? (
               <IoSearch className="text-2xl text-[--c2]" />
             ) : (
               <IoSearchOutline className="text-2xl" />
             )}
           </NavLink>
-          <NavLink href="/cart">
+          <NavLink href="/cart" label="Cart">
             <span className="relative" onClick={() => router.push("/cart")}>
               {cart?.length > 0 && (
-                <span className="absolute -top-1 -right-1 text-xs font-semibold text-white bg-green-600 rounded-full w-4 h-4 flex justify-center items-center">
+                <span className="absolute -top-1 -right-1 text-xs font-semibold text-white bg-[--c1] rounded-full w-4 h-4 flex justify-center items-center">
                   {cart.length}
                 </span>
               )}
               {pathname === "/cart" ? <IoCart className="text-2xl text-[--c2]" /> : <IoCartOutline className="text-2xl" />}
             </span>
           </NavLink>
-          <NavLink href="/myaccount">
+          <NavLink href="/myaccount" label="Account">
             {pathname === "/myaccount" ? (
               <IoPerson className="text-2xl text-[--c2]" />
             ) : (
@@ -66,15 +66,18 @@ const BottomBar = () => {
   );
 };
 
-const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => {
+const NavLink = ({ href, children, label }: { href: string; children: React.ReactNode; label: string }) => {
   const pathname = usePathname();
+  const active = useMemo(() => pathname === href, [pathname, href]);
   return (
     <Link
       href={href}
       // className={`border-b-4 border-transparent hover:border-primary`}
-      // style={{ borderColor: pathname === href ? "var(--primary)" : "" }}
+      // style={{ color: pathname === href ? "var(--c2)" : "" }}
+      className="flex flex-col items-center justify-center"
     >
       {children}
+      <p className={`text-[10px] ${active ? "text-[--c2] font-bold" : ""}`}>{label}</p>
     </Link>
   );
 };

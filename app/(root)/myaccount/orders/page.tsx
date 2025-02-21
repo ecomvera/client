@@ -43,11 +43,11 @@ const Page = () => {
 
   return (
     <div>
-      <h1
-        className="flex md:hidden items-center gap-2 font-semibold mb-5 text-xl font-sans cursor-pointer"
-        onClick={() => router.back()}
-      >
-        <GoArrowLeft className="w-7 h-7 md:hidden" /> My Account
+      <h1 className="flex md:hidden items-center gap-2 font-semibold mb-5 text-xl font-sans">
+        <span onClick={() => router.back()} className="hidden  cursor-pointer">
+          <GoArrowLeft className="w-7 h-7 md:hidden" />
+        </span>
+        My Orders
       </h1>
 
       <div className="flex flex-col gap-5">

@@ -6,9 +6,9 @@ import Link from "next/link";
 import { FaInstagram, FaFacebook } from "react-icons/fa";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useDataStore } from "@/stores/data";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { ICategory } from "@/types";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useUser } from "@/hooks/useUser";
 import Image from "next/image";
 import ReactCarousel from "./Carousel";
@@ -142,29 +142,40 @@ const Item = ({
 };
 
 const LinkSlider = () => {
+  const { push } = useRouter();
+  const { setIsSidebarOpen } = useAction();
+
+  const handleLinkClick = (link: string) => {
+    push(link);
+    setIsSidebarOpen(false);
+  };
+
   return (
     <div>
       <div className="line-break"></div>
       <ReactCarousel>
         <div className="flex gap-2 p-4">
           <CarouselItem className="basis-auto">
-            <Link href={"/myaccount"} className="flex flex-col gap-2 items-center">
+            <div onClick={() => handleLinkClick("/myaccount")} className="cursor-pointer flex flex-col gap-2 items-center">
               <div className="border rounded w-16 h-16 flex items-center justify-center">
                 <Image src="/assets/icons/user.png" alt="user" width={0} height={0} sizes="100vw" className="w-8 h-8" />
               </div>
               <p className="text-xs text-muted-foreground">My Account</p>
-            </Link>
+            </div>
           </CarouselItem>
           <CarouselItem className="basis-auto">
-            <Link href={"/orders"} className="flex flex-col gap-2 items-center">
+            <div
+              onClick={() => handleLinkClick("/myaccount/orders")}
+              className="cursor-pointer flex flex-col gap-2 items-center"
+            >
               <div className="border rounded w-16 h-16 flex items-center justify-center">
                 <Image src="/assets/icons/shipped.png" alt="user" width={0} height={0} sizes="100vw" className="w-8 h-8" />
               </div>
               <p className="text-xs text-muted-foreground">Orders</p>
-            </Link>
+            </div>
           </CarouselItem>
           <CarouselItem className="basis-auto">
-            <Link href={"/myaccount"} className="flex flex-col gap-2 items-center">
+            <div onClick={() => handleLinkClick("/wishlist")} className="cursor-pointer flex flex-col gap-2 items-center">
               <div className="border rounded w-16 h-16 flex items-center justify-center">
                 <Image
                   src="/assets/icons/wishlist-icon.png"
@@ -176,7 +187,7 @@ const LinkSlider = () => {
                 />
               </div>
               <p className="text-xs text-muted-foreground">Wishlist</p>
-            </Link>
+            </div>
           </CarouselItem>
         </div>
       </ReactCarousel>
