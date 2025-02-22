@@ -114,7 +114,7 @@ const Page = () => {
     if (!data?.ok) return;
 
     const sizeList = data?.productSizes
-      .reverse()
+      ?.reverse()
       .map((size: string) => filterProperties?.sizes?.find((item) => item.type === size)?.value.map((item) => item))
       .flat();
 

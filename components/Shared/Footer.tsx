@@ -64,7 +64,7 @@ const Footer = () => {
 
 const FLink = ({ label, route }: { label: string; route: string }) => {
   return (
-    <Link href={route}>
+    <Link href={`/${route}`}>
       <li className="text-sm tablet:text-base mt-2 font-light">{label}</li>
     </Link>
   );
