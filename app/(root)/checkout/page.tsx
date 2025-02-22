@@ -18,6 +18,8 @@ import { generateOrderNumber } from "@/lib/utils";
 import { useToken } from "@/hooks/useToken";
 import Script from "next/script";
 import { makePayment } from "@/lib/razorpay";
+import { Cross1Icon } from "@radix-ui/react-icons";
+import DeleteCartItem from "@/components/Dialogs/DeleteCartItem";
 
 declare global {
   interface Window {
@@ -46,6 +48,14 @@ const Page = () => {
     if (!deliveryAddress) {
       toast({
         description: "Please select an Delivery address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (cart.length === 0) {
+      toast({
+        description: "Your cart is empty",
         variant: "destructive",
       });
       return;
@@ -161,6 +171,7 @@ const Page = () => {
     if (!user && !userLoading) return router.replace("/sign-in?src=/checkout");
     if (!cart.length && !cartLoading) return router.replace("/");
   }, [userLoading, cartLoading]);
+
   return (
     <div className="max-w-desktop mx-auto px-2 tablet:py-5">
       <h1 className="text-2xl font-semibold text-light-1">Checkout</h1>
@@ -384,7 +395,7 @@ const DeliveryDetails = ({
             )}
             {cart && cart.length > 0 ? (
               cart.map((item) => (
-                <div key={item.id} className="py-2">
+                <div key={item.id} className="py-2 relative">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <Image
@@ -403,6 +414,7 @@ const DeliveryDetails = ({
                     </div>
                   </div>
                   <MissingItemDetails item={item} missingItems={missingItems} setMissingItems={setMissingItems} />
+                  <DeleteCartItem item={item} />
                 </div>
               ))
             ) : (

@@ -6,7 +6,7 @@ import { IoHeart, IoHeartOutline, IoLocationOutline } from "react-icons/io5";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { usePathname, useRouter } from "next/navigation";
-import { IProduct, IProductSize } from "@/types";
+import { ICartItem, IProduct, IProductSize } from "@/types";
 import { useDataStore } from "@/stores/data";
 import { useUser } from "@/hooks/useUser";
 import { useData } from "@/hooks/useData";
@@ -307,7 +307,7 @@ const ProductDetail = ({
   const { user } = useUser();
   const { token } = useToken();
   const { cart, wishlist } = useData();
-  const { addToCart, addToWishlist, removeFromWishlist } = useDataStore();
+  const { addToCart, addToWishlist, removeFromWishlist, removeFromCart } = useDataStore();
   const [selectedSize, setSelectedSize] = useState<IProductSize>();
   const [showSelectSizeMessage, setShowSelectSizeMessage] = useState(false);
   const [showMore, setShowMore] = useState(false);
@@ -369,6 +369,21 @@ const ProductDetail = ({
       body: JSON.stringify({ item: { ...item, id } }),
     });
     if (!res.ok) removeFromWishlist(id);
+  };
+
+  const handleBuyNow = async () => {
+    if (!selectedSize?.key) return setShowSelectSizeMessage(true);
+    addToCart({ ...item, product: data });
+    await fetch("/api/user/cart", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
+      body: JSON.stringify({ item }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.ok) router.push("/checkout");
+        else removeFromCart(item as ICartItem);
+      });
   };
 
   return (
@@ -472,9 +487,11 @@ const ProductDetail = ({
               <FaCartPlus className="mr-2 mt-[-2px]" />
               {isExistInCart ? "Added. Go to cart" : "Add to cart"}
             </Button>
-            <Link href="/checkout" className={`rounded tablet:text-base w-full bg-[--c2] hover:bg-[--c3]`}>
-              <Button className={`rounded tablet:text-base p-2 w-full bg-[--c2] hover:bg-[--c3]`}>Buy Now</Button>
-            </Link>
+            {/* <Link href="/checkout" className={`rounded tablet:text-base w-full bg-[--c2] hover:bg-[--c3]`}> */}
+            <Button className={`rounded tablet:text-base p-2 w-full bg-[--c2] hover:bg-[--c3]`} onClick={handleBuyNow}>
+              Buy Now
+            </Button>
+            {/* </Link> */}
           </div>
         </>
       )}
