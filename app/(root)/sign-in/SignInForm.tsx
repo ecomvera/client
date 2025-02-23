@@ -45,7 +45,7 @@ const SignInForm = ({
         title: res.data.otp,
       });
 
-      if (!res.data.user.onBoarded) {
+      if (!res.data.user || !res.data.user.onBoarded) {
         return setCurrentState("OnBoarding");
       }
 
@@ -93,7 +93,7 @@ const SignInForm = ({
 
       <Button
         disabled={phone.length !== 10 || isLoading}
-        className="text-base uppercase font-semibold mt-5"
+        className="text-base uppercase font-semibold mt-5 bg-[--c2] hover:bg-[--c2] text-white"
         onClick={handleSubmit}
       >
         {isLoading ? "Signing in..." : "Continue"}

@@ -7,6 +7,7 @@ import OnBoarding from "./OnBoarding";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@/hooks/useUser";
 import { toast } from "@/components/ui/use-toast";
+import Image from "next/image";
 
 const Page = () => {
   const params = useSearchParams();
@@ -26,6 +27,15 @@ const Page = () => {
         {/* <div className="hidden tablet:block border-[0.1px] border-light-3" /> */}
 
         <div className="bg-background rounded-t-xl flex flex-col justify-center h-max w-full tablet:max-w-[450px] m-auto p-2 tablet:p-5 py-8">
+          <Image
+            src="/assets/logo1.png"
+            alt="signin"
+            width={0}
+            height={0}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="w-[120px] object-cover text-center mx-auto"
+          />
+
           {currentState === "SignIn" && <SignInForm setPhone={setPhone} phone={phone} setCurrentState={setCurrentState} />}
           {currentState === "VerifyOTP" && <VerifyOTP phone={phone} setCurrentState={setCurrentState} />}
           {currentState === "OnBoarding" && <OnBoarding phone={phone} setCurrentState={setCurrentState} />}

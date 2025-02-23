@@ -68,7 +68,6 @@ const OnBoarding = ({
       localStorage.setItem("accessToken", res.data.accessToken);
       localStorage.setItem("refreshToken", res.data.refreshToken);
 
-      setIsLoading(false);
       const src = searchParams.get("src");
       if (src) return router.replace(src);
       router.replace("/");
@@ -79,6 +78,8 @@ const OnBoarding = ({
         description: "Something went wrong",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -184,7 +185,7 @@ const OnBoarding = ({
 
       <Button
         disabled={!name || !email || !gender || !otp || isLoading}
-        className="text-base uppercase font-semibold mt-10"
+        className="text-base uppercase font-semibold mt-10 bg-[--c2] hover:bg-[--c3] text-background"
         onClick={handleSubmit}
       >
         {isLoading ? "Verifying..." : "Continue"}

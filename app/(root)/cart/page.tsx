@@ -154,7 +154,7 @@ const CartSummary = ({
           Proceed
         </Button>
       </div>
-      <p className="text-xs text-gray-500 mt-2">Delivery charge will be calculated at the time of checkout</p>
+      {/* <p className="text-xs text-gray-500 mt-2">Delivery charge will be calculated at the time of checkout</p> */}
     </div>
   );
 };

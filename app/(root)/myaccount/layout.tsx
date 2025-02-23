@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/stores/user";
 import { useToken } from "@/hooks/useToken";
+import { HelpCircle } from "lucide-react";
 
 export default function RootLayout({
   children,
@@ -66,6 +67,11 @@ const nav = [
     icon: <BiIdCard className="w-5 h-5" />,
     name: "Profile",
     href: "/myaccount/profile",
+  },
+  {
+    icon: <HelpCircle className="w-5 h-5" />,
+    name: "Help",
+    href: "/myaccount/help",
   },
 ];
 

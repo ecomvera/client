@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/stores/user";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { HelpCircle, HelpCircleIcon } from "lucide-react";
 
 const Page = () => {
   const { user } = useUser();
@@ -72,6 +73,14 @@ const Page = () => {
           <FiUser className="w-7 h-7" />
           <p className="text-lg font-semibold">Profile</p>
           <p className="text-sm">Manage your profile</p>
+        </Link>
+        <Link
+          href="/myaccount/help"
+          className="flex flex-col justify-center items-center text-center border p-5 text-light-1 hover:bg-accent"
+        >
+          <HelpCircleIcon className="w-7 h-7" />
+          <p className="text-lg font-semibold">Help</p>
+          <p className="text-sm">Contact us</p>
         </Link>
       </div>
 

@@ -20,6 +20,7 @@ import Script from "next/script";
 import { makePayment } from "@/lib/razorpay";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import DeleteCartItem from "@/components/Dialogs/DeleteCartItem";
+import Stepper from "./_components/stepper";
 
 declare global {
   interface Window {
@@ -38,6 +39,7 @@ const Page = () => {
   const [deliveryAddress, setDeliveryAddress] = React.useState<IAddress | null>(null);
   const [missingItems, setMissingItems] = React.useState<{ productId: string; availableQuantity: number }[]>([]);
   const [currentItem, setCurrentItem] = React.useState(1);
+  const [activeStep, setActiveStep] = React.useState(1);
   const totalAccordion = 3;
 
   const handleCheckout = async () => {
@@ -178,6 +180,7 @@ const Page = () => {
 
       <div className="flex flex-col-reverse tablet:flex-row justify-between py-3 gap-4 border-light-3">
         <div className="w-full tablet:w-tablet">
+          <Stepper activeStep={activeStep} setActiveStep={setActiveStep} />
           <DeliveryDetails
             user={user}
             cart={cart}
@@ -194,6 +197,7 @@ const Page = () => {
             totalMRP={totalMRP}
             totalPrice={totalPrice}
             finalPrice={finalPrice}
+            setActiveStep={setActiveStep}
           />
           <Button
             className={`w-full mt-10 py-2 text-lg font-bold ${
@@ -227,6 +231,7 @@ const DeliveryDetails = ({
   totalMRP,
   totalPrice,
   finalPrice,
+  setActiveStep,
 }: {
   user: IUser | null;
   cart: ICartItem[];
@@ -243,41 +248,19 @@ const DeliveryDetails = ({
   totalMRP: number;
   totalPrice: number;
   finalPrice: number;
+  setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   return (
     <>
-      <div>
-        <h1 className="font-semibold text-light-1 mt-3">Payment Mode</h1>
-        {/* <span className="text-xs">
-          Choose <b>Online</b> mode for less delivery charges*
-        </span> */}
-        <RadioGroup value={paymentMode} className="flex justify-between h-10">
-          {["PREPAID", "COD"].map((mode) => (
-            <div
-              key={mode}
-              className="flex gap-2 w-full items-center hover:bg-accent p-2 cursor-pointer"
-              onClick={() => setPaymentMode(mode as "PREPAID" | "COD")}
-            >
-              <RadioGroupItem value={mode} id={mode}>
-                {mode}
-              </RadioGroupItem>
-              <Label htmlFor={mode} className="text-sm">
-                {mode === "PREPAID" ? (
-                  <>
-                    Online
-                    {/* <span className="text-xs">(UPI, Credit/Debit Card, Netbanking, etc)</span> */}
-                  </>
-                ) : (
-                  "Cash On Delivery"
-                )}
-              </Label>
-            </div>
-          ))}
-        </RadioGroup>
-      </div>
       <Accordion type="single" defaultValue={"item-1"} value={`item-${currentItem}`}>
         <AccordionItem value="item-1">
-          <AccordionTrigger className="text-base hover:no-underline" onClick={() => setCurrentItem(1)}>
+          <AccordionTrigger
+            className="text-base hover:no-underline"
+            onClick={() => {
+              setCurrentItem(1);
+              setActiveStep(1);
+            }}
+          >
             {!deliveryAddress ? (
               <p className="font-semibold">Delivery address</p>
             ) : (
@@ -300,6 +283,7 @@ const DeliveryDetails = ({
                     } else {
                       setDeliveryAddress(address);
                       setCurrentItem(1);
+                      setActiveStep(1);
                     }
                   }}
                 >
@@ -323,69 +307,13 @@ const DeliveryDetails = ({
             )}
           </RadioGroup>
         </AccordionItem>
-        {/* <AccordionItem value="item-2">
-          <AccordionTrigger className="text-base hover:no-underline" onClick={() => setCurrentItem(2)}>
-            {!billingAddress ? (
-              <p className="font-semibold">Billing address</p>
-            ) : (
-              <p className="font-normal">
-                Billing to <span className="font-semibold">{billingAddress?.name}</span>{" "}
-                <span className="ml-2 bg-blue-400 text-white rounded px-2">{billingAddress?.residenceType}</span>
-              </p>
-            )}
-          </AccordionTrigger>
-          <AccordionContent className="hover:bg-accent p-2">
-            <div className="flex items-center space-x-2 cursor-pointer">
-              <Checkbox id="terms" checked={deliveryAddress ? deliveryAddress?.id === billingAddress?.id : false} />
-              <label
-                htmlFor="terms"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 "
-                onClick={() => {
-                  setBillingAddress(deliveryAddress);
-                  setCurrentItem(2);
-                }}
-              >
-                Same as delivery
-              </label>
-            </div>
-          </AccordionContent>
-          <RadioGroup>
-            {user && user.addresses.length > 0 ? (
-              user.addresses.map((address) => (
-                <AccordionContent
-                  id={"billing" + address.id}
-                  className="hover:bg-accent p-2 flex items-center gap-3 cursor-pointer w-full"
-                  key={address.id}
-                  onClick={() => {
-                    if (address.id === billingAddress?.id) {
-                      setBillingAddress(null);
-                    } else {
-                      setBillingAddress(address);
-                      setCurrentItem(2);
-                    }
-                  }}
-                >
-                  <RadioGroupItem
-                    value={address.id as string}
-                    id={"billing" + address.id}
-                    checked={address.id === billingAddress?.id}
-                  />
-                  <Label htmlFor={"billing" + address.id} className="flex flex-col gap-1 cursor-pointer">
-                    <p className="font-semibold mb-1">{address.name}</p>
-                    <p>{`${address.line1} ${address.line2} ${address.city}, ${address.state}, ${address.country}. ${address.pincode}`}</p>
-                    <p>{address.landmark}</p>
-                    <p className="font-semibold">+91 {address.phone}</p>
-                  </Label>
-                </AccordionContent>
-              ))
-            ) : (
-              <AccordionContent>
-                <p className="text-light-1 px-2">No address found</p>
-              </AccordionContent>
-            )}
-          </RadioGroup>
-        </AccordionItem> */}
-        <AccordionItem value="item-2" onClick={() => setCurrentItem(2)}>
+        <AccordionItem
+          value="item-2"
+          onClick={() => {
+            setCurrentItem(2);
+            setActiveStep(2);
+          }}
+        >
           <AccordionTrigger className="text-base font-semibold hover:no-underline">
             Item{cart && cart.length > 1 ? "s" : ""} ({cart && cart.length})
           </AccordionTrigger>
@@ -424,7 +352,14 @@ const DeliveryDetails = ({
             )}
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem value="item-3" className="border-none" onClick={() => setCurrentItem(3)}>
+        <AccordionItem
+          value="item-3"
+          className="border-none"
+          onClick={() => {
+            setCurrentItem(3);
+            setActiveStep(3);
+          }}
+        >
           <AccordionTrigger className="text-base font-semibold hover:no-underline">Price Summary</AccordionTrigger>
           <AccordionContent className="">
             <div className="text-base flex items-center justify-between py-2">
@@ -445,6 +380,33 @@ const DeliveryDetails = ({
             <div className="text-base flex items-center justify-between py-2">
               <p>Total</p>
               <p className="font-semibold">₹{finalPrice}</p>
+            </div>
+
+            <div>
+              <h1 className="font-semibold text-light-1 mt-3">Payment Mode</h1>
+              <RadioGroup value={paymentMode} className="flex justify-between h-10">
+                {["PREPAID", "COD"].map((mode) => (
+                  <div
+                    key={mode}
+                    className="flex gap-2 w-full items-center hover:bg-accent p-2 cursor-pointer"
+                    onClick={() => setPaymentMode(mode as "PREPAID" | "COD")}
+                  >
+                    <RadioGroupItem value={mode} id={mode}>
+                      {mode}
+                    </RadioGroupItem>
+                    <Label htmlFor={mode} className="text-sm">
+                      {mode === "PREPAID" ? (
+                        <>
+                          Online
+                          {/* <span className="text-xs">(UPI, Credit/Debit Card, Netbanking, etc)</span> */}
+                        </>
+                      ) : (
+                        "Cash On Delivery"
+                      )}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
             </div>
           </AccordionContent>
         </AccordionItem>
@@ -537,5 +499,70 @@ const MissingItemDetails = ({
 //     </div>
 //   );
 // };
+
+{
+  /* <AccordionItem value="item-2">
+          <AccordionTrigger className="text-base hover:no-underline" onClick={() => setCurrentItem(2)}>
+            {!billingAddress ? (
+              <p className="font-semibold">Billing address</p>
+            ) : (
+              <p className="font-normal">
+                Billing to <span className="font-semibold">{billingAddress?.name}</span>{" "}
+                <span className="ml-2 bg-blue-400 text-white rounded px-2">{billingAddress?.residenceType}</span>
+              </p>
+            )}
+          </AccordionTrigger>
+          <AccordionContent className="hover:bg-accent p-2">
+            <div className="flex items-center space-x-2 cursor-pointer">
+              <Checkbox id="terms" checked={deliveryAddress ? deliveryAddress?.id === billingAddress?.id : false} />
+              <label
+                htmlFor="terms"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 "
+                onClick={() => {
+                  setBillingAddress(deliveryAddress);
+                  setCurrentItem(2);
+                }}
+              >
+                Same as delivery
+              </label>
+            </div>
+          </AccordionContent>
+          <RadioGroup>
+            {user && user.addresses.length > 0 ? (
+              user.addresses.map((address) => (
+                <AccordionContent
+                  id={"billing" + address.id}
+                  className="hover:bg-accent p-2 flex items-center gap-3 cursor-pointer w-full"
+                  key={address.id}
+                  onClick={() => {
+                    if (address.id === billingAddress?.id) {
+                      setBillingAddress(null);
+                    } else {
+                      setBillingAddress(address);
+                      setCurrentItem(2);
+                    }
+                  }}
+                >
+                  <RadioGroupItem
+                    value={address.id as string}
+                    id={"billing" + address.id}
+                    checked={address.id === billingAddress?.id}
+                  />
+                  <Label htmlFor={"billing" + address.id} className="flex flex-col gap-1 cursor-pointer">
+                    <p className="font-semibold mb-1">{address.name}</p>
+                    <p>{`${address.line1} ${address.line2} ${address.city}, ${address.state}, ${address.country}. ${address.pincode}`}</p>
+                    <p>{address.landmark}</p>
+                    <p className="font-semibold">+91 {address.phone}</p>
+                  </Label>
+                </AccordionContent>
+              ))
+            ) : (
+              <AccordionContent>
+                <p className="text-light-1 px-2">No address found</p>
+              </AccordionContent>
+            )}
+          </RadioGroup>
+        </AccordionItem> */
+}
 
 export default Page;

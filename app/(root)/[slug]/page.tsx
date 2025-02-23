@@ -52,7 +52,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
 
   const [filters, setFilters] = React.useState<IFilters[]>(allParams);
   useEffect(() => {
-    if (data) setShowLoadingScreen(true);
+    if (data && data.category) setShowLoadingScreen(true);
     // create a param string from the filters
     const filterString = filters.length ? filters.map((f) => `${f.key}=${f.value.join("_")}`).join("&") : "";
     router.push(`/${params.slug}?${filterString}`);
