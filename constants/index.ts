@@ -1,33 +1,23 @@
 export const categories = [
   {
-    image: "/assets/men-s-t-shirts.jpg",
-    route: "men-tshirts",
-    label: "Men's T-shirts",
+    route: "men",
+    label: "Men's Clothing",
   },
   {
-    image: "/assets/women-s-t-shirts.jpg",
-    route: "women-tshirts",
-    label: "Women's T-shirts",
+    route: "women",
+    label: "Women's Clothing",
   },
   {
-    image: "/assets/women-gift-idea.jpg",
-    route: "women-gifts",
-    label: "Gifts ideas for women",
+    route: "kids",
+    label: "Kids's Clothing",
   },
   {
-    image: "/assets/gift-ideas-for-men.jpg",
-    route: "men-gifts",
-    label: "Gifts ideas for men",
+    route: "watch",
+    label: "Watches",
   },
   {
-    image: "/assets/mugs.avif",
-    route: "mugs",
-    label: "Mugs",
-  },
-  {
-    image: "/assets/posters.jpg",
-    route: "posters",
-    label: "Posters",
+    route: "accessories",
+    label: "Accessories",
   },
 ];
 
