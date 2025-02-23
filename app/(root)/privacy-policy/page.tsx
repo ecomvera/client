@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 const Page = () => {
   return (
-    <div className="max-w-desktop mx-auto p-6 my-10 select-text">
+    <div className="max-w-laptop mx-auto p-6 my-10 select-text">
       <h1 className="text-3xl font-bold text-center mb-6">Privacy Policy</h1>
       <p className="mb-6">
         Silkyester ("we," "our," "us") respects the privacy of our customers and website users ("you"). This privacy policy

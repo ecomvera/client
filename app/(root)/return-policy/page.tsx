@@ -1,6 +1,6 @@
 const Page = () => {
   return (
-    <div className="max-w-desktop mx-auto p-6 my-10 select-text">
+    <div className="max-w-laptop mx-auto p-6 my-10 select-text">
       <h1 className="text-3xl font-bold text-center mb-6">Silkyester 24-Hour Return & Exchange Policy</h1>
       <p className="mb-6">
         At Silkyester, customer satisfaction is our top priority, and we strive to provide you with the best shopping
