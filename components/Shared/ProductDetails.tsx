@@ -411,7 +411,7 @@ const ProductDetail = ({
         {data.name} Voluptatem aut id placeat vitae officia. Est aut quia optio.
       </h2>
       <div className="mt-3">
-        <p className={`${!showMore && "line-clamp-3"}`}>{data.description}</p>
+        <p className={`${!showMore && "line-clamp-3"} break-all`}>{data.description}</p>
         <span onClick={() => setShowMore(!showMore)} className="text-base font-bold text-[--c1] cursor-pointer">
           {!showMore ? "Read more" : "Read less"}
         </span>
