@@ -378,6 +378,9 @@ const ProductDetail = ({
     if (!selectedSize?.key) return setShowSelectSizeMessage(true);
     try {
       addToCart({ ...item, product: data });
+      if (!user) {
+        return router.push(`/sign-in?src=${pathname}`);
+      }
       await fetch("/api/user/cart", {
         method: "POST",
         headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
