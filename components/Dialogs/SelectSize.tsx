@@ -76,18 +76,20 @@ const SelectSize = ({
         <DialogHeader>
           <DialogTitle>Select Size</DialogTitle>
           <DialogDescription>Select from the list of sizes</DialogDescription>
-          <div className="flex gap-3 pt-5">
-            {item?.product.sizes.map((size) => (
-              <div
-                key={size.key}
-                className={`border border-primary rounded-md px-2 py-1 w-10 h-10 flex items-center justify-center cursor-pointer font-semibold ${
-                  size.key === selectedSize ? "bg-[--c1] text-[--white] border-[--c1]" : ""
-                }`}
-                onClick={() => setSelectedSize(size.key)}
-              >
-                <span>{size.key}</span>
-              </div>
-            ))}
+          <div className="flex flex-wrap gap-3 pt-5">
+            {item?.product.sizes
+              .filter((size) => size.productColor === item.color)
+              .map((size) => (
+                <div
+                  key={size.key}
+                  className={`border border-primary rounded-md px-2 py-1 w-10 h-10 flex items-center justify-center cursor-pointer font-semibold ${
+                    size.key === selectedSize ? "bg-[--c1] text-[--white] border-[--c1]" : ""
+                  }`}
+                  onClick={() => setSelectedSize(size.key)}
+                >
+                  <span>{size.key}</span>
+                </div>
+              ))}
           </div>
         </DialogHeader>
         <DialogTrigger asChild>
