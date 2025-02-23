@@ -1,6 +1,6 @@
 const TermsAndConditions = () => {
   return (
-    <div className="max-w-laptop mx-auto p-6 text-gray-800">
+    <div className="max-w-laptop mx-auto p-6 text-gray-800 my-10 select-text">
       <h1 className="text-3xl font-bold mb-4">Terms and Conditions</h1>
       <p className="mb-4">
         This website (

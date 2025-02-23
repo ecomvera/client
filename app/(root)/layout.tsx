@@ -16,8 +16,8 @@ import Others from "../fonts/others";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Ecommerce App",
-  description: "Ecommerce app using Next.js and Tailwind CSS",
+  title: "Online Shopping for Men, Women & Kids - Fashion & Lifestyle | Silkyester",
+  description: "Online Shopping for Men, Women & Kids - Fashion & Lifestyle | Silkyester",
 };
 
 export default function RootLayout({
@@ -27,6 +27,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <title>Online Shopping for Men, Women & Kids - Fashion & Lifestyle | Silkyester</title>
+        <link rel="icon" href="/assets/hindi-round.PNG" />
+        <meta
+          name="description"
+          content="Shop the latest fashion trends for Men, Women & Kids at Silkyester. Discover stylish clothing, accessories, and lifestyle products with the best deals & fast delivery!"
+        />
+        <meta
+          name="keywords"
+          content="online shopping, fashion marketplace, buy clothes online, men's fashion, women's clothing, kids wear, trendy outfits, stylish apparel, fashion accessories, lifestyle products, best fashion deals, Silkyester fashion, fast delivery shopping"
+        />
+      </head>
       <body
         className={`${Others.logoFont} ${Fonts.Thin} ${Fonts.ExtraLight} ${Fonts.Light} ${Fonts.Regular} ${Fonts.Medium} ${Fonts.SemiBold} ${Fonts.Bold} ${Fonts.ExtraBold} ${Fonts.Black} antialiased`}
       >

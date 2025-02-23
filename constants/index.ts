@@ -71,10 +71,10 @@ export const footer = {
     },
     {
       label: "Shipping & Returns",
-      route: "shipping-returns",
+      route: "shipping-and-returns",
     },
     {
-      label: "Cancellation and Refunds",
+      label: "Cancellation & Refunds",
       route: "cancellation-and-refunds",
     },
   ],

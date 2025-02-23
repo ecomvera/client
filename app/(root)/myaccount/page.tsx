@@ -84,7 +84,7 @@ const Page = () => {
         </Link>
       </div>
 
-      {/* <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild className="flex gap-3 items-center text-lg">
           <Button className="md:hidden w-full mt-10" variant={"destructive"}>
             Logout
@@ -104,7 +104,7 @@ const Page = () => {
             </div>
           </DialogHeader>
         </DialogContent>
-      </Dialog> */}
+      </Dialog>
     </div>
   );
 };

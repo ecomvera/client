@@ -3,7 +3,7 @@
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useAction } from "@/stores/action";
 import Link from "next/link";
-import { FaInstagram, FaFacebook } from "react-icons/fa";
+import { FaInstagram, FaFacebook, FaYoutube, FaTwitter, FaLinkedin, FaPinterest } from "react-icons/fa";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useDataStore } from "@/stores/data";
 import { use, useEffect, useState } from "react";
@@ -53,7 +53,7 @@ const SideBar = () => {
         <LinkSlider />
 
         <div className="w-full p-3 ">
-          <div className="text-sm text-muted-foreground">Contact Us</div>
+          {/* <div className="text-sm text-muted-foreground">Contact Us</div>
           <div className="flex flex-col mt-2">
             <Link href={"#"} className="flex gap-3 p-2">
               <div className="text-sm font-semibold">Help & Support</div>
@@ -64,23 +64,57 @@ const SideBar = () => {
             <Link href={"#"} className="flex gap-3 p-2">
               <div className="text-sm font-semibold">Become a Seller</div>
             </Link>
-          </div>
+          </div> */}
 
           <div className="text-sm text-muted-foreground mt-3">About Us</div>
           <div className="flex flex-col mt-2">
             <Link href={"#"} className="flex gap-3 p-2">
               <div className="text-sm font-semibold">Blogs</div>
             </Link>
-            <div className="flex gap-3 p-2">
-              <div className="flex justify-center gap-5">
-                <Link href={"#"}>
-                  <FaInstagram className="text-2xl text-light-1" />
-                </Link>
-                <Link href={"#"}>
-                  <FaFacebook className="text-2xl text-light-1" />
-                </Link>
-              </div>
-            </div>
+          </div>
+
+          <div className="text-sm text-muted-foreground mt-3">Social Media</div>
+          <div className="flex justify-between w-full mt-2 p-2">
+            <Link href="https://www.instagram.com/silkyester/" target="_blank">
+              <FaInstagram className="text-2xl text-[--c3]" />
+            </Link>
+            <Link href="https://www.facebook.com/profile.php?id=61565074614724#" target="_blank">
+              <FaFacebook className="text-2xl text-[--c3]" />
+            </Link>
+            <Link href="https://www.youtube.com/@Silkyester" target="_blank">
+              <FaYoutube className="text-2xl text-[--c3]" />
+            </Link>
+            <Link href="https://x.com/silkyester" target="_blank">
+              <FaTwitter className="text-2xl text-[--c3]" />
+            </Link>
+            <Link href="https://www.linkedin.com/company/silkyester/" target="_blank">
+              <FaLinkedin className="text-2xl text-[--c3]" />
+            </Link>
+            <Link href="https://in.pinterest.com/silkyester/" target="_blank">
+              <FaPinterest className="text-2xl text-[--c3]" />
+            </Link>
+          </div>
+
+          <div className="text-sm text-muted-foreground mt-3">Help</div>
+          <div className="flex flex-col mt-2">
+            <Link href={"https://www.silkyester.com/faq"} className="flex gap-3 p-2">
+              <div className="text-sm font-semibold">FAQs</div>
+            </Link>
+            <Link href={"https://www.silkyester.com/contact-us"} className="flex gap-3 p-2">
+              <div className="text-sm font-semibold">Contact Us</div>
+            </Link>
+            <Link href={"https://www.silkyester.com/privacy-policy"} className="flex gap-3 p-2">
+              <div className="text-sm font-semibold">Privacy Policy</div>
+            </Link>
+            <Link href={"https://www.silkyester.com/shipping-and-returns"} className="flex gap-3 p-2">
+              <div className="text-sm font-semibold">Shipping & Returns</div>
+            </Link>
+            <Link href={"https://www.silkyester.com/terms-and-conditions"} className="flex gap-3 p-2">
+              <div className="text-sm font-semibold">Terms & Conditions</div>
+            </Link>
+            <Link href={"https://www.silkyester.com/cancellation-and-refunds"} className="flex gap-3 p-2">
+              <div className="text-sm font-semibold">Cancellation & Refunds</div>
+            </Link>
           </div>
         </div>
       </SheetContent>
