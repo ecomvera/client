@@ -25,6 +25,7 @@ import ReactCarousel from "./Carousel";
 import { HeartIcon, Share1Icon } from "@radix-ui/react-icons";
 import { FaCartPlus } from "react-icons/fa";
 import Link from "next/link";
+// import ImageCarousel from "./ImageCarouosel";
 
 const ProductDetails = ({ product }: { product: IProduct }) => {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]?.hex);
@@ -76,6 +77,8 @@ const LeftGallaryView = ({
   return (
     <div className="w-full tablet:w-auto flex flex-col justify-center gap-1 mobile:flex-row-reverse">
       {/* <ImgaeGallary images={images} open={open} setOpen={setOpen} startWith={startWith} /> */}
+
+      {/* <ImageCarousel images={images} currentColor={currentColor} /> */}
 
       {/* main image  */}
       <div
@@ -201,8 +204,9 @@ const LeftGallaryView = ({
           <CarouselPrevious />
           <CarouselNext />
         </Carousel>
+      </div>
 
-        {/* {images
+      {/* {images
           .filter((image) => image.color === currentColor)
           .map((image, index) => (
             <div key={index} className={`cursor-pointer w-full`}>
@@ -240,7 +244,6 @@ const LeftGallaryView = ({
             </AspectRatio>
           </div>
         )} */}
-      </div>
 
       {/* mobile view  */}
       <div className="mobile:hidden">
@@ -373,17 +376,25 @@ const ProductDetail = ({
 
   const handleBuyNow = async () => {
     if (!selectedSize?.key) return setShowSelectSizeMessage(true);
-    addToCart({ ...item, product: data });
-    await fetch("/api/user/cart", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
-      body: JSON.stringify({ item }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.ok) router.push("/checkout");
-        else removeFromCart(item as ICartItem);
+    try {
+      addToCart({ ...item, product: data });
+      await fetch("/api/user/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
+        body: JSON.stringify({ item }),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.ok) router.push("/checkout");
+          else removeFromCart(item as ICartItem);
+        });
+    } catch (error) {
+      removeFromCart(item as ICartItem);
+      toast({
+        variant: "destructive",
+        description: "Something went wrong, please try again",
       });
+    }
   };
 
   return (
