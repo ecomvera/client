@@ -178,7 +178,7 @@ const Page = () => {
   }, [userLoading, cartLoading]);
 
   return (
-    <div className="max-w-desktop mx-auto px-2 tablet:py-5">
+    <div className="max-w-desktop mx-auto px-2 tablet:py-5 mb-28">
       <h1 className="text-2xl font-semibold text-light-1">Checkout</h1>
 
       <div className="flex flex-col-reverse tablet:flex-row justify-between py-3 gap-4 border-light-3">
@@ -274,49 +274,50 @@ const DeliveryDetails = ({
             )}
           </AccordionTrigger>
           <RadioGroup>
-            {user && user.addresses.length > 0 ? (
-              user.addresses.map((address) => (
-                <AccordionContent
-                  id={"shipping" + address.id}
-                  className="hover:bg-accent p-2 flex items-center gap-3 cursor-pointer"
-                  key={address.id}
-                  onClick={() => {
-                    if (address.id === deliveryAddress?.id) {
-                      setDeliveryAddress(null);
-                    } else {
-                      setDeliveryAddress(address);
-                      setCurrentItem(1);
-                      setActiveStep(1);
-                    }
-                  }}
-                >
-                  <RadioGroupItem
-                    value={address.id as string}
-                    checked={address.id === deliveryAddress?.id}
+            <AccordionContent>
+              {user && user.addresses.length > 0 ? (
+                user.addresses.map((address) => (
+                  <div
                     id={"shipping" + address.id}
-                  />
-                  <Label htmlFor={"shipping" + address.id} className="flex flex-col gap-1 cursor-pointer">
-                    <p className="font-semibold mb-1">{address.name}</p>
-                    <p>{`${address.line1} ${address.line2} ${address.city}, ${address.state}, ${address.country}. ${address.pincode}`}</p>
-                    <p>{address.landmark}</p>
-                    <p className="font-semibold">+91 {address.phone}</p>
-                  </Label>
-                </AccordionContent>
-              ))
-            ) : (
-              <AccordionContent>
+                    className="hover:bg-accent p-2 flex items-center gap-3 cursor-pointer"
+                    key={address.id}
+                    onClick={() => {
+                      if (address.id === deliveryAddress?.id) {
+                        setDeliveryAddress(null);
+                      } else {
+                        setDeliveryAddress(address);
+                        setCurrentItem(1);
+                        setActiveStep(1);
+                      }
+                    }}
+                  >
+                    <RadioGroupItem
+                      value={address.id as string}
+                      checked={address.id === deliveryAddress?.id}
+                      id={"shipping" + address.id}
+                    />
+                    <Label htmlFor={"shipping" + address.id} className="flex flex-col gap-1 cursor-pointer">
+                      <p className="font-semibold mb-1">{address.name}</p>
+                      <p>{`${address.line1} ${address.line2} ${address.city}, ${address.state}, ${address.country}. ${address.pincode}`}</p>
+                      <p>{address.landmark}</p>
+                      <p className="font-semibold">+91 {address.phone}</p>
+                    </Label>
+                  </div>
+                ))
+              ) : (
+                //
                 <p className="text-light-1 px-2">No address found</p>
-              </AccordionContent>
-            )}
-            <Link
-              href="/myaccount/addresses?address=new&src=/checkout"
-              className="hover:bg-accent p-2 flex items-center gap-3 cursor-pointer"
-            >
-              <Label className="flex gap-1 cursor-pointer items-center p-4">
-                <PlusCircleIcon className="w-6 h-6" />
-                <p className="font-semibold">Add New Address</p>
-              </Label>
-            </Link>
+              )}
+              <Link
+                href="/myaccount/addresses?address=new&src=/checkout"
+                className="hover:bg-accent p-2 flex items-center gap-3 cursor-pointer"
+              >
+                <Label className="flex gap-1 cursor-pointer items-center p-4">
+                  <PlusCircleIcon className="w-6 h-6" />
+                  <p className="font-semibold">Add New Address</p>
+                </Label>
+              </Link>
+            </AccordionContent>
           </RadioGroup>
         </AccordionItem>
         <AccordionItem
