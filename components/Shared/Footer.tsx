@@ -3,7 +3,7 @@
 import { categories, footer } from "@/constants";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaInstagram, FaFacebook } from "react-icons/fa";
+import { FaInstagram, FaFacebook, FaYoutube, FaTwitter, FaLinkedin, FaPrint, FaPinterest } from "react-icons/fa";
 
 const Footer = () => {
   const pathname = usePathname();
@@ -52,10 +52,28 @@ const Footer = () => {
 
         <div className="text-center pt-20 flex flex-col">
           <div className="flex justify-center gap-5 pt-5">
-            <FaInstagram className="text-2xl text-[--c1]" />
-            <FaFacebook className="text-2xl text-[--c1]" />
+            <Link href="https://www.instagram.com/silkyester/" target="_blank">
+              <FaInstagram className="text-2xl text-[--c1]" />
+            </Link>
+            <Link href="https://www.facebook.com/profile.php?id=61565074614724#" target="_blank">
+              <FaFacebook className="text-2xl text-[--c1]" />
+            </Link>
+            <Link href="https://www.youtube.com/@Silkyester" target="_blank">
+              <FaYoutube className="text-2xl text-[--c1]" />
+            </Link>
+            <Link href="https://x.com/silkyester" target="_blank">
+              <FaTwitter className="text-2xl text-[--c1]" />
+            </Link>
+            <Link href="https://www.linkedin.com/company/silkyester/" target="_blank">
+              <FaLinkedin className="text-2xl text-[--c1]" />
+            </Link>
+            <Link href="https://in.pinterest.com/silkyester/" target="_blank">
+              <FaPinterest className="text-2xl text-[--c1]" />
+            </Link>
           </div>
-          <p className="text-sm tablet:text-lg text-light-4 py-5">Copyright ©2024</p>
+          <p className="text-xs tablet:text-sm text-light-4 py-5">
+            © 2025 Silkyester. All Rights Reserved. | www.silkyester.com
+          </p>
         </div>
       </div>
     </div>

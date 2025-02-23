@@ -58,16 +58,24 @@ export const footer = {
       route: "faq",
     },
     {
-      label: "Shipping & Returns",
-      route: "shipping-returns",
+      label: "Contact Us",
+      route: "contact-us",
     },
     {
       label: "Privacy Policy",
       route: "privacy-policy",
     },
     {
-      label: "Contact Us",
-      route: "contact-us",
+      label: "Terms & Conditions",
+      route: "terms-and-conditions",
+    },
+    {
+      label: "Shipping & Returns",
+      route: "shipping-returns",
+    },
+    {
+      label: "Cancellation and Refunds",
+      route: "cancellation-and-refunds",
     },
   ],
 };
