@@ -21,6 +21,8 @@ import { makePayment } from "@/lib/razorpay";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import DeleteCartItem from "@/components/Dialogs/DeleteCartItem";
 import Stepper from "./_components/stepper";
+import { PlusCircleIcon } from "lucide-react";
+import Link from "next/link";
 
 declare global {
   interface Window {
@@ -44,6 +46,7 @@ const Page = () => {
 
   const handleCheckout = async () => {
     if (currentItem < totalAccordion) {
+      setActiveStep(activeStep + 1);
       return setCurrentItem(currentItem + 1);
     }
 
@@ -305,6 +308,15 @@ const DeliveryDetails = ({
                 <p className="text-light-1 px-2">No address found</p>
               </AccordionContent>
             )}
+            <Link
+              href="/myaccount/addresses?address=new&src=/checkout"
+              className="hover:bg-accent p-2 flex items-center gap-3 cursor-pointer"
+            >
+              <Label className="flex gap-1 cursor-pointer items-center p-4">
+                <PlusCircleIcon className="w-6 h-6" />
+                <p className="font-semibold">Add New Address</p>
+              </Label>
+            </Link>
           </RadioGroup>
         </AccordionItem>
         <AccordionItem
