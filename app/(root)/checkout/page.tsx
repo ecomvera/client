@@ -23,6 +23,7 @@ import DeleteCartItem from "@/components/Dialogs/DeleteCartItem";
 import Stepper from "./_components/stepper";
 import { PlusCircleIcon } from "lucide-react";
 import Link from "next/link";
+import Loader from "@/components/Shared/loader";
 
 declare global {
   interface Window {
@@ -203,7 +204,7 @@ const Page = () => {
             setActiveStep={setActiveStep}
           />
           <Button
-            className={`w-full mt-10 py-2 text-lg font-bold ${
+            className={`w-full mt-10 py-2 text-lg font-bold bg-[--c2] hover:bg-[--c3] ${
               currentItem < totalAccordion ? "" : "bg-[--c1] hover:bg-[--c1] text-gray-800"
             } `}
             disabled={loading}
@@ -214,6 +215,8 @@ const Page = () => {
         </div>
         {/* <PaymentDetails /> */}
       </div>
+
+      <Loader />
     </div>
   );
 };

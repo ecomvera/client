@@ -1,28 +1,22 @@
 "use client";
 
-import InfoCard from "../Cards/InfoCard";
+import { IProduct } from "@/types";
+import ReactCarousel from "./Carousel";
+import { CarouselItem } from "../ui/carousel";
 import ProductCard from "../Cards/ProductCard";
-import Carousel from "./Carousel";
 
-const product = {
-  image: "/assets/p1.webp",
-  route: "/p/p1",
-  label: "Men T-Shirt",
-  price: "50.00",
-};
-
-const SimilarProducts = () => {
+const SimilarProducts = ({ products }: { products: IProduct[] }) => {
   return (
     <div className="py-5">
       <h2 className="text-xl font-semibold py-5">You may also like</h2>
 
-      <Carousel>
-        <InfoCard {...product} />
-        <InfoCard {...product} />
-        <InfoCard {...product} />
-        <InfoCard {...product} />
-        <InfoCard {...product} />
-      </Carousel>
+      <ReactCarousel showArrows autoPlay={5000}>
+        {products?.map((product: IProduct) => (
+          <CarouselItem key={product.id} className="basis-[40%] sm:basis-1/3 md:basis-1/5 lg:basis-1/6">
+            <ProductCard product={product} showHeart={false} showRating={true} />
+          </CarouselItem>
+        ))}
+      </ReactCarousel>
     </div>
   );
 };

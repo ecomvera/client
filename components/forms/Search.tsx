@@ -34,7 +34,7 @@ const Search = () => {
         className="hidden laptop:flex items-center h-9 rounded overflow-hidden bg-[--white] bg-primary-50 w-[350px] laptop:w-[400px]"
       >
         <div
-          className={`
+          className={` 
           ${search.length ? "bg-primary-500 cursor-pointer" : "bg-primary-50 cursor-not-allowed"} 
            h-full p-2 w-10 flex justify-center items-center bg-[--c1]`}
         >
@@ -49,8 +49,8 @@ const Search = () => {
         />
         {search && <Cross2Icon onClick={() => setSearch("")} className={`cursor-pointer mr-3 text-xl w-5`} />}
       </form>
-      <Link href={`/search`}>
-        <IoSearchOutline className={`laptop:hidden cursor-pointer`} size={20} />
+      <Link href={`/search`} className="hidden tablet:block">
+        <IoSearchOutline className={`laptop:hidden cursor-pointer mt-1`} size={24} />
       </Link>
     </div>
   );

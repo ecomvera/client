@@ -10,11 +10,12 @@ const Page = async ({ params }: { params: { slug: string } }) => {
   // const fetchProduct = useSWR(`/api/products/${params.slug}`, fetcher, noCache);
   // const { data, isLoading } = fetchProduct;
   const product = await getData(`/api/products/${params.slug}`);
+  const similarProducts = await getData(`/api/products?new-arrivals`);
   if (!product) return <NotFound />;
 
   if (product)
     return (
-      <div className="max-w-desktop mx-auto px-2">
+      <div className="max-w-desktop mx-auto px-2 mb-14">
         <BreadcrumbCard
           nav={[
             { title: product.category?.parent?.name || "", url: `/${product.category?.parent?.slug}` },
@@ -23,7 +24,7 @@ const Page = async ({ params }: { params: { slug: string } }) => {
           title={product.name}
         />
         <ProductDetails product={product} />
-        {/* <SimilarProducts /> */}
+        <SimilarProducts products={similarProducts} />
       </div>
     );
 };

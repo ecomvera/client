@@ -14,7 +14,7 @@ const NewArrivals = ({ data: products }: { data: IProduct[] }) => {
 
       <ReactCarousel showArrows autoPlay={5000}>
         {products?.map((product: IProduct) => (
-          <CarouselItem key={product.id} className=" sm:basis-1/2 md:basis-1/3 lg:basis-1/6">
+          <CarouselItem key={product.id} className="basis-3/5 sm:basis-1/3 md:basis-1/5 lg:basis-1/6">
             <ProductCard product={product} showHeart={false} showRating={false} />
           </CarouselItem>
         ))}

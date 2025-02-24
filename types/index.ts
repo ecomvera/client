@@ -98,6 +98,7 @@ export interface IProduct {
   categoryId: string;
 
   subCategory?: { id: string; name: string; slug?: string } | string;
+  PruductReviews?: any;
 }
 
 export interface IProductType {

@@ -195,11 +195,11 @@ const OnBoarding = ({
 
       <p className="text-sm text-light-1 text-center">
         By creating an account or signing in, you agree with <br className="hidden mobile:block" /> our{" "}
-        <Link href="#" className="text-blue-800 font-semibold">
+        <Link href="/terms-and-conditions" className="text-blue-800 font-semibold">
           Terms and Conditions
         </Link>{" "}
         and{" "}
-        <Link href="#" className="text-blue-800 font-semibold">
+        <Link href="/privacy-policy" className="text-blue-800 font-semibold">
           Privacy Policy
         </Link>
       </p>

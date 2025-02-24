@@ -9,9 +9,11 @@ const Page = () => {
 
   const links = [
     { href: "/faq", label: "FAQ" },
+    { href: "/contact-us", label: "Contact Us" },
     { href: "/privacy-policy", label: "Privacy Policy" },
-    { href: "/terms-of-service", label: "Terms of Service" },
-    { href: "/refund-policy", label: "Refund Policy" },
+    { href: "/terms-and-conditions", label: "Terms & Conditions" },
+    { href: "/shipping-and-returns", label: "Shipping & Returns" },
+    { href: "/cancellation-and-refunds", label: "Cancellation & Refunds" },
   ];
 
   return (
@@ -24,7 +26,7 @@ const Page = () => {
       </h1>
 
       <div>
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-6">Useful Links</h1>
+        <h1 className="text-3xl font-semibold mb-4">Useful Links</h1>
         <p className="text-gray-600 mb-8">Find important information about our policies and frequently asked questions.</p>
 
         <div className=" p-6 w-full">

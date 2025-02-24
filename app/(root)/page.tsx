@@ -30,13 +30,11 @@ export default async function Home() {
   return (
     <div className="h-full min-h-[calc(100vh-100px)]">
       <Client categories={categories} />
-      <GalleryCollections collections={_.filter(collections, { isGallery: true })} />
+      {/* <GalleryCollections collections={_.filter(collections, { isGallery: true })} /> */}
       <GroupCategories collections={_.filter(collections, { isGallery: false })} />
 
       <NewArrivals data={newArrivals} />
       <BestSellers />
-
-      <Loader />
 
       {/* <ReactCarousel showArrows>
         {Array.from({ length: 10 }).map((_, index) => (

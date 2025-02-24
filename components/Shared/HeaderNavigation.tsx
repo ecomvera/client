@@ -59,7 +59,7 @@ const CategoryDropdown = ({ label, subCategories }: { label: string; subCategori
         <ul className="flex w-[715px] gap-10 p-5 px-8">
           {Object.keys(arr).map((item) => (
             <div key={item}>
-              <h3 className="text-base font-semibold text-[--c5]">{startCase(item)}</h3>
+              <h3 className="text-base font-semibold text-[--c2]">{startCase(item)}</h3>
               <ul role="list" className="mt-5 space-y-1">
                 {arr[item].map((category: ICategory) => (
                   <Link href={`/${category.slug}`} key={category.slug} className="">

@@ -67,7 +67,7 @@ const Header = () => {
               <Image
                 src="/assets/logo_text.png"
                 alt="logo"
-                className="object-cover w-44 h-full scale-125 zoom-in-90 transition-transform duration-300"
+                className="object-cover w-28 mobile:w-32 tablet:w-40 py-1 h-full scale-125 zoom-in-90 transition-transform duration-300"
                 width="0"
                 height="0"
                 sizes="100vw"
@@ -99,7 +99,7 @@ const Header = () => {
                     {wishlist.length}
                   </span>
                 )}
-                <IoHeartOutline className="cursor-pointer text-[25px]" />
+                <IoHeartOutline className="cursor-pointer text-[22px] tablet:text-[25px]" />
               </span>
               <div className="hidden tablet:flex gap-5">
                 <span className="relative mt-1" onClick={() => router.push("/cart")}>
@@ -162,7 +162,7 @@ const ProfileIcon = () => {
         onClick={() => setOpen(true)}
         className="focus:outline-none"
       >
-        <IoPersonOutline className="cursor-pointer text-xl tablet:text-2xl" />
+        <IoPersonOutline className="cursor-pointer text-xl tablet:text-[24px] mt-1" />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         className="mx-2"

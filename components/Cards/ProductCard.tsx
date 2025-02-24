@@ -7,6 +7,7 @@ import { useUser } from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
 import { AspectRatio } from "../ui/aspect-ratio";
 import { useToken } from "@/hooks/useToken";
+import { useMemo } from "react";
 
 const ProductCard = ({
   product,
@@ -59,6 +60,15 @@ const ProductCard = ({
     });
   };
 
+  const percentOff = useMemo(() => {
+    return ((product.mrp - product.price) / product.mrp) * 100;
+  }, [product]);
+
+  const rating = useMemo(() => {
+    if (!product.ProductReviews?.length) return 0;
+    return product.ProductReviews?.reduce((acc: number, cur: any) => acc + cur.rating, 0) / product.ProductReviews?.length;
+  }, [product]);
+
   return (
     <Link href={`/p/${product.slug}`}>
       <div className="flex flex-col text-light-1">
@@ -86,19 +96,26 @@ const ProductCard = ({
             className="rounded-md object-contain w-full h-full"
           />
 
-          {showRating && (
+          {showRating && rating ? (
             <div className="absolute bottom-2 rounded-l right-0 bg-light-1 text-background px-1 flex gap-1 items-center text-xs">
-              <IoStar fill="var(--c1)" /> 4.5
+              <IoStar fill="var(--c1)" /> {rating.toFixed(1)}
             </div>
-          )}
+          ) : null}
         </AspectRatio>
 
         <div className="p-1">
           <p className="text-sm tablet:text-lg text-ellipsis truncate">{product.name}</p>
-          <p className="text-sm tablet:text-lg font-semibold">
-            ₹{product.price}{" "}
-            <span className="text-xs font-extralight tablet:text-sm line-through text-">₹{product.mrp}</span>
-          </p>
+          <div className="text-xs mobile:text-sm tablet:text-base font-semibold flex gap-2 items-center justify-between">
+            <div>
+              ₹{product.price}{" "}
+              <span className="text-[10px] mobile:text-xs font-extralight tablet:text-sm line-through text-">
+                ₹{product.mrp}
+              </span>
+            </div>
+            {percentOff > 0 && (
+              <p className="text-xs tablet:text-sm font-semibold text-[--c6]">{Math.round(percentOff)}% off</p>
+            )}
+          </div>
         </div>
       </div>
     </Link>

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import { IoHeart, IoHeartOutline, IoLocationOutline } from "react-icons/io5";
+import { IoCart, IoCartOutline, IoHeart, IoHeartOutline, IoLocationOutline } from "react-icons/io5";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { usePathname, useRouter } from "next/navigation";
@@ -404,17 +404,15 @@ const ProductDetail = ({
     <div className="w-full px-2 relative tablet:static mt-2 tablet:mt-0 laptop:px-5">
       <div className="absolute right-0 top-[-30px] flex justify-end gap-3 mt-2">
         {isInWishlist ? (
-          <IoHeart className="cursor-pointer w-6 h-6 text-red-500" onClick={handleAddToWishlist} />
+          <IoHeart className="cursor-pointer w-5 h-5  mobile:w-6 mobile:h-6 text-red-500" onClick={handleAddToWishlist} />
         ) : (
-          <IoHeartOutline className="cursor-pointer w-6 h-6" onClick={handleAddToWishlist} />
+          <IoHeartOutline className="cursor-pointer w-5 h-5  mobile:w-6 mobile:h-6" onClick={handleAddToWishlist} />
         )}
-        <Share1Icon className="cursor-pointer w-6 h-6" />
+        <Share1Icon className="cursor-pointer w-5 h-5  mobile:w-6 mobile:h-6" />
       </div>
-      <h2 className="text-xl font-medium leading-[1.2] mobile:mt-10 tablet:mt-0">
-        {data.name} Voluptatem aut id placeat vitae officia. Est aut quia optio.
-      </h2>
+      <h2 className="text-base mobile:text-xl font-medium leading-[1.2] mobile:mt-10 tablet:mt-0">{data.name}</h2>
       <div className="mt-3">
-        <p className={`${!showMore && "line-clamp-3"} break-all`}>{data.description}</p>
+        <p className={`${!showMore && "line-clamp-3"} break-all text-sm mobile:text-base`}>{data.description}</p>
         <span onClick={() => setShowMore(!showMore)} className="text-base font-bold text-[--c1] cursor-pointer">
           {!showMore ? "Read more" : "Read less"}
         </span>
@@ -431,7 +429,10 @@ const ProductDetail = ({
         <p className="text-base font-semibold text-light-1">{data.material}</p>
       </div>
 
-      <p className="text-base mobile:text-lg font-semibold text-dark-3 uppercase mt-5">Select Color</p>
+      <p className="text-sm mobile:text-base tablet:text-lg font-semibold text-dark-3 uppercase mt-5">
+        Select Color <span className="text-xs">({data.colors.find((color) => color.hex === selectedColor)?.name})</span>
+      </p>
+      <p className="text-xs mobile:text-sm font-semibold"></p>
       <div className="flex gap-1">
         {data.colors.map((color) => (
           <div
@@ -443,6 +444,7 @@ const ProductDetail = ({
             }}
             onClick={() => setSelectedColor(color.hex)}
           >
+            <span className="sr-only">{color.name}</span>
             {selectedColor === color.hex && <div className="w-8 h-8 rounded-full border-[--white] border-2" />}
           </div>
         ))}
@@ -450,11 +452,11 @@ const ProductDetail = ({
 
       {isItemUnavailable ? (
         <div className="py-5">
-          <p className="text-base mobile:text-lg font-semibold text-red-600/70 uppercase">Out of Stock</p>
+          <p className="text-sm mobile:text-base tablet:text-lg font-semibold text-red-600/70 uppercase">Out of Stock</p>
         </div>
       ) : (
         <>
-          <p className="text-base mobile:text-lg font-semibold text-dark-3 uppercase mt-5">Select Size</p>
+          <p className="text-sm mobile:text-base tablet:text-lg font-semibold text-dark-3 uppercase mt-5">Select Size</p>
           <div className="flex gap-1">
             {data.sizes.map(
               (size) =>
@@ -498,7 +500,7 @@ const ProductDetail = ({
               variant={"outline"}
               onClick={handleAddToCart}
             >
-              <FaCartPlus className="mr-2 mt-[-2px]" />
+              {/* <IoCartOutline className="mt-[-1px]" /> */}
               {isExistInCart ? "Added. Go to cart" : "Add to cart"}
             </Button>
             {/* <Link href="/checkout" className={`rounded tablet:text-base w-full bg-[--c2] hover:bg-[--c3]`}> */}
@@ -510,20 +512,20 @@ const ProductDetail = ({
         </>
       )}
 
-      <CheckPincode />
+      {/* <CheckPincode /> */}
 
-      <p className="text-xl font-semibold mt-10">Product Highlights</p>
+      <p className="text-base tablet:text-lg font-semibold">Product Highlights</p>
       <div className="grid grid-cols-2 gap-5 mt-3 w-full">
         {data.attributes.map((item, index) => (
           <div key={index} className="">
-            <p className="font-semibold">{item.key}</p>
-            <p>{item.value}</p>
+            <p className="text-sm mobile:text-base tablet:text-lg font-semibold">{item.key}</p>
+            <p className="text-sm mobile:text-base tablet:text-lg">{item.value}</p>
             <div className="w-full mobile:w-1/2 h-[1px] bg-light-3"></div>
           </div>
         ))}
       </div>
 
-      <ReturnDetails />
+      {/* <ReturnDetails /> */}
 
       <Reviews data={data.ProductReviews || []} />
     </div>
