@@ -25,6 +25,7 @@ import ReactCarousel from "./Carousel";
 import { HeartIcon, Share1Icon } from "@radix-ui/react-icons";
 import { FaCartPlus } from "react-icons/fa";
 import Link from "next/link";
+import ShareModal from "../Dialogs/Share";
 // import ImageCarousel from "./ImageCarouosel";
 
 const ProductDetails = ({ product }: { product: IProduct }) => {
@@ -408,7 +409,8 @@ const ProductDetail = ({
         ) : (
           <IoHeartOutline className="cursor-pointer w-5 h-5  mobile:w-6 mobile:h-6" onClick={handleAddToWishlist} />
         )}
-        <Share1Icon className="cursor-pointer w-5 h-5  mobile:w-6 mobile:h-6" />
+        <ShareModal pageLink={window.location.href} />
+        {/* <Share1Icon className="cursor-pointer w-5 h-5  mobile:w-6 mobile:h-6" /> */}
       </div>
       <h2 className="text-base mobile:text-xl font-medium leading-[1.2] mobile:mt-10 tablet:mt-0">{data.name}</h2>
       <div className="mt-3">

@@ -3,6 +3,7 @@
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useAction } from "@/stores/action";
 import "./loadingScreenStyle.css";
+import Image from "next/image";
 
 export function LoadingScreen() {
   const { showLoadingScreen } = useAction();
@@ -13,9 +14,17 @@ export function LoadingScreen() {
         aria-describedby={undefined}
       >
         <DialogTitle className="hidden">Loading...</DialogTitle>
+        {/* <img
+          src="/assets/animated_logo.gif"
+          alt="loader"
+          width={0}
+          height={0}
+          sizes="100vw"
+          className="w-[300px] h-[300px]"
+        /> */}
         {/* <RunningTruck /> */}
-        <TimerGlass />
-        {/* <ThreeDots /> */}
+        {/* <TimerGlass /> */}
+        <ThreeDots />
       </DialogContent>
     </Dialog>
   );
@@ -24,9 +33,9 @@ export function LoadingScreen() {
 const ThreeDots = () => {
   return (
     <div className="flex space-x-2 ml-[-5px] mt-[-3px]">
-      <div className="w-4 h-4 bg-white rounded-full animate-bounce"></div>
-      <div className="w-4 h-4 bg-white rounded-full animate-bounce delay-200"></div>
-      <div className="w-4 h-4 bg-white rounded-full animate-bounce delay-400"></div>
+      <div className="w-4 h-4 bg-[--c1] rounded-full animate-bounce"></div>
+      <div className="w-4 h-4 bg-[--c1] rounded-full animate-bounce delay-200"></div>
+      <div className="w-4 h-4 bg-[--c1] rounded-full animate-bounce delay-400"></div>
     </div>
   );
 };

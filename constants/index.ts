@@ -97,7 +97,7 @@ export const footer = {
     },
     {
       label: "About Us",
-      route: "about",
+      route: "about-us",
     },
     {
       label: "Track Order",

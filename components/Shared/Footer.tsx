@@ -82,7 +82,7 @@ const Footer = () => {
   // );
 
   return (
-    <div className="bg-gray-100 text-gray-700 py-10 px-6 md:px-20 select-text">
+    <div className="bg-gray-100 text-gray-700 py-10 px-6 md:px-20 select-text hidden tablet:block">
       <div className="max-w-desktop mx-auto grid grid-cols-1 md:grid-cols-4 gap-6">
         <div>
           <h3 className="font-semibold mb-3">CATEGORIES</h3>

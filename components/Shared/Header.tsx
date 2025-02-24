@@ -45,11 +45,11 @@ const Header = () => {
         <div className="max-w-desktop mx-auto px-3 w-full">
           <div className="flex justify-between gap-3 items-center">
             <div className="flex gap-4">
-              <HeadLink href="/about" label="About" />
+              <HeadLink href="/about-us" label="About" />
               <HeadLink href="/blog" label="Blog" />
             </div>
             <div className="flex gap-4">
-              <HeadLink href="/contact" label="Contact" />
+              <HeadLink href="/contact-us" label="Contact" />
               <HeadLink href="/myaccount/orders" label="Track Order" />
             </div>
           </div>
