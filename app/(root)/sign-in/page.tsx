@@ -28,7 +28,7 @@ const Page = () => {
 
         <div className="bg-background rounded-t-xl flex flex-col justify-center h-max w-full tablet:max-w-[450px] m-auto p-2 tablet:p-5 py-8">
           <Image
-            src="/assets/logo1.png"
+            src="/assets/logo_200x200.png"
             alt="signin"
             width={0}
             height={0}

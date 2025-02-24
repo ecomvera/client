@@ -30,7 +30,7 @@ const Page = () => {
           <div>
             <div className="text-light-1">No items in your wishlist</div>
             <Image
-              src="/assets/bag__.png"
+              src="/assets/wishlist.png"
               alt="empty"
               width={0}
               height={0}

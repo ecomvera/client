@@ -18,6 +18,11 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Online Shopping for Men, Women & Kids - Fashion & Lifestyle | Silkyester",
   description: "Online Shopping for Men, Women & Kids - Fashion & Lifestyle | Silkyester",
+  icons: {
+    icon: "assets/hindi_logo.png",
+    shortcut: "assets/hindi_logo.png",
+    apple: "assets/hindi_logo.png",
+  },
 };
 
 export default function RootLayout({
@@ -29,7 +34,6 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <title>Online Shopping for Men, Women & Kids - Fashion & Lifestyle | Silkyester</title>
-        <link rel="icon" href="/assets/hindi-round.PNG" />
         <meta
           name="description"
           content="Shop the latest fashion trends for Men, Women & Kids at Silkyester. Discover stylish clothing, accessories, and lifestyle products with the best deals & fast delivery!"

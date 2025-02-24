@@ -127,7 +127,7 @@ const MyCart = ({ setActiveStep }: { setActiveStep: React.Dispatch<React.SetStat
           <div>
             <div className="text-light-1">No items in your cart</div>
             <Image
-              src="/assets/bag.png"
+              src="/assets/cart_bag.png"
               alt="empty"
               width={0}
               height={0}

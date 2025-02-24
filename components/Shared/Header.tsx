@@ -65,7 +65,7 @@ const Header = () => {
             <Link href={"/"} className="z-20 overflow-hidden">
               {/* <h2 className="text-xl tablet:text-2xl font-bold uppercase tracking-wide">Silkyester</h2> */}
               <Image
-                src="/assets/logo_bg.png"
+                src="/assets/logo_text.png"
                 alt="logo"
                 className="object-cover w-44 h-full scale-125 zoom-in-90 transition-transform duration-300"
                 width="0"

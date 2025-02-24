@@ -8,7 +8,7 @@ const Loader = () => {
         <div className={Styles.truckWrapper}>
           <div className={`${Styles.truckBody} relative overflow-hidden`}>
             <Image
-              src="/assets/Pattern.png"
+              src="/assets/silkyester_pattern.png"
               alt="truck"
               width={0}
               height={0}
@@ -16,7 +16,7 @@ const Loader = () => {
               className="w-[78px] h-[94%] ml-[5px]  mt-[2px] absolute left-0"
             />
             <Image
-              src="/assets/logo_bg.png"
+              src="/assets/logo_text.png"
               alt="truck"
               width={0}
               height={0}
