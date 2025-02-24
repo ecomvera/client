@@ -68,4 +68,44 @@ export const footer = {
       route: "cancellation-and-refunds",
     },
   ],
+  popularSearches: [
+    {
+      label: "T-shirts",
+      route: "t-shirts",
+    },
+    {
+      label: "Shirts",
+      route: "shirts",
+    },
+    {
+      label: "Jeans",
+      route: "jeans",
+    },
+    {
+      label: "Sweatshirts",
+      route: "sweatshirts",
+    },
+  ],
+  links: [
+    {
+      label: "Blog",
+      route: "blog",
+    },
+    {
+      label: "Careers",
+      route: "careers",
+    },
+    {
+      label: "About Us",
+      route: "about",
+    },
+    {
+      label: "Track Order",
+      route: "myaccount/orders",
+    },
+    {
+      label: "Become a Seller",
+      route: "become-a-seller",
+    },
+  ],
 };

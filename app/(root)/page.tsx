@@ -28,7 +28,7 @@ export default async function Home() {
   // }
 
   return (
-    <div className="h-full min-h-[calc(100vh-100px)]">
+    <div className="h-full min-h-[calc(100vh-100px)] pb-16">
       <Client categories={categories} />
       {/* <GalleryCollections collections={_.filter(collections, { isGallery: true })} /> */}
       <GroupCategories collections={_.filter(collections, { isGallery: false })} />
