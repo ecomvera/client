@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, use, useEffect, useMemo, useState } from "react";
 import { IoCart, IoCartOutline, IoHeart, IoHeartOutline, IoLocationOutline } from "react-icons/io5";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
