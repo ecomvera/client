@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Copy, Send } from "lucide-react";
 import { Share1Icon } from "@radix-ui/react-icons";
-import { FaFacebook, FaInstagram, FaWhatsapp } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter, FaWhatsapp } from "react-icons/fa";
 
 const ShareModal = ({ pageLink }: { pageLink: string }) => {
   const [copied, setCopied] = useState(false);
@@ -29,14 +29,14 @@ const ShareModal = ({ pageLink }: { pageLink: string }) => {
             <a href={`https://api.whatsapp.com/send?text=${pageLink}`} target="_blank">
               <FaWhatsapp className="w-8 h-8 text-gray-600 hover:text-black" />
             </a>
-            <a href={`https://www.instagram.com/share?url=${pageLink}`} target="_blank">
-              <FaInstagram className="w-8 h-8 text-gray-600 hover:text-black" />
+            <a href={`https://twitter.com/intent/tweet?url=${pageLink}`} target="_blank">
+              <FaTwitter className="w-8 h-8 text-gray-600 hover:text-black" />
             </a>
             <a href={`https://www.facebook.com/sharer/sharer.php?u=${pageLink}`} target="_blank">
               <FaFacebook className="w-8 h-8 text-gray-600 hover:text-black" />
             </a>
-            <a href={`https://discord.com/share?url=${pageLink}`} target="_blank">
-              <Send className="w-8 h-8 text-gray-600 hover:text-black" />
+            <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${pageLink}`} target="_blank">
+              <FaLinkedin className="w-8 h-8 text-gray-600 hover:text-black" />
             </a>
           </div>
           <div className="mt-4">
