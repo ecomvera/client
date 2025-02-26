@@ -3,7 +3,6 @@
 import { StarFilledIcon, StarIcon } from "@radix-ui/react-icons";
 import { Separator } from "../ui/separator";
 import { formatDate } from "@/lib/utils";
-import { Progress } from "@/components/ui/progress";
 import { ArrowRight, Star } from "lucide-react";
 import Link from "next/link";
 
@@ -79,11 +78,24 @@ const RatingComponent = ({ data }: { data: any }) => {
         {ratingBreakdown.map(({ stars, count }) => (
           <div key={stars} className="flex items-center space-x-2">
             <span className="text-sm font-medium min-w-5">{stars}★</span>
-            <Progress value={(count / totalRatings) * 100} className="w-full h-2 bg-gray-200 " />
+            <ReviewBar value={(count / totalRatings) * 100} color="bg-[--c2]" />
             <span className="text-sm text-gray-600 min-w-3">{count}</span>
           </div>
         ))}
       </div>
+    </div>
+  );
+};
+
+interface ReviewBarProps {
+  value: number;
+  color?: string;
+}
+
+const ReviewBar: React.FC<ReviewBarProps> = ({ value, color = "bg-blue-500" }) => {
+  return (
+    <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+      <div className={`h-full ${color} transition-all`} style={{ width: `${value}%` }}></div>
     </div>
   );
 };

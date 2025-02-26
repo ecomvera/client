@@ -409,7 +409,7 @@ const ProductDetail = ({
         ) : (
           <IoHeartOutline className="cursor-pointer w-5 h-5  mobile:w-6 mobile:h-6" onClick={handleAddToWishlist} />
         )}
-        <ShareModal pageLink={window.location.href} />
+        <ShareModal />
         {/* <Share1Icon className="cursor-pointer w-5 h-5  mobile:w-6 mobile:h-6" /> */}
       </div>
       <h2 className="text-base mobile:text-xl font-medium leading-[1.2] mobile:mt-10 tablet:mt-0">{data.name}</h2>

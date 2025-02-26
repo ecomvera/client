@@ -6,9 +6,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaInstagram, FaFacebook, FaYoutube, FaTwitter, FaLinkedin, FaPrint, FaPinterest } from "react-icons/fa";
 import Image from "next/image";
+import { useDataStore } from "@/stores/data";
+import { useMemo } from "react";
 
 const Footer = () => {
   const pathname = usePathname();
+  const { categories } = useDataStore();
+
+  const categoriesData = useMemo(() => categories.map((category) => category.children).flat(), [categories]);
 
   if (["/sign-in", "/cart", "/checkout", "/payment"].includes(pathname)) return null;
   // return (
@@ -87,9 +92,11 @@ const Footer = () => {
         <div>
           <h3 className="font-semibold mb-3">CATEGORIES</h3>
           <ul className="space-y-2">
-            {["Men", "Women", "Kids", "Home & Living", "Beauty", "Gift Cards"].map((item) => (
+            {categoriesData.slice(0, 6).map((item: any) => (
               <li key={item} className="hover:text-gray-900 cursor-pointer">
-                {item}
+                <Link key={item.label} href={`/${item.slug}`} className="hover:text-gray-900 cursor-pointer">
+                  {item.name}
+                </Link>
               </li>
             ))}
           </ul>
@@ -132,7 +139,7 @@ const Footer = () => {
 
           <h3 className="font-semibold mt-5">KEEP IN TOUCH</h3>
           <div className="flex space-x-4">
-            <div className="flex justify-center gap-5">
+            <div className="flex flex-wrap gap-5">
               <Link href="https://www.instagram.com/silkyester/" target="_blank">
                 <FaInstagram className="text-2xl " />
               </Link>
@@ -160,9 +167,9 @@ const Footer = () => {
         <div>
           <h3 className="font-semibold mb-3">POPULAR SEARCHES</h3>
           <div className="text-sm text-gray-600 flex gap-2">
-            {footer.popularSearches.map((item, index) => (
-              <Link key={index} href={item.route}>
-                {item.label} <span className={index === footer.popularSearches.length - 1 ? "hidden" : ""}> |</span>
+            {categoriesData.map((item: any, index) => (
+              <Link key={index} href={item.slug}>
+                {item.name} <span className={index === categoriesData.length - 1 ? "hidden" : ""}> |</span>
               </Link>
             ))}
           </div>

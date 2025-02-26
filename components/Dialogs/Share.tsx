@@ -8,8 +8,10 @@ import { Copy, Send } from "lucide-react";
 import { Share1Icon } from "@radix-ui/react-icons";
 import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter, FaWhatsapp } from "react-icons/fa";
 
-const ShareModal = ({ pageLink }: { pageLink: string }) => {
+const ShareModal = () => {
   const [copied, setCopied] = useState(false);
+
+  const pageLink = typeof window !== "undefined" ? window.location.href : "";
 
   const handleCopy = () => {
     navigator.clipboard.writeText(pageLink);

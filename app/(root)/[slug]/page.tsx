@@ -180,7 +180,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
         </div>
 
         <div className="flex flex-col w-full mt-[-5px]">
-          <div className="z-[2] flex justify-between items-center gap-5 sticky md:flex top-12 md:top-auto bg-background mb-3 py-3 md:p-0">
+          <div className="z-[2] flex justify-between items-center gap-5 sticky md:flex top-10 md:top-auto bg-background mb-3 py-3 md:p-0">
             <div className="font-semibold text-xl md:text-2xl font-sans tracking-wide">
               {category?.name}{" "}
               {(category?.products || data?.products) && (
