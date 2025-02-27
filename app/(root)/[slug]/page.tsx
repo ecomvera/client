@@ -120,7 +120,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
       const aggregatedProducts = children.reduce((acc: IProduct[], category: ICategory) => {
         return acc.concat(category.products || []);
       }, []);
-      console.log(aggregatedProducts);
+      // console.log(aggregatedProducts);
       setFilteredProducts(aggregatedProducts); // Set the products from subcategories
       setProductAttributes({ products: aggregatedProducts });
     }

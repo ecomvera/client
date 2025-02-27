@@ -58,7 +58,7 @@ const Page = () => {
 const CartProduct = ({ item }: { item: ICartItem }) => {
   return (
     <div className="p-2 flex gap-2 border my-2">
-      <Link href={`/p/${item.product.slug}`} className="relative w-[60px] tablet:w-[100px] overflow-hidden">
+      <Link href={`/product/${item.product.slug}`} className="relative w-[60px] tablet:w-[100px] overflow-hidden">
         <AspectRatio ratio={0.8 / 1}>
           <Image
             src={item.product.images.filter((image) => image.color === item.color)[0]?.url}

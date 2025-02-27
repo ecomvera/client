@@ -20,6 +20,7 @@ interface IDataStore {
   setFilterProperties: (filterProperties: IFilterProperties) => void;
   categories: ICategory[];
   setCategories: (categories: ICategory[]) => void;
+  initialized: boolean;
 
   deliveryCost: number;
   freeDeliveryAt: number;
@@ -54,7 +55,8 @@ export const useDataStore = create<IDataStore>((set) => ({
   filterProperties: filterProperties,
   setFilterProperties: (filterProperties: IFilterProperties) => set({ filterProperties }),
   categories: categories,
-  setCategories: (categories: ICategory[]) => set({ categories }),
+  initialized: false,
+  setCategories: (categories: ICategory[]) => set({ categories, initialized: true }),
 
   deliveryCost: deliveryCost,
   freeDeliveryAt: freeDeliveryAt,

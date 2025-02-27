@@ -70,7 +70,7 @@ const ProductCard = ({
   }, [product]);
 
   return (
-    <Link href={`/p/${product.slug}`}>
+    <Link href={`/product/${product.slug}`}>
       <div className="flex flex-col text-light-1">
         <AspectRatio ratio={0.8 / 1} className="border rounded-md relative">
           {showHeart && (

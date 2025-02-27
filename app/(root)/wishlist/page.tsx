@@ -86,7 +86,7 @@ const ProductCard = ({
 
   return (
     <Card className="items-center justify-center text-light-1 overflow-hidden rounded-none border-none shadow-none">
-      <Link href={`/p/${item.product.slug}`}>
+      <Link href={`/product/${item.product.slug}`}>
         <CardHeader className="relative p-0 w-full">
           <Image
             src={item.product.images[0].url}

@@ -78,7 +78,7 @@ const RatingComponent = ({ data }: { data: any }) => {
         {ratingBreakdown.map(({ stars, count }) => (
           <div key={stars} className="flex items-center space-x-2">
             <span className="text-sm font-medium min-w-5">{stars}★</span>
-            <ReviewBar value={(count / totalRatings) * 100} color="bg-[--c2]" />
+            <ReviewBar value={(count / totalRatings) * 100 || 0} color="bg-[--c2]" />
             <span className="text-sm text-gray-600 min-w-3">{count}</span>
           </div>
         ))}

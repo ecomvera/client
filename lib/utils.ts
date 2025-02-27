@@ -26,6 +26,28 @@ export async function getData(url: string) {
   }
 }
 
+// default 5 mins
+export async function fetchISR(url: string, revalidate = 300) {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, { next: { revalidate } });
+    if (!res.ok) {
+      console.log("error -", "failed to fetch data");
+      return null;
+    }
+
+    const data = await res.json();
+    if (!data.ok) {
+      console.log("error -", data.error);
+      return null;
+    }
+
+    return data.data;
+  } catch (error) {
+    console.log("error -", error);
+    return null;
+  }
+}
+
 export const fetcher = (url: string) => fetch(url).then((res) => res.json());
 // export const postFetcher = (url: string, method = "POST", body = {}) => {
 //   console.log(url);

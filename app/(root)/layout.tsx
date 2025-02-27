@@ -13,7 +13,8 @@ import Script from "next/script";
 import Fonts from "../fonts/Montserrat";
 import Others from "../fonts/others";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import FetchData from "@/components/Shared/FetchData";
+import { fetchISR } from "@/lib/utils";
+import HydrateZustand from "@/components/Shared/HydrateZustand ";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,11 +28,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const categories = await fetchISR(`/api/categories`, 3600);
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -51,7 +54,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <Suspense fallback={<div>Loading...</div>}>
             <div className="!scroll-smooth select-none relative bg-[--white] text-[--black]">
-              <FetchData />
+              <HydrateZustand categories={categories} />
               <LoadingScreen />
               <Toaster />
               <Header />
