@@ -16,7 +16,7 @@ export const dynamic = "force-dynamic";
 export default async function Home() {
   const collections = await getData(`/api/collections?active=true`);
   const newArrivals = await getData(`/api/products?new-arrivals`);
-  const categories = await getData(`/api/categories`);
+  // const categories = await getData(`/api/categories`);
 
   // const [isMounted, setIsMounted] = useState(false);
 
@@ -30,7 +30,6 @@ export default async function Home() {
 
   return (
     <div className="h-full min-h-[calc(100vh-100px)] pb-16">
-      <Client categories={categories} />
       {/* <GalleryCollections collections={_.filter(collections, { isGallery: true })} /> */}
       <GroupCategories collections={_.filter(collections, { isGallery: false })} />
 

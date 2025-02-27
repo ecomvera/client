@@ -13,6 +13,7 @@ import Script from "next/script";
 import Fonts from "../fonts/Montserrat";
 import Others from "../fonts/others";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import FetchData from "@/components/Shared/FetchData";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -50,6 +51,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <Suspense fallback={<div>Loading...</div>}>
             <div className="!scroll-smooth select-none relative bg-[--white] text-[--black]">
+              <FetchData />
               <LoadingScreen />
               <Toaster />
               <Header />
