@@ -6,6 +6,8 @@ const logo = localFont({
   weight: "100 900",
 });
 
-export default {
+const Fonts = {
   logoFont: logo.variable,
 };
+
+export default Fonts;

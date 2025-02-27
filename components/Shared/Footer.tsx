@@ -93,7 +93,7 @@ const Footer = () => {
           <h3 className="font-semibold mb-3">CATEGORIES</h3>
           <ul className="space-y-2">
             {categoriesData.slice(0, 6).map((item: any) => (
-              <li key={item} className="hover:text-gray-900 cursor-pointer">
+              <li key={item.id} className="hover:text-gray-900 cursor-pointer">
                 <Link key={item.label} href={`/${item.slug}`} className="hover:text-gray-900 cursor-pointer">
                   {item.name}
                 </Link>

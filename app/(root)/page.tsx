@@ -11,6 +11,7 @@ import Client from "@/components/Shared/client";
 import Loader from "@/components/Shared/loader";
 import GalleryCollections from "@/components/Shared/GalleryCollections";
 import _ from "lodash";
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const collections = await getData(`/api/collections?active=true`);

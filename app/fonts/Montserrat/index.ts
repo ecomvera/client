@@ -54,7 +54,7 @@ const montserratBlack = localFont({
   weight: "100 900",
 });
 
-export default {
+export const Fonts = {
   Thin: montserratThin.variable,
   ExtraLight: montserratExtraLight.variable,
   Light: montserratLight.variable,
@@ -65,3 +65,5 @@ export default {
   ExtraBold: montserratExtraBold.variable,
   Black: montserratBlack.variable,
 };
+
+export default Fonts;

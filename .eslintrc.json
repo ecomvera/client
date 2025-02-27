@@ -2,6 +2,7 @@
   "extends": "next/core-web-vitals",
   "rules": {
     "react-hooks/exhaustive-deps": "off",
-    "allowCallExpression": true
+    "react/no-unescaped-entities": "off",
+    "allowCallExpression": 0
   }
 }
