@@ -45,6 +45,58 @@ const Page = () => {
   const [activeStep, setActiveStep] = React.useState(1);
   const totalAccordion = 3;
 
+  const handlePayment = async ({ orderID }: { orderID: string }) => {
+    console.log({ orderID });
+    try {
+      const data = await fetch("/api/user/payment/payu", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
+        body: JSON.stringify({
+          amount: 1,
+          email: user?.email || "",
+          firstName: user?.name || "",
+          mobile: user?.phone || "",
+          orderID: orderID,
+        }),
+      });
+      if (!data.ok) {
+        toast({
+          description: "Something went wrong",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // try {
+      //   const res = await data.json();
+      //   if (!res.ok) {
+      //     toast({
+      //       description: res.error || "Something went wrong",
+      //       variant: "destructive",
+      //     });
+      //     return;
+      //   }
+      // } catch (error) {}
+
+      const html = await data.text();
+
+      document.open();
+      document.write(html);
+      document.close();
+
+      // // open a new window
+      // const newWindow = window.open();
+      // newWindow?.document.write(html);
+      // newWindow?.document.close();
+    } catch (error: any) {
+      console.log("error -", error);
+      toast({
+        description: "Something went wrong",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleCheckout = async () => {
     if (currentItem < totalAccordion) {
       setActiveStep(activeStep + 1);
@@ -82,6 +134,7 @@ const Page = () => {
       deliveryId: deliveryAddress?.id,
       items,
       status: paymentMode === "PREPAID" ? "PAYMENT_PENDING" : "PROCESSING",
+      paymentMode: paymentMode === "PREPAID" ? "ONLINE" : "CASH_ON_DELIVERY",
       totalAmount: totalPrice,
       deliveryCharge: totalPrice < freeDeliveryAt ? deliveryCost : 0,
       giftWrapCharge: 0,
@@ -120,9 +173,9 @@ const Page = () => {
     // setCart([]);
     setLoading(false);
 
-    // if (paymentMode === "PREPAID") router.push(`/payment?id=${res.data.id}&amount=${res.data.totalAmount}`);
     if (paymentMode === "PREPAID") {
-      await makePayment(res.data.id, parseInt(res.data.totalAmount));
+      // await makePayment(res.data.id, parseInt(res.data.totalAmount));
+      await handlePayment({ orderID: res.data.id });
     }
 
     if (paymentMode === "COD") {
