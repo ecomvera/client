@@ -35,7 +35,7 @@ const Page = () => {
   const router = useRouter();
   const { user, isLoading: userLoading } = useUser();
   const { token } = useToken();
-  const { cart, isLoading: cartLoading, totalMRP, totalPrice, finalPrice } = useData();
+  const { cart, setCart, isLoading: cartLoading, totalMRP, totalPrice, finalPrice } = useData();
   const { deliveryCost, freeDeliveryAt } = useDataStore();
   const [loading, setLoading] = React.useState(false);
   const [paymentMode, setPaymentMode] = React.useState<"PREPAID" | "COD">("PREPAID");
@@ -46,7 +46,6 @@ const Page = () => {
   const totalAccordion = 3;
 
   const handlePayment = async ({ orderID }: { orderID: string }) => {
-    console.log({ orderID });
     try {
       const data = await fetch("/api/user/payment/payu", {
         method: "POST",
@@ -169,13 +168,13 @@ const Page = () => {
       return;
     }
 
-    // localStorage.removeItem("cart");
-    // setCart([]);
+    localStorage.removeItem("cart");
+    setCart([]);
     setLoading(false);
 
     if (paymentMode === "PREPAID") {
-      // await makePayment(res.data.id, parseInt(res.data.totalAmount));
-      await handlePayment({ orderID: res.data.id });
+      await makePayment(res.data.id, parseInt(res.data.totalAmount)); // razorpay payment gateway
+      // await handlePayment({ orderID: res.data.id }); // payU payment gateway
     }
 
     if (paymentMode === "COD") {

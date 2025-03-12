@@ -79,7 +79,7 @@ const Page = () => {
                 </div>
                 <div className="flex flex-1 flex-col">
                   <div className="flex justify-between">
-                    <Link href={`/product/${item.product.slug}`} className="w-fit bg-red-400">
+                    <Link href={`/product/${item.product.slug}`} className="w-fit">
                       <p className="text-[15px] font-semibold line-clamp-2 leading-5">{item.product.name}</p>
                     </Link>
                     {order.ProductReviews.length > 0 ? (

@@ -25,5 +25,5 @@ export const useData = () => {
     if (typeof window !== "undefined") fetchCart();
   }, []);
 
-  return { cart, wishlist, isLoading, totalMRP, totalPrice, finalPrice };
+  return { cart, setCart, wishlist, isLoading, totalMRP, totalPrice, finalPrice };
 };

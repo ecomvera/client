@@ -13,7 +13,7 @@ import Script from "next/script";
 import Fonts from "../fonts/Montserrat";
 import Others from "../fonts/others";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import { fetchISR } from "@/lib/utils";
+import { fetchISR, getData } from "@/lib/utils";
 import HydrateZustand from "@/components/Shared/HydrateZustand ";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -33,7 +33,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const categories = await fetchISR(`/api/categories`, 3600);
+  const categories = await getData(`/api/categories`);
 
   return (
     <html lang="en" suppressHydrationWarning>
