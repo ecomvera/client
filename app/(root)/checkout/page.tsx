@@ -1,7 +1,7 @@
 "use client";
 
 import { useUser } from "@/hooks/useUser";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { IAddress, ICartItem, IUser } from "@/types";
@@ -14,16 +14,16 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { useData } from "@/hooks/useData";
 import { Checkbox } from "@/components/ui/checkbox";
-import { generateOrderNumber } from "@/lib/utils";
+import { devLog, generateOrderNumber } from "@/lib/utils";
 import { useToken } from "@/hooks/useToken";
 import Script from "next/script";
-import { makePayment } from "@/lib/razorpay";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import DeleteCartItem from "@/components/Dialogs/DeleteCartItem";
 import Stepper from "./_components/stepper";
 import { PlusCircleIcon } from "lucide-react";
 import Link from "next/link";
 import Loader from "@/components/Shared/loader";
+import { makePayment } from "@/lib/payment";
 
 declare global {
   interface Window {
@@ -33,6 +33,7 @@ declare global {
 
 const Page = () => {
   const router = useRouter();
+  const params = useSearchParams();
   const { user, isLoading: userLoading } = useUser();
   const { token } = useToken();
   const { cart, setCart, isLoading: cartLoading, totalMRP, totalPrice, finalPrice } = useData();
@@ -44,57 +45,6 @@ const Page = () => {
   const [currentItem, setCurrentItem] = React.useState(1);
   const [activeStep, setActiveStep] = React.useState(1);
   const totalAccordion = 3;
-
-  const handlePayment = async ({ orderID }: { orderID: string }) => {
-    try {
-      const data = await fetch("/api/user/payment/payu", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
-        body: JSON.stringify({
-          amount: 1,
-          email: user?.email || "",
-          firstName: user?.name || "",
-          mobile: user?.phone || "",
-          orderID: orderID,
-        }),
-      });
-      if (!data.ok) {
-        toast({
-          description: "Something went wrong",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // try {
-      //   const res = await data.json();
-      //   if (!res.ok) {
-      //     toast({
-      //       description: res.error || "Something went wrong",
-      //       variant: "destructive",
-      //     });
-      //     return;
-      //   }
-      // } catch (error) {}
-
-      const html = await data.text();
-
-      document.open();
-      document.write(html);
-      document.close();
-
-      // // open a new window
-      // const newWindow = window.open();
-      // newWindow?.document.write(html);
-      // newWindow?.document.close();
-    } catch (error: any) {
-      console.log("error -", error);
-      toast({
-        description: "Something went wrong",
-        variant: "destructive",
-      });
-    }
-  };
 
   const handleCheckout = async () => {
     if (currentItem < totalAccordion) {
@@ -168,13 +118,12 @@ const Page = () => {
       return;
     }
 
-    localStorage.removeItem("cart");
-    setCart([]);
-    setLoading(false);
+    // localStorage.removeItem("cart");
+    // setCart([]);
 
     if (paymentMode === "PREPAID") {
-      await makePayment(res.data.id, parseInt(res.data.totalAmount)); // razorpay payment gateway
-      // await handlePayment({ orderID: res.data.id }); // payU payment gateway
+      devLog({ amount: data.subTotal });
+      await makePayment({ orderNo: res.data.orderNumber, amount: 1, user, token, gateway: "razorpay" });
     }
 
     if (paymentMode === "COD") {
@@ -182,8 +131,10 @@ const Page = () => {
         description: "Order placed successfully",
         variant: "success",
       });
-      router.replace(`/myaccount/orders`);
+      router.replace(`/order/success?orderNo=${res.data.orderNumber}&paymentMode=Cash On Delivery`);
     }
+
+    setLoading(false);
   };
 
   // useEffect(() => {
@@ -220,7 +171,7 @@ const Page = () => {
   //     `http://localhost:3001/api/shipment/courier-list?p_pin=${pincode}&d_pin=${deliveryPincode}&dm=s&pm=${}&sv=1000&w=1000&bl=1&bw=1&bh=1`
   //   ).then((res) => res.json());
   // }
-  // console.log(groupedShipmentDetails);
+  // devLog(groupedShipmentDetails);
   // };
   // if (deliveryAddress && paymentMode) getData(deliveryAddress);
   // }, [deliveryAddress, paymentMode]);
@@ -229,6 +180,13 @@ const Page = () => {
     if (!user && !userLoading) return router.replace("/sign-in?src=/checkout");
     if (!cart.length && !cartLoading) return router.replace("/");
   }, [userLoading, cartLoading]);
+
+  useEffect(() => {
+    if (params.get("address")) {
+      const address = user?.addresses.find((a) => a.id === params.get("address"));
+      if (address) setDeliveryAddress(address);
+    }
+  }, [user?.addresses]);
 
   return (
     <div className="max-w-desktop mx-auto px-2 tablet:py-5 mb-28">
@@ -334,7 +292,9 @@ const DeliveryDetails = ({
                 user.addresses.map((address) => (
                   <div
                     id={"shipping" + address.id}
-                    className="hover:bg-accent p-2 flex items-center gap-3 cursor-pointer"
+                    className={`hover:bg-accent p-2 flex items-center gap-3 cursor-pointer ${
+                      address.id === deliveryAddress?.id ? "bg-accent" : ""
+                    }`}
                     key={address.id}
                     onClick={() => {
                       if (address.id === deliveryAddress?.id) {

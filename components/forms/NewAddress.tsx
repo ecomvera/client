@@ -70,7 +70,7 @@ const NewAddress = () => {
       description: "Address added successfully",
     });
     addAddress(res.data);
-    params.get("src") ? router.push(params.get("src") as string) : router.back();
+    params.get("src") ? router.push(`${params.get("src") as string}?address=${res.data.id}`) : router.back();
     form.reset();
   }
 

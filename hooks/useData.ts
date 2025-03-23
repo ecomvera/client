@@ -7,7 +7,7 @@ export const useData = () => {
 
   const totalMRP = useMemo(() => cart && cart.reduce((acc, item) => acc + item.product.mrp * item.quantity, 0), [cart]);
   const totalPrice = useMemo(() => cart && cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0), [cart]);
-  const finalPrice = totalPrice && (totalPrice > freeDeliveryAt ? totalPrice : totalPrice + deliveryCost);
+  const finalPrice = totalPrice && (totalPrice >= freeDeliveryAt ? totalPrice : totalPrice + deliveryCost);
 
   useEffect(() => {
     const fetchCart = async () => {

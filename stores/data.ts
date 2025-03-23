@@ -6,8 +6,8 @@ const filterProperties = { sizes: [], attributes: [], colors: [] };
 const cart: ICartItem[] = [];
 const wishlist: ICartItem[] = [];
 
-const deliveryCost = 49;
-const freeDeliveryAt = 999;
+const deliveryCost = process.env.NEXT_PUBLIC_DELIVERY_CHARGE ? parseInt(process.env.NEXT_PUBLIC_DELIVERY_CHARGE) : 0;
+const freeDeliveryAt = process.env.NEXT_PUBLIC_FREE_SHIPPING_AT ? parseInt(process.env.NEXT_PUBLIC_FREE_SHIPPING_AT) : 0;
 
 interface IFilterProperties {
   sizes: ISize[];

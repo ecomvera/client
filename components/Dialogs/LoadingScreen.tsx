@@ -7,6 +7,7 @@ import Image from "next/image";
 
 export function LoadingScreen() {
   const { showLoadingScreen } = useAction();
+
   return (
     <Dialog open={showLoadingScreen}>
       <DialogContent

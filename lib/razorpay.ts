@@ -1,4 +1,5 @@
 import { toast } from "@/components/ui/use-toast";
+import { devLog } from "./utils";
 
 declare global {
   interface Window {
@@ -6,21 +7,30 @@ declare global {
   }
 }
 
-export const makePayment = async (id: string, amount: number) => {
+export const razorpayPayment = async ({
+  orderNo,
+  amount,
+  user,
+  token,
+}: {
+  orderNo: string;
+  amount: number;
+  user: any;
+  token: any;
+}) => {
   try {
-    const token = localStorage.getItem("accessToken");
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-
-    const res = await fetch("/api/user/payment/create-order", {
+    const res = await fetch("/api/user/payment/razorpay/create-order", {
       method: "POST",
-      headers: { "Content-Type": "application/json", authorization: `Bearer ${token}` },
-      body: JSON.stringify({ id, amount: 1 }),
+      headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
+      body: JSON.stringify({ orderNo, amount }),
     }).then((res) => res.json());
 
+    console.log({ res });
+
     if (!res.ok) {
-      console.log("error -", res);
+      devLog("error -", res);
       toast({ description: res.error || "Payment failed", variant: "destructive" });
-      await handleUpdateOrderPaymentStatus(id, "PAYMENT_FAILED", res.paymentId);
+      await handleUpdateOrderPaymentStatus(orderNo, "PAYMENT_FAILED", res.paymentId);
       return;
     }
 
@@ -33,25 +43,26 @@ export const makePayment = async (id: string, amount: number) => {
       image: "https://www.silkyester.com/favicon.ico",
       order_id: res.data.id,
       handler: async function (response: any) {
-        const data = await fetch("/api/user/payment/verify", {
+        const data = await fetch("/api/user/payment/razorpay/verify", {
           method: "POST",
-          headers: { "Content-Type": "application/json", authorization: `Bearer ${token}` },
+          headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
           body: JSON.stringify({
-            orderId: id,
+            orderNo: orderNo,
             razorpayPaymentId: response.razorpay_payment_id,
             razorpayOrderId: response.razorpay_order_id,
             razorpaySignature: response.razorpay_signature,
           }),
         }).then((res) => res.json());
         if (!data.ok) {
+          devLog("error -", data);
           toast({ description: data.error || "Something went wrong", variant: "destructive" });
-          await handleUpdateOrderPaymentStatus(id, "PAYMENT_FAILED");
+          await handleUpdateOrderPaymentStatus(orderNo, "PAYMENT_FAILED");
           return;
         } else {
           toast({ description: "Payment successful", variant: "success" });
         }
 
-        window.location.replace("/myaccount/orders");
+        window.location.replace("/order/success?orderNo=" + orderNo + "&paymentMode=Razorpay Payment");
       },
 
       prefill: {
@@ -67,25 +78,24 @@ export const makePayment = async (id: string, amount: number) => {
     const paymentObject = new window.Razorpay(options);
     await paymentObject.open();
     paymentObject.on("payment.failed", async function (response: any) {
-      console.log(response);
       toast({ description: response.error.description || "Payment failed", variant: "destructive" });
-      await handleUpdateOrderPaymentStatus(id, "PAYMENT_FAILED");
+      await handleUpdateOrderPaymentStatus(orderNo, "PAYMENT_FAILED");
     });
   } catch (error) {
     console.error(error);
     toast({ description: "Payment failed", variant: "destructive" });
-    await handleUpdateOrderPaymentStatus(id, "PAYMENT_FAILED");
+    await handleUpdateOrderPaymentStatus(orderNo, "PAYMENT_FAILED");
   }
 };
 
-const handleUpdateOrderPaymentStatus = async (id: string, status: string, paymentId?: string) => {
+const handleUpdateOrderPaymentStatus = async (orderNo: string, status: string, paymentId?: string) => {
   const token = localStorage.getItem("accessToken");
-  if (!paymentId) {
-    await fetch("/api/user/orders/status", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json", authorization: `Bearer ${token}` },
-      body: JSON.stringify({ id, status }),
-    });
-  }
-  window.location.replace("/myaccount/orders");
+  // if (!paymentId) {
+  await fetch("/api/user/orders/status", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json", authorization: `Bearer ${token}` },
+    body: JSON.stringify({ orderNo, status }),
+  });
+  // }
+  window.location.replace("/order/failure?paymentMode=Razorpay Payment");
 };

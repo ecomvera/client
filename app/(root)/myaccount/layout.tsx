@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/stores/user";
 import { useToken } from "@/hooks/useToken";
 import { HelpCircle } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
 export default function RootLayout({
   children,
@@ -94,7 +95,8 @@ const SidebarNav = () => {
   };
 
   return (
-    <div className="border rounded-lg p-5 flex-col gap-5 w-48 h-fit laptop:w-64 hidden tablet:flex sticky top-20">
+    // <div className="border rounded-lg p-5 flex-col gap-5 w-48 h-fit laptop:w-64 hidden tablet:flex sticky top-20">
+    <Card className="rounded-lg p-5 flex-col gap-5 w-48 h-fit laptop:w-64 hidden tablet:flex sticky top-20">
       {nav.map((item) => (
         <Link key={item.name} href={item.href} className={`my-3 text-light-1`}>
           <div
@@ -131,6 +133,6 @@ const SidebarNav = () => {
           </DialogContent>
         </Dialog>
       </div> */}
-    </div>
+    </Card>
   );
 };

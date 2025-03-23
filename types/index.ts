@@ -159,10 +159,36 @@ export interface ICartItem {
 
 export interface IOrder {
   id: string;
+  orderNumber: string;
   userId: string;
   paymetId: string;
   addressId: string;
   status: "created" | "dispatched" | "delivered" | "cancelled";
+  items: IOrderItem[];
+  timeline: any[];
+
+  subTotal: number;
+  deliveryCharge: number;
+  giftWrapCharge: number;
+  totalAmount: number;
+
+  paymentMode: "COD" | "ONLINE";
+  shippingAddress: IAddress;
+
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface IOrderItem {
+  id: string;
+  orderId: string;
+  productId: string;
+  product: IProduct;
+  color: string;
+  size: string;
+  quantity: number;
+  price: number;
+  totalPrice: number;
 }
 
 export interface IUser {

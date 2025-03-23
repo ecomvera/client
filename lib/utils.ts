@@ -116,3 +116,18 @@ export function formatDateTime(dateString: string) {
     hour12: true,
   });
 }
+
+export const devLog = (...args: any) => {
+  if (process.env.NODE_ENV === "development") {
+    console.log(...args);
+  }
+};
+
+// export const formatPaymentLabel = (status: string) => {
+//   const paymentLabels: Record<string, string> = {
+//     ONLINE: "Online",
+//     CASH_ON_DELIVERY: "Cash on Delivery",
+//   };
+
+//   return paymentLabels[status] || null;
+// };
