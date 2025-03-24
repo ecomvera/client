@@ -1,39 +1,47 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { ArrowLeftIcon, PersonIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
-import React, { Dispatch, SetStateAction, useState } from "react";
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp";
-import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
-import { IoFemaleOutline, IoMail, IoMailOutline, IoMaleOutline, IoTransgenderOutline } from "react-icons/io5";
+import { type Dispatch, type SetStateAction, useState } from "react";
+import { IoFemaleOutline, IoLockClosedOutline, IoMailOutline, IoMaleOutline, IoTransgenderOutline } from "react-icons/io5";
 import { useUserStore } from "@/stores/user";
 import { useDataStore } from "@/stores/data";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const OnBoarding = ({
-  phone,
+  email,
   setCurrentState,
 }: {
-  phone: string;
-  setCurrentState: Dispatch<SetStateAction<"SignIn" | "VerifyOTP" | "OnBoarding">>;
+  email: string;
+  setCurrentState: Dispatch<SetStateAction<"SignIn" | "ForgotPassword" | "OnBoarding">>;
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { setUser, setToken } = useUserStore();
   const { cart, wishlist, setCart, setWishlist } = useDataStore();
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [gender, setGender] = useState("");
-  const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {
+    if (password !== confirmPassword) {
+      return toast({
+        title: "Error",
+        description: "Passwords do not match",
+        variant: "destructive",
+      });
+    }
+
     try {
       setIsLoading(true);
       const res = await fetch("/api/auth/onboarding", {
         method: "POST",
-        body: JSON.stringify({ phone, name, email, otp, gender }),
+        body: JSON.stringify({ name, email, password, gender }),
       }).then((data) => data.json());
 
       if (!res.ok) {
@@ -62,8 +70,8 @@ const OnBoarding = ({
       setToken({ access: res.data.accessToken, refresh: res.data.refreshToken });
 
       localStorage.setItem("user", JSON.stringify(res.data.user));
-      localStorage.setItem("cart", JSON.stringify(res.data.user.cart));
-      localStorage.setItem("wishlist", JSON.stringify(res.data.user.wishlist));
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
 
       localStorage.setItem("accessToken", res.data.accessToken);
       localStorage.setItem("refreshToken", res.data.refreshToken);
@@ -87,108 +95,125 @@ const OnBoarding = ({
     <>
       <div className="flex items-center gap-3">
         <ArrowLeftIcon className="w-5 h-5 cursor-pointer" onClick={() => setCurrentState("SignIn")} />
-        <h1 className="text-lg font-bold">OnBoarding...</h1>
+        <h1 className="text-lg font-bold">Create Account</h1>
       </div>
-      <p className="text-sm">Please complete your profile.</p>
+      <p className="text-sm">Please provide the following information to create your account.</p>
 
-      <span className="text-sm font-semibold mt-5">Name</span>
-      <div className="border border-light-1 rounded-md p-1 flex items-center w-full">
-        <span className="text-sm font-semibold ml-1">
-          <PersonIcon className="w-5 h-5" />
-        </span>
-        <Input
-          placeholder="Enter Your Full Name"
-          className="border-none focus-visible:ring-transparent shadow-none text-base font-semibold w-full ml-2"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          name="name"
-          autoComplete="name"
-        />
-      </div>
-      <span className="text-sm font-semibold mt-5">Phone</span>
-      <div className="border border-light-1 rounded-md p-1 flex items-center w-full">
-        <span className="text-sm font-semibold">+91</span>
-        <Input
-          placeholder="Enter Mobile Number"
-          className="border-none focus-visible:ring-transparent shadow-none text-base font-semibold w-full ml-2"
-          value={phone}
-          disabled
-        />
-      </div>
-      <span className="text-sm font-semibold mt-5">Email</span>
-      <div className="border border-light-1 rounded-md p-1 flex items-center w-full">
-        <span className="text-sm font-semibold ml-1">
-          <IoMailOutline className="w-5 h-5" />
-        </span>
-        <Input
-          type="email"
-          placeholder="Enter Your Email"
-          className="border-none focus-visible:ring-transparent shadow-none text-base font-semibold w-full ml-2"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          name="email"
-          autoComplete="email"
-        />
-      </div>
-      <span className="text-sm font-semibold mt-5">Gender</span>
-      <div className="flex gap-3">
-        <div
-          className={`border border-light-1 rounded-md p-1 flex items-center w-full h-10 cursor-pointer ${
-            gender === "Male" && "bg-primary text-background"
-          }`}
-          onClick={() => setGender("Male")}
-        >
-          <span className="flex gap-5 text-sm font-semibold ml-1">
-            <IoMaleOutline className="w-5 h-5" /> <span>Male</span>
-          </span>
+      <div className="space-y-4 mt-5">
+        <div>
+          <span className="text-sm font-semibold">Name</span>
+          <div className="border border-light-1 rounded-md p-1 flex items-center w-full">
+            <span className="text-sm font-semibold ml-1">
+              <PersonIcon className="w-5 h-5" />
+            </span>
+            <Input
+              placeholder="Enter Your Full Name"
+              className="border-none focus-visible:ring-transparent shadow-none text-base font-semibold w-full ml-2"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              name="name"
+              autoComplete="name"
+            />
+          </div>
         </div>
-        <div
-          className={`border border-light-1 rounded-md p-1 flex items-center w-full h-10 cursor-pointer ${
-            gender === "Female" && "bg-primary text-background"
-          }`}
-          onClick={() => setGender("Female")}
-        >
-          <span className="flex gap-5 text-sm font-semibold ml-1">
-            <IoFemaleOutline className="w-5 h-5" /> <span>Female</span>
-          </span>
-        </div>
-        <div
-          className={`border border-light-1 rounded-md p-1 flex items-center w-full h-10 cursor-pointer ${
-            gender === "Other" && "bg-primary text-background"
-          }`}
-          onClick={() => setGender("Other")}
-        >
-          <span className="flex gap-5 text-sm font-semibold ml-1">
-            <IoTransgenderOutline className="w-5 h-5" /> <span>Other</span>
-          </span>
-        </div>
-      </div>
 
-      <span className="text-sm font-semibold mt-5">OTP</span>
-      <p className="text-sm mb-2">
-        Enter the OTP sent to {phone}{" "}
-        <span className="text-blue-800 font-semibold cursor-pointer" onClick={() => setCurrentState("SignIn")}>
-          Change
-        </span>
-      </p>
-      <InputOTP maxLength={4} pattern={REGEXP_ONLY_DIGITS_AND_CHARS} onChange={(value) => setOtp(value)}>
-        <InputOTPGroup className="rounded-none border-none">
-          <InputOTPSlot index={0} className="rounded-md border border-primary" />
-          <InputOTPSeparator />
-          <InputOTPSlot index={1} className="rounded-md border border-primary" />
-          <InputOTPSeparator />
-          <InputOTPSlot index={2} className="rounded-md border border-primary" />
-          <InputOTPSeparator />
-          <InputOTPSlot index={3} className="rounded-md border border-primary" />
-        </InputOTPGroup>
-      </InputOTP>
+        <div>
+          <span className="text-sm font-semibold">Email</span>
+          <div className="border border-light-1 rounded-md p-1 flex items-center w-full">
+            <span className="text-sm font-semibold ml-1">
+              <IoMailOutline className="w-5 h-5" />
+            </span>
+            <Input
+              type="email"
+              placeholder="Enter Your Email"
+              className="border-none focus-visible:ring-transparent shadow-none text-base font-semibold w-full ml-2"
+              value={email}
+              disabled
+              name="email"
+              autoComplete="email"
+            />
+          </div>
+        </div>
+
+        <div>
+          <span className="text-sm font-semibold">Password</span>
+          <div className="border border-light-1 rounded-md p-1 flex items-center w-full">
+            <span className="text-sm font-semibold ml-1">
+              <IoLockClosedOutline className="w-5 h-5" />
+            </span>
+            <Input
+              type="password"
+              placeholder="Create Password"
+              className="border-none focus-visible:ring-transparent shadow-none text-base font-semibold w-full ml-2"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              name="password"
+              autoComplete="new-password"
+            />
+          </div>
+        </div>
+
+        <div>
+          <span className="text-sm font-semibold">Confirm Password</span>
+          <div className="border border-light-1 rounded-md p-1 flex items-center w-full">
+            <span className="text-sm font-semibold ml-1">
+              <IoLockClosedOutline className="w-5 h-5" />
+            </span>
+            <Input
+              type="password"
+              placeholder="Confirm Password"
+              className="border-none focus-visible:ring-transparent shadow-none text-base font-semibold w-full ml-2"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              name="confirmPassword"
+              autoComplete="new-password"
+            />
+          </div>
+        </div>
+
+        <div>
+          <span className="text-sm font-semibold">Gender</span>
+          <div className="flex gap-3">
+            <div
+              className={`border border-light-1 rounded-md p-1 flex items-center w-full h-10 cursor-pointer ${
+                gender === "Male" && "bg-primary text-background"
+              }`}
+              onClick={() => setGender("Male")}
+            >
+              <span className="flex gap-5 text-sm font-semibold ml-1">
+                <IoMaleOutline className="w-5 h-5" /> <span>Male</span>
+              </span>
+            </div>
+            <div
+              className={`border border-light-1 rounded-md p-1 flex items-center w-full h-10 cursor-pointer ${
+                gender === "Female" && "bg-primary text-background"
+              }`}
+              onClick={() => setGender("Female")}
+            >
+              <span className="flex gap-5 text-sm font-semibold ml-1">
+                <IoFemaleOutline className="w-5 h-5" /> <span>Female</span>
+              </span>
+            </div>
+            <div
+              className={`border border-light-1 rounded-md p-1 flex items-center w-full h-10 cursor-pointer ${
+                gender === "Other" && "bg-primary text-background"
+              }`}
+              onClick={() => setGender("Other")}
+            >
+              <span className="flex gap-5 text-sm font-semibold ml-1">
+                <IoTransgenderOutline className="w-5 h-5" /> <span>Other</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <Button
-        disabled={!name || !email || !gender || !otp || isLoading}
+        disabled={!name || !password || !confirmPassword || !gender || isLoading || password !== confirmPassword}
         className="text-base uppercase font-semibold mt-10 bg-[--c2] hover:bg-[--c3] text-background"
         onClick={handleSubmit}
       >
-        {isLoading ? "Verifying..." : "Continue"}
+        {isLoading ? "Creating Account..." : "Create Account"}
       </Button>
 
       <div className="border-[0.5px] border-light-3 my-6" />

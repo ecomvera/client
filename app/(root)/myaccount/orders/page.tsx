@@ -50,6 +50,13 @@ const Page = () => {
         My Orders
       </h1>
 
+      {orders.length === 0 ? (
+        <div className="flex flex-col gap-5">
+          <h1 className="text-lg font-semibold">No orders found</h1>
+          <p className="text-gray-600">You have not placed any orders yet.</p>
+        </div>
+      ) : null}
+
       <div className="flex flex-col gap-5">
         {orders.map((order: any) => (
           <div key={order.id} className="flex flex-col gap-2 border border-light-3 p-2 rounded-lg">

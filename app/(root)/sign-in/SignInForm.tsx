@@ -1,55 +1,123 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
 import Link from "next/link";
-import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import type React from "react";
+import { type Dispatch, type SetStateAction, useState } from "react";
+import { IoMailOutline, IoLockClosedOutline, IoArrowForward } from "react-icons/io5";
+import { useUserStore } from "@/stores/user";
+import { useDataStore } from "@/stores/data";
 
 const SignInForm = ({
-  phone,
-  setPhone,
+  email,
+  setEmail,
   setCurrentState,
 }: {
-  phone: string;
-  setPhone: Dispatch<SetStateAction<string>>;
-  setCurrentState: Dispatch<SetStateAction<"SignIn" | "VerifyOTP" | "OnBoarding">>;
+  email: string;
+  setEmail: Dispatch<SetStateAction<string>>;
+  setCurrentState: Dispatch<SetStateAction<"SignIn" | "ForgotPassword" | "OnBoarding">>;
 }) => {
-  const [error, setError] = useState("");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { setUser, setToken } = useUserStore();
+  const { cart, wishlist, setCart, setWishlist } = useDataStore();
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [emailChecked, setEmailChecked] = useState(false);
 
-  const handleFocus = () => {
-    if (inputRef.current) {
-      inputRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+  const validateEmail = (email: string) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+  const checkEmail = async () => {
+    if (!validateEmail(email)) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid email address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const res = await fetch("/api/auth/check-email", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+      }).then((data) => data.json());
+
+      setIsLoading(false);
+
+      if (res.exists) {
+        setEmailChecked(true);
+        setShowPassword(true);
+      } else {
+        // Email doesn't exist, redirect to onboarding
+        setCurrentState("OnBoarding");
+      }
+    } catch (error) {
+      setIsLoading(false);
+      toast({
+        title: "Error",
+        description: "Something went wrong",
+        variant: "destructive",
+      });
     }
   };
 
-  const handleSubmit = async () => {
+  const handleLogin = async () => {
     try {
       setIsLoading(true);
       const res = await fetch("/api/auth/login", {
         method: "POST",
-        body: JSON.stringify({ phone }),
+        body: JSON.stringify({ email, password }),
       }).then((data) => data.json());
+
       setIsLoading(false);
 
       if (!res.ok) {
         return toast({
           title: "Error",
-          description: res.error || "Something went wrong",
+          description: res.error || "Invalid email or password",
           variant: "destructive",
         });
       }
 
-      toast({
-        title: res.data.otp,
-      });
+      // Set user data and tokens
+      setUser(res.data.user);
 
-      if (!res.data.user || !res.data.user.onBoarded) {
-        return setCurrentState("OnBoarding");
+      if (res.data.user.cart.length > 0) {
+        toast({
+          title: "Success",
+          description: "Your cart has been updated successfully",
+          variant: "success",
+        });
       }
 
-      setCurrentState("VerifyOTP");
+      const updatedCart = [...cart, ...res.data.user.cart];
+      const updatedWishlist = [...wishlist, ...res.data.user.wishlist];
+      setCart(updatedCart);
+      setWishlist(updatedWishlist);
+      setToken({ access: res.data.accessToken, refresh: res.data.refreshToken });
+
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
+
+      localStorage.setItem("accessToken", res.data.accessToken);
+      localStorage.setItem("refreshToken", res.data.refreshToken);
+
+      const src = searchParams.get("src");
+      if (src) return router.replace(src);
+      router.replace("/");
     } catch (error: any) {
       setIsLoading(false);
       toast({
@@ -60,44 +128,111 @@ const SignInForm = ({
     }
   };
 
-  useEffect(() => {
-    if ((phone.length > 0 && phone.length < 10) || phone.length > 10) {
-      setError("Phone number should be of 10 digits");
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!showPassword) {
+      checkEmail();
     } else {
-      setError("");
+      handleLogin();
     }
-  }, [phone]);
+  };
 
   return (
     <>
       <h1 className="text-lg font-bold">Sign In / Sign Up</h1>
       <p className="text-sm">Join our community & get exclusive offers</p>
 
-      <div className="border border-light-1 rounded-md p-1 flex items-center w-full  mt-10">
-        <span className="text-sm font-semibold">+91</span>
-        <Input
-          ref={inputRef}
-          type="tel"
-          id="mobile"
-          placeholder="Enter Mobile Number"
-          className="border-none focus-visible:ring-transparent shadow-none text-base font-semibold w-full ml-2"
-          value={phone}
-          onFocus={handleFocus}
-          onChange={(e) => {
-            if (e.target.value.length > 10) return;
-            setPhone(e.target.value.replace(/[^0-9]/g, ""));
-          }}
-        />
-      </div>
-      <p className="text-sm text-red-600">{error}</p>
+      <form onSubmit={handleSubmit} className="space-y-4 mt-10">
+        <div className="border border-light-1 rounded-md p-1 flex items-center w-full">
+          <span className="text-sm font-semibold ml-1">
+            <IoMailOutline className="w-5 h-5" />
+          </span>
+          <Input
+            type="email"
+            id="email"
+            placeholder="Enter Email Address"
+            className="border-none focus-visible:ring-transparent shadow-none text-base font-semibold w-full ml-2"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={showPassword}
+            autoComplete="email"
+          />
+          {!showPassword && (
+            <Button
+              type="submit"
+              size="icon"
+              variant="ghost"
+              disabled={!validateEmail(email) || isLoading}
+              className="h-8 w-8"
+            >
+              <IoArrowForward className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
 
-      <Button
-        disabled={phone.length !== 10 || isLoading}
-        className="text-base uppercase font-semibold mt-5 bg-[--c2] hover:bg-[--c2] text-white"
-        onClick={handleSubmit}
-      >
-        {isLoading ? "Signing in..." : "Continue"}
-      </Button>
+        {showPassword && (
+          <>
+            <div className="border border-light-1 rounded-md p-1 flex items-center w-full">
+              <span className="text-sm font-semibold ml-1">
+                <IoLockClosedOutline className="w-5 h-5" />
+              </span>
+              <Input
+                type="password"
+                id="password"
+                placeholder="Enter Password"
+                className="border-none focus-visible:ring-transparent shadow-none text-base font-semibold w-full ml-2"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+              />
+            </div>
+
+            <div className="text-right">
+              <button
+                type="button"
+                className="text-blue-800 font-semibold text-sm"
+                onClick={() => setCurrentState("ForgotPassword")}
+              >
+                Forgot Password?
+              </button>
+            </div>
+
+            <Button
+              type="submit"
+              disabled={!password || isLoading}
+              className="text-base uppercase font-semibold w-full bg-[--c2] hover:bg-[--c2] text-white"
+            >
+              {isLoading ? "Signing in..." : "Sign In"}
+            </Button>
+          </>
+        )}
+
+        {!showPassword && (
+          <Button
+            type="submit"
+            disabled={!validateEmail(email) || isLoading}
+            className="text-base uppercase font-semibold w-full bg-[--c2] hover:bg-[--c2] text-white"
+          >
+            {isLoading ? "Checking..." : "Continue"}
+          </Button>
+        )}
+      </form>
+
+      {showPassword && (
+        <div className="mt-4 text-center">
+          <button
+            type="button"
+            className="text-blue-800 font-semibold text-sm"
+            onClick={() => {
+              setShowPassword(false);
+              setEmailChecked(false);
+              setPassword("");
+            }}
+          >
+            Use a different email
+          </button>
+        </div>
+      )}
 
       <div className="border-[0.5px] border-light-3 my-6" />
 
