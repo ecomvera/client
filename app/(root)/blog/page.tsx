@@ -1,4 +1,9 @@
-import { Button } from "@/components/ui/button";
+export const metadata = {
+  title: "Blog | Silkyester",
+  alternates: {
+    canonical: "https://www.silkyester.com/blog",
+  },
+};
 
 export default function ComingSoon() {
   return (

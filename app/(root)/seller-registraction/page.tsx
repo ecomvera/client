@@ -1,10 +1,17 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+export const metadata = {
+  title: "Become a Seller | Silkyester",
+  alternates: {
+    canonical: "https://www.silkyester.com/seller-registration",
+  },
+};
+
 export default function BecomeASeller() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-6 text-center">
-      <h1 className="text-4xl font-bold text-gray-800 mb-4">Become a Seller</h1>
+      <h1 className="text-4xl font-bold text-gray-800 mb-4">Seller registraction</h1>
       <p className="text-lg text-gray-600 mb-6">
         Join our marketplace and start selling your products to thousands of customers. Grow your business with us!
       </p>

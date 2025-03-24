@@ -1,4 +1,9 @@
-import { Button } from "@/components/ui/button";
+export const metadata = {
+  title: "Careers | Silkyester",
+  alternates: {
+    canonical: "https://www.silkyester.com/careers",
+  },
+};
 
 export default function Careers() {
   return (

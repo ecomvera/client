@@ -1,5 +1,12 @@
 import Link from "next/link";
 
+export const metadata = {
+  title: "Shipping and Return Policy | Silkyester",
+  alternates: {
+    canonical: "https://www.silkyester.com/shipping-returns",
+  },
+};
+
 export default function ShippingReturn() {
   return (
     <div className="max-w-laptop mx-auto p-6 text-gray-800 my-10 select-text">

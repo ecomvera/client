@@ -1,35 +1,76 @@
-"use client";
-
+import { StructuredData } from "@/components/structured-data";
 import { Mail, MapPin, Phone } from "lucide-react";
 
+export const metadata = {
+  title: "Contact Us | Silkyester",
+  alternates: {
+    canonical: "https://www.silkyester.com/contact-us",
+  },
+};
+
 export default function ContactUs() {
+  const hadJSON = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Silkyester",
+    url: "https://www.silkyester.com",
+    logo: "https://www.silkyester.com/logo.png",
+    contactPoint: [
+      {
+        "@type": "ContactPoint",
+        telephone: "+91-6399269102",
+        contactType: "customer service",
+        areaServed: ["IN", "US"],
+        availableLanguage: ["Hindi", "English"],
+      },
+    ],
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Floor No.: 00, Building No.: TEHSIL MORADABAD, C/O SHRI RUDESH KUMAR, OD 040104",
+      addressLocality: "Mohammadpur",
+      addressRegion: "Uttar Pradesh",
+      postalCode: "244001",
+      addressCountry: "IN",
+    },
+    sameAs: [
+      "https://www.instagram.com/Silkyester",
+      "https://www.facebook.com/Silkyester",
+      "https://www.youtube.com/@Silkyester",
+      "https://twitter.com/Silkyester",
+      "https://www.linkedin.com/company/silkyester",
+      "https://www.pinterest.com/Silkyester",
+    ],
+  };
   return (
-    <div className="max-w-laptop mx-auto my-10 select-text">
-      <div className="max-w-4xl w-full p-8">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6 ">Contact Us</h2>
+    <>
+      <StructuredData data={hadJSON} />
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* Contact Information */}
-          <div className="space-y-6">
-            <div className="">
-              <MapPin className="text-blue-500" />
-              <p className="text-gray-700 mt-2">
-                Premises Name: C/O Shri Radesh Kumar Street: OD 040104 Landmark: Panchayat Headquarter Town: Mohammadpur
-                District: Moradabad State: Uttar Pradesh, 240001
-              </p>
-            </div>
-            <div className="">
-              <Mail className="text-blue-500" />
-              <p className="text-gray-700 mt-2">support@silkyester.com</p>
-            </div>
-            <div className="">
-              <Phone className="text-blue-500" />
-              <p className="text-gray-700 mt-2">+123 456 7890</p>
-            </div>
-          </div>
+      <div className="max-w-laptop mx-auto my-10 select-text">
+        <div className="max-w-4xl w-full p-8">
+          <h2 className="text-3xl font-bold text-gray-800 mb-6 ">Contact Us</h2>
 
-          {/* Contact Form */}
-          {/* <form className="space-y-4 bg-gray-50 p-6 rounded-lg shadow-md">
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Contact Information */}
+            <div className="space-y-6">
+              <div className="">
+                <MapPin className="text-blue-500" />
+                <p className="text-gray-700 mt-2">
+                  Premises Name: C/O Shri Radesh Kumar Street: OD 040104 Landmark: Panchayat Headquarter Town: Mohammadpur
+                  District: Moradabad State: Uttar Pradesh, 240001
+                </p>
+              </div>
+              <div className="">
+                <Mail className="text-blue-500" />
+                <p className="text-gray-700 mt-2">support@silkyester.com</p>
+              </div>
+              <div className="">
+                <Phone className="text-blue-500" />
+                <p className="text-gray-700 mt-2">+123 456 7890</p>
+              </div>
+            </div>
+
+            {/* Contact Form */}
+            {/* <form className="space-y-4 bg-gray-50 p-6 rounded-lg shadow-md">
             <input
               type="text"
               placeholder="Your Name"
@@ -49,8 +90,9 @@ export default function ContactUs() {
               Send Message
             </button>
           </form> */}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

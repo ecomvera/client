@@ -1,8 +1,8 @@
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
+export const metadata = {
   title: "Silkyester | Privacy Policy",
-  description: "Silkyester Privacy Policy",
+  alternates: {
+    canonical: "https://www.silkyester.com/privacy-policy",
+  },
 };
 
 const Page = () => {

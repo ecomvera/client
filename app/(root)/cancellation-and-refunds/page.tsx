@@ -1,3 +1,10 @@
+export const metadata = {
+  title: "Refund Policy | Silkyester",
+  alternates: {
+    canonical: "https://www.silkyester.com/cancellation-refunds",
+  },
+};
+
 export default function RefundPolicy() {
   return (
     <div className="max-w-laptop mx-auto p-6 my-10 select-text">

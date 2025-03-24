@@ -1,6 +1,13 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+export const metadata = {
+  title: "About Us | Silkyester",
+  alternates: {
+    canonical: "https://www.silkyester.com/about-us",
+  },
+};
+
 export default function AboutUs() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-6 text-center">

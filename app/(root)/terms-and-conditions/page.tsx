@@ -1,3 +1,10 @@
+export const metadata = {
+  title: "Terms and Conditions | Silkyester",
+  alternates: {
+    canonical: "",
+  },
+};
+
 const TermsAndConditions = () => {
   return (
     <div className="max-w-laptop mx-auto p-6 text-gray-800 my-10 select-text">

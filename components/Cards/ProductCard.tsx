@@ -113,7 +113,7 @@ const ProductCard = ({
               </span>
             </div>
             {percentOff > 0 && (
-              <p className="text-xs tablet:text-sm font-semibold text-[--c6]">{Math.round(percentOff)}% off</p>
+              <p className="text-xs tablet:text-sm font-semibold text-[--c6]">{percentOff.toFixed(0)}% off</p>
             )}
           </div>
         </div>

@@ -1,16 +1,10 @@
-import Banner from "@/components/Cards/Banner";
 import BestSellers from "@/components/Shared/BestSellers";
 import NewArrivals from "@/components/Shared/NewArrivals";
-import ReactCarousel from "@/components/Shared/Carousel";
-import { CarouselItem } from "@/components/ui/carousel";
-import LoadingPage from "@/components/Shared/LoadingPage";
-import { useEffect } from "react";
 import GroupCategories from "@/components/Shared/GroupCategories";
 import { getData } from "@/lib/utils";
-import Loader from "@/components/Shared/loader";
-import GalleryCollections from "@/components/Shared/GalleryCollections";
 import _ from "lodash";
 import ShopByCategory from "@/components/Shared/ShopByCategory";
+import { StructuredData } from "@/components/structured-data";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
@@ -20,16 +14,69 @@ export default async function Home() {
   const shopByCategory = await getData(`/api/products?shop-by-category`);
 
   // console.log(bestSellers);
+
+  const hadJSON = {
+    "@context": "https://schema.org",
+    "@type": "ClothingStore",
+    name: "Silkyester",
+    url: "https://silkyester.com/",
+    logo: "https://silkyester.com/logo.png",
+    description:
+      "Silkyester offers premium shirts & t-shirts with same-day delivery. Shop the latest fashion trends at unbeatable prices.",
+    sameAs: [
+      "https://www.instagram.com/silkyester",
+      "https://www.facebook.com/silkyester",
+      "https://www.youtube.com/c/silkyester",
+      "https://twitter.com/silkyester",
+      "https://www.linkedin.com/company/silkyester",
+      "https://www.pinterest.com/silkyester",
+    ],
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: "+91-6399269102",
+      contactType: "customer service",
+      areaServed: "IN",
+      availableLanguage: ["English", "Hindi"],
+    },
+    shippingDetails: {
+      "@type": "OfferShippingDetails",
+      shippingRate: {
+        "@type": "MonetaryAmount",
+        value: "0.00",
+        currency: "INR",
+      },
+      deliveryTime: {
+        "@type": "DeliveryTime",
+        businessDays: "https://schema.org/SameDayDelivery",
+        handlingTime: {
+          "@type": "QuantitativeValue",
+          minValue: 0,
+          maxValue: 30,
+          unitCode: "MIN",
+        },
+        transitTime: {
+          "@type": "QuantitativeValue",
+          minValue: 0,
+          maxValue: 30,
+          unitCode: "MIN",
+        },
+      },
+    },
+  };
   return (
-    <div className="h-full min-h-[calc(100vh-100px)] pb-16">
-      {/* <GalleryCollections collections={_.filter(collections, { isGallery: true })} /> */}
-      <GroupCategories collections={_.filter(collections, { isGallery: false })} />
+    <>
+      <StructuredData data={hadJSON} />
 
-      <NewArrivals data={newArrivals} />
+      <div className="h-full min-h-[calc(100vh-100px)] pb-16">
+        {/* <GalleryCollections collections={_.filter(collections, { isGallery: true })} /> */}
+        <GroupCategories collections={_.filter(collections, { isGallery: false })} />
 
-      <ShopByCategory data={shopByCategory} />
+        <NewArrivals data={newArrivals} />
 
-      <BestSellers data={bestSellers} />
-    </div>
+        <ShopByCategory data={shopByCategory} />
+
+        <BestSellers data={bestSellers} />
+      </div>
+    </>
   );
 }
