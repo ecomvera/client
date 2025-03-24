@@ -22,7 +22,7 @@ const Page = () => {
 
   return (
     <div className="max-w-desktop mx-auto h-[calc(100vh-50px)] tablet:h-[calc(100vh-100px)]">
-      <div className="flex flex-col tablet:flex-row overflow-hidden h-full">
+      <div className="flex flex-col tablet:flex-row h-full">
         <div className="w-full h-full tablet:w-1/2 p-2"></div>
 
         <div className="bg-background rounded-t-xl flex flex-col justify-center h-max w-full tablet:max-w-[450px] m-auto p-2 tablet:p-5 py-8">
@@ -35,9 +35,11 @@ const Page = () => {
             className="w-[120px] object-cover text-center mx-auto"
           />
 
-          {currentState === "SignIn" && <SignInForm setEmail={setEmail} email={email} setCurrentState={setCurrentState} />}
-          {currentState === "ForgotPassword" && <ForgotPassword email={email} setCurrentState={setCurrentState} />}
-          {currentState === "OnBoarding" && <OnBoarding email={email} setCurrentState={setCurrentState} />}
+          <div className="">
+            {currentState === "SignIn" && <SignInForm setEmail={setEmail} email={email} setCurrentState={setCurrentState} />}
+            {currentState === "ForgotPassword" && <ForgotPassword email={email} setCurrentState={setCurrentState} />}
+            {currentState === "OnBoarding" && <OnBoarding email={email} setCurrentState={setCurrentState} />}
+          </div>
         </div>
       </div>
     </div>

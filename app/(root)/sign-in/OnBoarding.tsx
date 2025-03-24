@@ -180,7 +180,7 @@ const OnBoarding = ({
               }`}
               onClick={() => setGender("Male")}
             >
-              <span className="flex gap-5 text-sm font-semibold ml-1">
+              <span className="flex gap-5 text-sm font-semibold">
                 <IoMaleOutline className="w-5 h-5" /> <span>Male</span>
               </span>
             </div>
@@ -190,7 +190,7 @@ const OnBoarding = ({
               }`}
               onClick={() => setGender("Female")}
             >
-              <span className="flex gap-5 text-sm font-semibold ml-1">
+              <span className="flex gap-5 text-sm font-semibold">
                 <IoFemaleOutline className="w-5 h-5" /> <span>Female</span>
               </span>
             </div>
@@ -200,7 +200,7 @@ const OnBoarding = ({
               }`}
               onClick={() => setGender("Other")}
             >
-              <span className="flex gap-5 text-sm font-semibold ml-1">
+              <span className="flex gap-5 text-sm font-semibold">
                 <IoTransgenderOutline className="w-5 h-5" /> <span>Other</span>
               </span>
             </div>
