@@ -19,7 +19,7 @@ export default async function Home() {
   const bestSellers = await getData(`/api/products?best-sellers`);
   const shopByCategory = await getData(`/api/products?shop-by-category`);
 
-  console.log(bestSellers);
+  // console.log(bestSellers);
   return (
     <div className="h-full min-h-[calc(100vh-100px)] pb-16">
       {/* <GalleryCollections collections={_.filter(collections, { isGallery: true })} /> */}
