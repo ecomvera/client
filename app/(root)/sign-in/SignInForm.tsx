@@ -10,15 +10,18 @@ import { type Dispatch, type SetStateAction, useState } from "react";
 import { IoMailOutline, IoLockClosedOutline, IoArrowForward } from "react-icons/io5";
 import { useUserStore } from "@/stores/user";
 import { useDataStore } from "@/stores/data";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const SignInForm = ({
   email,
   setEmail,
   setCurrentState,
+  setPhone,
 }: {
   email: string;
   setEmail: Dispatch<SetStateAction<string>>;
-  setCurrentState: Dispatch<SetStateAction<"SignIn" | "ForgotPassword" | "OnBoarding">>;
+  setCurrentState: Dispatch<SetStateAction<"SignIn" | "ForgotPassword" | "PhoneSignIn">>;
+  setPhone: Dispatch<SetStateAction<string>>;
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -27,7 +30,7 @@ const SignInForm = ({
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [emailChecked, setEmailChecked] = useState(false);
+  const [phoneInput, setPhoneInput] = useState("");
 
   const validateEmail = (email: string) => {
     return String(email)
@@ -57,11 +60,10 @@ const SignInForm = ({
       setIsLoading(false);
 
       if (res.exists) {
-        setEmailChecked(true);
         setShowPassword(true);
       } else {
-        // Email doesn't exist, redirect to onboarding
-        setCurrentState("OnBoarding");
+        // Email doesn't exist, redirect to onboarding with verification
+        router.push(`/onboarding?email=${encodeURIComponent(email)}`);
       }
     } catch (error) {
       setIsLoading(false);
@@ -128,6 +130,20 @@ const SignInForm = ({
     }
   };
 
+  const handlePhoneLogin = () => {
+    if (phoneInput.length !== 10) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid 10-digit phone number",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setPhone(phoneInput);
+    setCurrentState("PhoneSignIn");
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!showPassword) {
@@ -142,97 +158,136 @@ const SignInForm = ({
       <h1 className="text-lg font-bold">Sign In / Sign Up</h1>
       <p className="text-sm">Join our community & get exclusive offers</p>
 
-      <form onSubmit={handleSubmit} className="space-y-4 mt-10">
-        <div className="border border-light-1 rounded-md p-1 flex items-center w-full">
-          <span className="text-sm font-semibold ml-1">
-            <IoMailOutline className="w-5 h-5" />
-          </span>
-          <Input
-            type="email"
-            id="email"
-            placeholder="Enter Email Address"
-            className="border-none focus-visible:ring-transparent shadow-none text-base font-semibold w-full ml-2"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={showPassword}
-            autoComplete="email"
-          />
-          {!showPassword && (
-            <Button
-              type="submit"
-              size="icon"
-              variant="ghost"
-              disabled={!validateEmail(email) || isLoading}
-              className="h-8 w-8"
-            >
-              <IoArrowForward className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
+      <Tabs defaultValue="email" className="mt-6">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="email">Email</TabsTrigger>
+          <TabsTrigger value="phone">Phone</TabsTrigger>
+        </TabsList>
 
-        {showPassword && (
-          <>
+        <TabsContent value="email" className="mt-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="border border-light-1 rounded-md p-1 flex items-center w-full">
               <span className="text-sm font-semibold ml-1">
-                <IoLockClosedOutline className="w-5 h-5" />
+                <IoMailOutline className="w-5 h-5" />
               </span>
               <Input
-                type="password"
-                id="password"
-                placeholder="Enter Password"
+                type="email"
+                id="email"
+                placeholder="Enter Email Address"
                 className="border-none focus-visible:ring-transparent shadow-none text-base font-semibold w-full ml-2"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="current-password"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={showPassword}
+                autoComplete="email"
+              />
+              {!showPassword && (
+                <Button
+                  type="submit"
+                  size="icon"
+                  variant="ghost"
+                  disabled={!validateEmail(email) || isLoading}
+                  className="h-8 w-8"
+                >
+                  <IoArrowForward className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+
+            {showPassword && (
+              <>
+                <div className="border border-light-1 rounded-md p-1 flex items-center w-full">
+                  <span className="text-sm font-semibold ml-1">
+                    <IoLockClosedOutline className="w-5 h-5" />
+                  </span>
+                  <Input
+                    type="password"
+                    id="password"
+                    placeholder="Enter Password"
+                    className="border-none focus-visible:ring-transparent shadow-none text-base font-semibold w-full ml-2"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="current-password"
+                  />
+                </div>
+
+                <div className="text-right">
+                  <button
+                    type="button"
+                    className="text-blue-800 font-semibold text-sm"
+                    onClick={() => setCurrentState("ForgotPassword")}
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={!password || isLoading}
+                  className="text-base uppercase font-semibold w-full bg-[--c2] hover:bg-[--c2] text-white"
+                >
+                  {isLoading ? "Signing in..." : "Sign In"}
+                </Button>
+              </>
+            )}
+
+            {!showPassword && (
+              <Button
+                type="submit"
+                disabled={!validateEmail(email) || isLoading}
+                className="text-base uppercase font-semibold w-full bg-[--c2] hover:bg-[--c2] text-white"
+              >
+                {isLoading ? "Checking..." : "Continue with Email"}
+              </Button>
+            )}
+
+            {showPassword && (
+              <div className="mt-4 text-center">
+                <button
+                  type="button"
+                  className="text-blue-800 font-semibold text-sm"
+                  onClick={() => {
+                    setShowPassword(false);
+                    setPassword("");
+                  }}
+                >
+                  Use a different email
+                </button>
+              </div>
+            )}
+          </form>
+        </TabsContent>
+
+        <TabsContent value="phone" className="mt-4">
+          <div className="space-y-4">
+            <div className="border border-light-1 rounded-md p-1 flex items-center w-full">
+              <span className="text-sm font-semibold">+91</span>
+              <Input
+                type="tel"
+                id="phone"
+                name="phone"
+                placeholder="Enter Mobile Number"
+                className="border-none focus-visible:ring-transparent shadow-none text-base font-semibold w-full ml-2"
+                value={phoneInput}
+                onChange={(e) => {
+                  if (e.target.value.length > 10) return;
+                  setPhoneInput(e.target.value.replace(/[^0-9]/g, ""));
+                }}
+                maxLength={10}
               />
             </div>
 
-            <div className="text-right">
-              <button
-                type="button"
-                className="text-blue-800 font-semibold text-sm"
-                onClick={() => setCurrentState("ForgotPassword")}
-              >
-                Forgot Password?
-              </button>
-            </div>
-
             <Button
-              type="submit"
-              disabled={!password || isLoading}
+              disabled={phoneInput.length !== 10 || isLoading}
               className="text-base uppercase font-semibold w-full bg-[--c2] hover:bg-[--c2] text-white"
+              onClick={handlePhoneLogin}
             >
-              {isLoading ? "Signing in..." : "Sign In"}
+              Continue with Phone
             </Button>
-          </>
-        )}
 
-        {!showPassword && (
-          <Button
-            type="submit"
-            disabled={!validateEmail(email) || isLoading}
-            className="text-base uppercase font-semibold w-full bg-[--c2] hover:bg-[--c2] text-white"
-          >
-            {isLoading ? "Checking..." : "Continue"}
-          </Button>
-        )}
-      </form>
-
-      {showPassword && (
-        <div className="mt-4 text-center">
-          <button
-            type="button"
-            className="text-blue-800 font-semibold text-sm"
-            onClick={() => {
-              setShowPassword(false);
-              setEmailChecked(false);
-              setPassword("");
-            }}
-          >
-            Use a different email
-          </button>
-        </div>
-      )}
+            <p className="text-sm text-light-1 !mt-2">Email registration is required to create an account</p>
+          </div>
+        </TabsContent>
+      </Tabs>
 
       <div className="border-[0.5px] border-light-3 my-6" />
 

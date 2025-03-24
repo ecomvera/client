@@ -13,7 +13,7 @@ const ForgotPassword = ({
   setCurrentState,
 }: {
   email: string;
-  setCurrentState: Dispatch<SetStateAction<"SignIn" | "ForgotPassword" | "OnBoarding">>;
+  setCurrentState: Dispatch<SetStateAction<"SignIn" | "ForgotPassword" | "PhoneSignIn">>;
 }) => {
   const [resetEmail, setResetEmail] = useState(email);
   const [isLoading, setIsLoading] = useState(false);

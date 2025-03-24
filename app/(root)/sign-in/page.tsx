@@ -3,18 +3,18 @@
 import { useEffect, useState } from "react";
 import SignInForm from "./SignInForm";
 import ForgotPassword from "./ForgotPassword";
-import OnBoarding from "./OnBoarding";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@/hooks/useUser";
-import { toast } from "@/components/ui/use-toast";
 import Image from "next/image";
+import PhoneSignIn from "./PhoneSignIn";
 
 const Page = () => {
   const params = useSearchParams();
   const router = useRouter();
   const { user, isLoading } = useUser();
-  const [currentState, setCurrentState] = useState<"SignIn" | "ForgotPassword" | "OnBoarding">("SignIn");
+  const [currentState, setCurrentState] = useState<"SignIn" | "ForgotPassword" | "PhoneSignIn">("SignIn");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
 
   useEffect(() => {
     if (!isLoading && user) router.replace(params.get("src") || "/");
@@ -36,9 +36,13 @@ const Page = () => {
           />
 
           <div className="">
-            {currentState === "SignIn" && <SignInForm setEmail={setEmail} email={email} setCurrentState={setCurrentState} />}
+            {currentState === "SignIn" && (
+              <SignInForm setEmail={setEmail} email={email} setCurrentState={setCurrentState} setPhone={setPhone} />
+            )}
             {currentState === "ForgotPassword" && <ForgotPassword email={email} setCurrentState={setCurrentState} />}
-            {currentState === "OnBoarding" && <OnBoarding email={email} setCurrentState={setCurrentState} />}
+            {currentState === "PhoneSignIn" && (
+              <PhoneSignIn phone={phone} setPhone={setPhone} setCurrentState={setCurrentState} />
+            )}
           </div>
         </div>
       </div>
