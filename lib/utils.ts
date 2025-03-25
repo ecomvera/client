@@ -10,19 +10,19 @@ export async function getData(url: string) {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, { cache: "no-store" });
     if (!res.ok) {
       console.log("error -", "failed to fetch data");
-      return null;
+      return [];
     }
 
     const data = await res.json();
     if (!data.ok) {
       console.log("error -", data.error);
-      return null;
+      return [];
     }
 
     return data.data;
   } catch (error) {
     console.log("error -", error);
-    return null;
+    return [];
   }
 }
 
@@ -32,19 +32,19 @@ export async function fetchISR(url: string, revalidate = 300) {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, { next: { revalidate } });
     if (!res.ok) {
       console.log("error -", "failed to fetch data");
-      return null;
+      return [];
     }
 
     const data = await res.json();
     if (!data.ok) {
       console.log("error -", data.error);
-      return null;
+      return [];
     }
 
     return data.data;
   } catch (error) {
     console.log("error -", error);
-    return null;
+    return [];
   }
 }
 

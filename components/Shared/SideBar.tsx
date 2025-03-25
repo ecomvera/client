@@ -27,7 +27,7 @@ const SideBar = () => {
     <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
       <SheetContent side="left" className="p-0 border-border">
         <SheetTitle className="hidden"></SheetTitle>
-        <SheetHeader className="text-start p-3">
+        <SheetHeader className="text-start p-3 pb-0 h-[73px]">
           <div>Welcome {user ? <p className="text-lg font-semibold">{user.name}</p> : "User"}</div>
           {user ? (
             <></>
@@ -38,83 +38,89 @@ const SideBar = () => {
           )}
         </SheetHeader>
         <div className="line-break"></div>
-        <div className="flex flex-col gap-3 p-3">
-          <div className="text-sm text-muted-foreground">Shop In</div>
 
-          <div className="flex flex-col px-1">
-            <Accordion type="single" collapsible>
-              {categories.map((item) => (
-                <Item key={item.id} label={item.name} subCategories={item.children} setIsSidebarOpen={setIsSidebarOpen} />
-              ))}
-            </Accordion>
-          </div>
-        </div>
+        <div className="overflow-y-auto h-[calc(100vh-73px)]">
+          <div className="flex flex-col gap-3 p-3">
+            <div className="text-sm text-muted-foreground">Shop In</div>
 
-        <LinkSlider />
-
-        <div className="w-full p-3 ">
-          {/* <div className="text-sm text-muted-foreground">Contact Us</div>
-          <div className="flex flex-col mt-2">
-            <Link href={"#"} className="flex gap-3 p-2">
-              <div className="text-sm font-semibold">Help & Support</div>
-            </Link>
-            <Link href={"#"} className="flex gap-3 p-2">
-              <div className="text-sm font-semibold">Feedback & Suggestions</div>
-            </Link>
-            <Link href={"#"} className="flex gap-3 p-2">
-              <div className="text-sm font-semibold">Become a Seller</div>
-            </Link>
-          </div> */}
-
-          <div className="text-sm text-muted-foreground mt-3">About Us</div>
-          <div className="flex flex-col mt-2">
-            <Link href={"#"} className="flex gap-3 p-2">
-              <div className="text-sm font-semibold">Blogs</div>
-            </Link>
+            <div className="flex flex-col px-1">
+              <Accordion type="single" collapsible>
+                {categories.map((item) => (
+                  <Item key={item.id} label={item.name} subCategories={item.children} setIsSidebarOpen={setIsSidebarOpen} />
+                ))}
+              </Accordion>
+            </div>
           </div>
 
-          <div className="text-sm text-muted-foreground mt-3">Social Media</div>
-          <div className="flex justify-between w-full mt-2 p-2">
-            <Link href="https://www.instagram.com/silkyester/" target="_blank">
-              <FaInstagram className="text-2xl text-[--c3]" />
-            </Link>
-            <Link href="https://www.facebook.com/profile.php?id=61565074614724#" target="_blank">
-              <FaFacebook className="text-2xl text-[--c3]" />
-            </Link>
-            <Link href="https://www.youtube.com/@Silkyester" target="_blank">
-              <FaYoutube className="text-2xl text-[--c3]" />
-            </Link>
-            <Link href="https://x.com/silkyester" target="_blank">
-              <FaTwitter className="text-2xl text-[--c3]" />
-            </Link>
-            <Link href="https://www.linkedin.com/company/silkyester/" target="_blank">
-              <FaLinkedin className="text-2xl text-[--c3]" />
-            </Link>
-            <Link href="https://in.pinterest.com/silkyester/" target="_blank">
-              <FaPinterest className="text-2xl text-[--c3]" />
-            </Link>
-          </div>
+          <LinkSlider />
 
-          <div className="text-sm text-muted-foreground mt-3">Help</div>
-          <div className="flex flex-col mt-2">
-            <Link href={"https://www.silkyester.com/faq"} className="flex gap-3 p-2">
-              <div className="text-sm font-semibold">FAQs</div>
-            </Link>
-            <Link href={"https://www.silkyester.com/contact-us"} className="flex gap-3 p-2">
-              <div className="text-sm font-semibold">Contact Us</div>
-            </Link>
-            <Link href={"https://www.silkyester.com/privacy-policy"} className="flex gap-3 p-2">
-              <div className="text-sm font-semibold">Privacy Policy</div>
-            </Link>
-            <Link href={"https://www.silkyester.com/shipping-and-returns"} className="flex gap-3 p-2">
-              <div className="text-sm font-semibold">Shipping & Returns</div>
-            </Link>
-            <Link href={"https://www.silkyester.com/terms-and-conditions"} className="flex gap-3 p-2">
-              <div className="text-sm font-semibold">Terms & Conditions</div>
-            </Link>
-            <Link href={"https://www.silkyester.com/cancellation-and-refunds"} className="flex gap-3 p-2">
-              <div className="text-sm font-semibold">Cancellation & Refunds</div>
-            </Link>
+          <div className="w-full p-3">
+            <div className="text-sm text-muted-foreground mt-2">About Us</div>
+            <div className="flex flex-col mt-2">
+              <Link href={"/blog"} className="flex gap-3 p-2">
+                <div className="text-sm font-semibold">Blogs</div>
+              </Link>
+              <Link href={"/about-us"} className="flex gap-3 p-2">
+                <div className="text-sm font-semibold">Who We Are</div>
+              </Link>
+            </div>
+
+            <div className="text-sm text-muted-foreground mt-2">Social Media</div>
+            <div className="flex justify-between w-full p-2">
+              <Link href="https://www.instagram.com/silkyester/" target="_blank">
+                <FaInstagram className="text-2xl text-[--c3]" />
+              </Link>
+              <Link href="https://www.facebook.com/profile.php?id=61565074614724#" target="_blank">
+                <FaFacebook className="text-2xl text-[--c3]" />
+              </Link>
+              <Link href="https://www.youtube.com/@Silkyester" target="_blank">
+                <FaYoutube className="text-2xl text-[--c3]" />
+              </Link>
+              <Link href="https://x.com/silkyester" target="_blank">
+                <FaTwitter className="text-2xl text-[--c3]" />
+              </Link>
+              <Link href="https://www.linkedin.com/company/silkyester/" target="_blank">
+                <FaLinkedin className="text-2xl text-[--c3]" />
+              </Link>
+              <Link href="https://in.pinterest.com/silkyester/" target="_blank">
+                <FaPinterest className="text-2xl text-[--c3]" />
+              </Link>
+            </div>
+
+            <div className="text-sm text-muted-foreground mt-2">Help</div>
+            <div className="flex flex-col">
+              <Link href={"https://www.silkyester.com/faq"} className="flex gap-3 p-2">
+                <div className="text-sm font-semibold">FAQs</div>
+              </Link>
+              <Link href={"https://www.silkyester.com/contact-us"} className="flex gap-3 p-2">
+                <div className="text-sm font-semibold">Contact Us</div>
+              </Link>
+              <Link href={"https://www.silkyester.com/privacy-policy"} className="flex gap-3 p-2">
+                <div className="text-sm font-semibold">Privacy Policy</div>
+              </Link>
+              <Link href={"https://www.silkyester.com/shipping-and-returns"} className="flex gap-3 p-2">
+                <div className="text-sm font-semibold">Shipping & Returns</div>
+              </Link>
+              <Link href={"https://www.silkyester.com/terms-and-conditions"} className="flex gap-3 p-2">
+                <div className="text-sm font-semibold">Terms & Conditions</div>
+              </Link>
+              <Link href={"https://www.silkyester.com/cancellation-and-refunds"} className="flex gap-3 p-2">
+                <div className="text-sm font-semibold">Cancellation & Refunds</div>
+              </Link>
+            </div>
+
+            <div className="text-sm text-muted-foreground mt-2">Useful Links</div>
+            <div className="flex flex-col">
+              <Link href={"/myaccount/orders"} className="flex gap-3 p-2">
+                <div className="text-sm font-semibold">Track Order</div>
+              </Link>
+              <Link href={"/careers"} className="flex gap-3 p-2">
+                <div className="text-sm font-semibold">Careers</div>
+              </Link>
+              <Link href={"/seller-registration"} className="flex gap-3 p-2">
+                <div className="text-sm font-semibold">Become a Seller</div>
+              </Link>
+            </div>
           </div>
         </div>
       </SheetContent>

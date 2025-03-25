@@ -120,7 +120,7 @@ export const footer = {
     },
     {
       label: "Become a Seller",
-      route: "become-a-seller",
+      route: "seller-registration",
     },
   ],
 };
