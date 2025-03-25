@@ -149,6 +149,14 @@ export default function OnboardingPage() {
       });
     }
 
+    if (phone && phone.length !== 10) {
+      return toast({
+        title: "Error",
+        description: "Please enter a valid 10-digit phone number",
+        variant: "destructive",
+      });
+    }
+
     try {
       setIsLoading(true);
 
@@ -351,14 +359,14 @@ export default function OnboardingPage() {
 
             {/* {!phone && ( */}
             <div>
-              <span className="text-sm font-semibold">Phone (Optional)</span>
+              <span className="text-sm font-semibold">Phone</span>
               <div className="border border-light-1 rounded-md p-1 flex items-center w-full">
                 <span className="text-sm font-semibold">+91</span>
                 <Input
                   type="tel"
                   id="phone"
                   name="phone"
-                  placeholder="Enter Mobile Number (Optional)"
+                  placeholder="Enter Mobile Number"
                   className="border-none focus-visible:ring-transparent shadow-none text-base font-semibold w-full ml-2"
                   value={phone}
                   onChange={(e) => {
@@ -472,7 +480,8 @@ export default function OnboardingPage() {
               !gender ||
               isLoading ||
               password !== confirmPassword ||
-              (!emailVerified && !phoneVerified)
+              (!emailVerified && !phoneVerified) ||
+              !phone
             }
             className="text-base uppercase font-semibold mt-10 bg-[--c2] hover:bg-[--c3] text-background"
             onClick={handleSubmit}

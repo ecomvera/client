@@ -153,7 +153,7 @@ export default function OrderDetailsPage({ params }: { params: { orderNo: string
         </div>
         <div className="mt-2 md:mt-0">
           <Badge className={`${getStatusColor(order.status)} text-white px-3 py-1 text-sm capitalize`}>
-            {order.timeline[0].activity || order.status}
+            {order.timeline[0]?.activity || order.status}
           </Badge>
         </div>
       </div>

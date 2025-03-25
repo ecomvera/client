@@ -20,6 +20,8 @@ import NewArrivals from "@/components/Shared/NewArrivals";
 import BestSellers from "@/components/Shared/BestSellers";
 import DefaultPage from "./DefaultPage";
 import ProductCard from "@/components/Cards/ProductCard";
+import { Input } from "@/components/ui/input";
+import Search from "@/components/forms/Search";
 
 interface IFilters {
   key: string;
@@ -50,6 +52,13 @@ const Page = () => {
   const [sizes, setSizes] = useState<string[]>([]);
   const [attributes, setAttributes] = useState<IAttribute[]>([]);
   const { mutate: fetchFilterProperties } = useSWR(`/api/filters`, fetcher, fetchOpt);
+
+  const [search, setSearch] = useState("");
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    router.push(`/search?q=${search}`);
+  };
 
   const [genders, setGenders] = useState<string[]>([]);
   const [category, setCategory] = useState<ICategory>();
@@ -87,6 +96,7 @@ const Page = () => {
   });
 
   const [filters, setFilters] = React.useState<IFilters[]>(allParams);
+
   useEffect(() => {
     if (!query) return;
     // create a param string from the filters
@@ -151,6 +161,8 @@ const Page = () => {
           setFilters={setFilters}
         />
       </div>
+
+      <Search className="flex laptop:hidden mt-2 border-2" />
 
       {/* desktop design */}
       {query && (

@@ -11,6 +11,7 @@ import {
   IoPersonOutline,
   IoReorderThreeOutline,
   IoHeartOutline,
+  IoSearchOutline,
 } from "react-icons/io5";
 import { useAction } from "@/stores/action";
 import { useEffect, useState } from "react";
@@ -90,7 +91,14 @@ const Header = () => {
             )
           ) : (
             <div className="flex gap-5 items-center mr-2 flex-1 justify-end">
-              <Search />
+              <Search className="hidden laptop:flex " />
+
+              {pathname !== "/search" && (
+                <Link href={`/search`} className="hidden tablet:block">
+                  <IoSearchOutline className={`laptop:hidden cursor-pointer mt-1`} size={24} />
+                </Link>
+              )}
+
               {/* <ThemeHandler /> */}
 
               <span className="relative mt-1" onClick={() => router.push("/wishlist")}>

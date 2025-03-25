@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 
-import { IoSearch, IoSearchOutline } from "react-icons/io5";
-import Link from "next/link";
+import { IoSearch } from "react-icons/io5";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Cross2Icon } from "@radix-ui/react-icons";
-import { PiCrossLight } from "react-icons/pi";
+import clsx from "clsx";
+import { ClassNameValue } from "tailwind-merge";
 
-const Search = () => {
+const Search = ({ className }: { className?: ClassNameValue }) => {
   const navigate = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -28,11 +28,13 @@ const Search = () => {
   }, [searchParams]);
 
   return (
-    <div className="">
-      <form
-        onSubmit={handleSearch}
-        className="hidden laptop:flex items-center h-9 rounded overflow-hidden bg-[--white] bg-primary-50 w-[350px] laptop:w-[400px]"
-      >
+    <div
+      className={clsx(
+        `items-center h-9 rounded overflow-hidden bg-[--white] bg-primary-50 w-full laptop:w-[400px] border-[--c1] border-[1px]`,
+        className
+      )}
+    >
+      <form onSubmit={handleSearch} className="flex items-center h-full w-full">
         <div
           className={` 
           ${search.length ? "bg-primary-500 cursor-pointer" : "bg-primary-50 cursor-not-allowed"} 
@@ -49,9 +51,6 @@ const Search = () => {
         />
         {search && <Cross2Icon onClick={() => setSearch("")} className={`cursor-pointer mr-3 text-xl w-5`} />}
       </form>
-      <Link href={`/search`} className="hidden tablet:block">
-        <IoSearchOutline className={`laptop:hidden cursor-pointer mt-1`} size={24} />
-      </Link>
     </div>
   );
 };
