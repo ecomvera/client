@@ -18,7 +18,7 @@ export default function ContactUs() {
     contactPoint: [
       {
         "@type": "ContactPoint",
-        telephone: "+91-6399269102",
+        telephone: "02269646745",
         contactType: "customer service",
         areaServed: ["IN", "US"],
         availableLanguage: ["Hindi", "English"],
@@ -61,11 +61,11 @@ export default function ContactUs() {
               </div>
               <div className="">
                 <Mail className="text-blue-500" />
-                <p className="text-gray-700 mt-2">support@silkyester.com</p>
+                <p className="text-gray-700 mt-2">infosilkyester@gmail.com</p>
               </div>
               <div className="">
                 <Phone className="text-blue-500" />
-                <p className="text-gray-700 mt-2">+123 456 7890</p>
+                <p className="text-gray-700 mt-2">02269646745</p>
               </div>
             </div>
 
