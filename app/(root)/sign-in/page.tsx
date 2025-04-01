@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@/hooks/useUser";
 import Image from "next/image";
 import PhoneSignIn from "./PhoneSignIn";
+import ProductSlider from "./ProductSlider";
 
 const Page = () => {
   const params = useSearchParams();
@@ -21,28 +22,43 @@ const Page = () => {
   }, [isLoading, user, router, params]);
 
   return (
-    <div className="max-w-desktop mx-auto h-[calc(100vh-50px)] tablet:h-[calc(100vh-100px)]">
+    <div className="max-w-desktop mx-auto h-[calc(100vh-50px)] tablet:h-[calc(100vh-80px)]">
       <div className="flex flex-col tablet:flex-row h-full">
-        <div className="w-full h-full tablet:w-1/2 p-2"></div>
-
-        <div className="bg-background rounded-t-xl flex flex-col justify-center h-max w-full tablet:max-w-[450px] m-auto p-2 tablet:p-5 py-8">
+        <div className="w-full h-full block tablet:hidden overflow-hidden relative ">
+          <ProductSlider gradient="bottom" />
+        </div>
+        <div className="w-full h-full hidden tablet:block overflow-hidden relative">
+          {/* <ProductSlider gradient="right" /> */}
           <Image
-            src="/assets/logo_200x200.png"
+            src="/assets/signin/1.png"
             alt="signin"
             width={0}
             height={0}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="w-[120px] object-cover text-center mx-auto"
+            className="w-full h-full object-cover object-top"
           />
+        </div>
 
-          <div className="">
-            {currentState === "SignIn" && (
-              <SignInForm setEmail={setEmail} email={email} setCurrentState={setCurrentState} setPhone={setPhone} />
-            )}
-            {currentState === "ForgotPassword" && <ForgotPassword email={email} setCurrentState={setCurrentState} />}
-            {currentState === "PhoneSignIn" && (
-              <PhoneSignIn phone={phone} setPhone={setPhone} setCurrentState={setCurrentState} />
-            )}
+        <div className="w-full h-full flex flex-col justify-center items-center">
+          <div className="bg-background rounded-t-xl flex flex-col justify-center h-max w-full tablet:max-w-[450px] m-auto p-2 tablet:p-5">
+            <Image
+              src="/assets/logo_200x200.png"
+              alt="signin"
+              width={0}
+              height={0}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="w-[120px] object-cover text-center mx-auto"
+            />
+
+            <div className="">
+              {currentState === "SignIn" && (
+                <SignInForm setEmail={setEmail} email={email} setCurrentState={setCurrentState} setPhone={setPhone} />
+              )}
+              {currentState === "ForgotPassword" && <ForgotPassword email={email} setCurrentState={setCurrentState} />}
+              {currentState === "PhoneSignIn" && (
+                <PhoneSignIn phone={phone} setPhone={setPhone} setCurrentState={setCurrentState} />
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -47,6 +47,7 @@ export default async function RootLayout({
           name="keywords"
           content="online shopping, fashion marketplace, buy clothes online, men's fashion, women's clothing, kids wear, trendy outfits, stylish apparel, fashion accessories, lifestyle products, best fashion deals, Silkyester fashion, fast delivery shopping"
         />
+        <meta name="fast2sms" content="dg16YysIJwRjCRm3x2GE9tgyXGbbCvoJ" />
       </head>
       <body
         className={`${Others.logoFont} ${Fonts.Thin} ${Fonts.ExtraLight} ${Fonts.Light} ${Fonts.Regular} ${Fonts.Medium} ${Fonts.SemiBold} ${Fonts.Bold} ${Fonts.ExtraBold} ${Fonts.Black} antialiased`}
