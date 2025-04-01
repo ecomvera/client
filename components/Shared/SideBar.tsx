@@ -111,14 +111,11 @@ const SideBar = () => {
 
             <div className="text-sm text-muted-foreground mt-2">Useful Links</div>
             <div className="flex flex-col">
-              <Link href={"/myaccount/orders"} className="flex gap-3 p-2">
-                <div className="text-sm font-semibold">Track Order</div>
-              </Link>
               <Link href={"/careers"} className="flex gap-3 p-2">
                 <div className="text-sm font-semibold">Careers</div>
               </Link>
               <Link href={"/seller-registration"} className="flex gap-3 p-2">
-                <div className="text-sm font-semibold">Become a Seller</div>
+                <div className="text-sm font-semibold">Become Seller</div>
               </Link>
             </div>
           </div>

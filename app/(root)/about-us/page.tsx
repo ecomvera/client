@@ -35,7 +35,7 @@ export default function AboutUs() {
         </ul>
       </div>
       <Link href="/">
-        <Button className="mt-6 px-6 py-2 text-lg font-semibold">Explore Our Products</Button>
+        <Button className="mt-6 px-6 py-2 font-semibold bg-[--c2] hover:bg-[--c3] text-white">Explore Our Products</Button>
       </Link>
     </div>
   );

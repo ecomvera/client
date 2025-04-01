@@ -123,7 +123,7 @@ const Page = () => {
 
     if (paymentMode === "PREPAID") {
       devLog({ amount: data.subTotal });
-      await makePayment({ orderNo: res.data.orderNumber, amount: 1, user, token, gateway: "razorpay" });
+      await makePayment({ orderNo: res.data.orderNumber, amount: data.subTotal, user, token, gateway: "razorpay" });
     }
 
     if (paymentMode === "COD") {

@@ -35,7 +35,10 @@ export default function RootLayout({
       {!isLoading && !user ? (
         <div className="w-full text-center mt-28">
           <p className="font-semibold">Please Sign In to continue</p>
-          <Button className="md:text-lg mt-3" onClick={() => router.push(`/sign-in?src=${pathname}`)}>
+          <Button
+            className="mt-3 bg-[--c2] hover:bg-[--c3] text-white"
+            onClick={() => router.push(`/sign-in?src=${pathname}`)}
+          >
             Sign In
           </Button>
         </div>

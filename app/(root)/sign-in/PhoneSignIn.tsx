@@ -10,6 +10,7 @@ import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/comp
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { useUserStore } from "@/stores/user";
 import { useDataStore } from "@/stores/data";
+import { devLog } from "@/lib/utils";
 
 const PhoneSignIn = ({
   phone,
@@ -36,7 +37,7 @@ const PhoneSignIn = ({
         body: JSON.stringify({ phone }),
       });
 
-      console.log(res);
+      devLog(res);
 
       if (!res.ok) {
         setIsLoading(false);
@@ -50,7 +51,8 @@ const PhoneSignIn = ({
 
       const resJson = await res.json();
 
-      console.log(resJson);
+      devLog(resJson);
+      // devLog(`Your OTP is: ${resJson.data.otp}`);
 
       setIsLoading(false);
 
@@ -67,7 +69,7 @@ const PhoneSignIn = ({
       // For development purposes only - in production, this would be sent via SMS
       toast({
         title: "OTP Sent",
-        description: `Your OTP is: ${resJson.data.otp}`,
+        description: "Please check your phone for the OTP",
       });
     } catch (error) {
       setIsLoading(false);
