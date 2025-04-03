@@ -24,7 +24,7 @@ const ProductCard = ({
   const { addToWishlist, removeFromWishlist, wishlist } = useDataStore();
 
   const createItemId = () => {
-    return `${product.id}-${product?.colors[0]}-${product?.sizes[0].key}`;
+    return `${product.id}-${product?.colors[0].hex}-${product?.sizes[0].key}`;
   };
 
   const isAdded = product && wishlist?.find((p) => p.id === createItemId());
@@ -34,7 +34,7 @@ const ProductCard = ({
 
     const item = {
       id: createItemId(),
-      color: product.colors[0].name,
+      color: product.colors[0].hex,
       quantity: 1,
       productId: product.id as string,
     };

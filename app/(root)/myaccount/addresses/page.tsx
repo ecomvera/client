@@ -51,7 +51,10 @@ const AddressList = () => {
         Authorization: `Bearer ${token.access}`,
       },
       body: JSON.stringify({ id }),
-    });
+    }).then((res) => res.json());
+
+    console.log(res);
+
     if (res.ok) {
       deleteAddress(id);
       toast({

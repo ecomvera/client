@@ -37,7 +37,7 @@ const imagesData = [
 ];
 
 const duplicateAndShuffleImages = (images: string[], screenWidth: number) => {
-  const multiplier = screenWidth < 768 ? 2 : 4;
+  const multiplier = screenWidth < 768 ? 2 : screenWidth < 1024 ? 4 : 8;
   const duplicatedImages = [...images];
   for (let i = 0; i < multiplier; i++) {
     duplicatedImages.push(...images);
@@ -73,10 +73,8 @@ const ProductSlider = ({ gradient }: { gradient: "bottom" | "right" }) => {
   const rows = useMemo(() => {
     const rowsData: any[] = [];
     // const imagesPerRow = windowWidth < 768 ? 8 : 18;
-    const imagesPerRow = 18;
+    const imagesPerRow = windowWidth < 768 ? 10 : windowWidth < 1024 ? 18 : 22;
     const duplicatedImages = duplicateAndShuffleImages(imagesData, windowWidth);
-
-    console.log(duplicatedImages.length);
 
     for (let i = 0; i < duplicatedImages.length; i += imagesPerRow) {
       rowsData.push(duplicatedImages.slice(i, i + imagesPerRow));

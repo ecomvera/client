@@ -55,7 +55,7 @@ export default function ContactUs() {
               <div className="">
                 <MapPin className="text-blue-500" />
                 <p className="text-gray-700 mt-2">
-                  Premises Name: C/O Shri Radesh Kumar Street: OD 040104 Landmark: Panchayat Headquarter Town: Mohammadpur
+                  Premises Name: C/O Shri Rudesh Kumar Street: OD 040104 Landmark: Panchayat Headquarter Town: Mohammadpur
                   District: Moradabad State: Uttar Pradesh, 240001
                 </p>
               </div>
