@@ -21,7 +21,7 @@ export interface IAddress {
   id?: string;
   name: string;
   phone: string;
-  // email: string;
+  email: string;
   line1: string;
   line2: string;
   landmark: string;

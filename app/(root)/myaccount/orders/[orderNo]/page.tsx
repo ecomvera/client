@@ -212,13 +212,13 @@ export default function OrderDetailsPage({ params }: { params: { orderNo: string
 
           {/* Order Items */}
           <Card>
-            <CardHeader>
+            <CardHeader className="p-2 pt-5 mobile:px-5">
               <CardTitle>Order Items</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="">
+            <CardContent className="p-2 mobile:p-5">
+              <div className="space-y-2">
                 {order.items.map((item) => (
-                  <div key={item.id} className="flex items-start space-x-4">
+                  <div key={item.id} className="flex items-start gap-2">
                     <div className="relative h-20 w-20 overflow-hidden rounded-md border">
                       <Image
                         src={item.product.images[0]?.url || "/placeholder.svg"}
@@ -228,13 +228,15 @@ export default function OrderDetailsPage({ params }: { params: { orderNo: string
                       />
                     </div>
                     <div className="flex-1 space-y-1">
-                      <h3 className="font-medium">{item.product.name}</h3>
-                      <div className="flex items-center text-sm text-muted-foreground">
-                        <span>Quantity: {item.quantity}</span>
+                      <h3 className="font-mediumm text-xs mobile:text-sm tablet:text-base line-clamp-2 truncate text-wrap">
+                        {item.product.name}
+                      </h3>
+                      <div className="flex items-center text-muted-foreground">
+                        <span className="text-xs mobile:text-sm tablet:text-base">Quantity: {item.quantity}</span>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium">₹{item.price}</p>
+                      <p className="font-medium text-xs mobile:text-sm">₹{item.price}</p>
                       {/* <AddProductReview productId={item.product.id || ""} orderId={order.id} name={item.product.name} /> */}
                     </div>
                   </div>
@@ -322,11 +324,11 @@ export default function OrderDetailsPage({ params }: { params: { orderNo: string
               <CardTitle>Need Help?</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <Button className="w-full" variant="outline">
+              {/* <Button className="w-full" variant="outline">
                 Cancel Order
-              </Button>
+              </Button> */}
               <Button className="w-full" variant="outline">
-                Contact Support
+                <Link href={"/contact-us"}>Contact Support</Link>
               </Button>
             </CardContent>
           </Card>

@@ -45,33 +45,41 @@ const NewAddress = () => {
 
   async function onSubmit(values: z.infer<typeof addressSchema>) {
     setIsLoading(true);
+    try {
+      const res = await fetch("/api/user/address", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token.access}`,
+        },
+        body: JSON.stringify({ ...values, residenceType }),
+      }).then((res) => res.json());
 
-    const res = await fetch("/api/user/address", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token.access}`,
-      },
-      body: JSON.stringify({ ...values, residenceType }),
-    }).then((res) => res.json());
+      if (!res.ok) {
+        return toast({
+          title: "Error",
+          description: "Failed to add address",
+          variant: "destructive",
+        });
+      }
 
-    if (!res.ok) {
-      setIsLoading(false);
+      toast({
+        title: "Success",
+        description: "Address added successfully",
+      });
+      addAddress(res.data);
+      params.get("src") ? router.push(`${params.get("src") as string}?address=${res.data.id}`) : router.back();
+      form.reset();
+    } catch (error) {
+      console.log(error);
       return toast({
         title: "Error",
         description: "Failed to add address",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
-    toast({
-      title: "Success",
-      description: "Address added successfully",
-    });
-    addAddress(res.data);
-    params.get("src") ? router.push(`${params.get("src") as string}?address=${res.data.id}`) : router.back();
-    form.reset();
   }
 
   return (

@@ -352,21 +352,21 @@ const DeliveryDetails = ({
             {cart && cart.length > 0 ? (
               cart.map((item) => (
                 <div key={item.id} className="py-2 relative">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Image
-                        src={item.product.images.filter((image) => image.color === item.color)[0].url}
-                        alt={item.product.name}
-                        width={0}
-                        height={0}
-                        sizes="100vw"
-                        className="w-20 rounded-md"
-                      />
-                      <p>{item.product.name}</p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <p>₹{item.product.price}</p>
-                      <p className="font-semibold">x {item.quantity}</p>
+                  <div className="flex items-start gap-2">
+                    <Image
+                      src={item.product.images.filter((image) => image.color === item.color)[0].url}
+                      alt={item.product.name}
+                      width={0}
+                      height={0}
+                      sizes="100vw"
+                      className="w-20 rounded-md"
+                    />
+                    <div className="flex flex-col gap-3">
+                      <p className="mr-6 line-clamp-3 truncate text-wrap">{item.product.name}</p>
+                      <div className="flex items-center flex-nowrap gap-3">
+                        <p>₹{item.product.price}</p>
+                        <p className="font-semibold">x {item.quantity}</p>
+                      </div>
                     </div>
                   </div>
                   <MissingItemDetails item={item} missingItems={missingItems} setMissingItems={setMissingItems} />

@@ -93,7 +93,7 @@ const ProductCard = ({
             width={0}
             height={0}
             sizes="100vw"
-            className="rounded-md object-contain w-full h-full"
+            className="rounded-md object-cover w-full h-full"
           />
 
           {showRating && rating ? (

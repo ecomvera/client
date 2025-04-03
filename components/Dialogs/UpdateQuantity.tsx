@@ -38,7 +38,7 @@ const UpdateQuantity = ({ item }: { item: ICartItem }) => {
   return (
     <Dialog>
       <DialogTrigger className="flex items-center text-xs tablet:text-base">
-        Qnt: <span className="font-semibold ml-1">{item?.quantity}</span> <ChevronDownIcon className="w-5 h-5" />
+        Qnt: <span className="font-semibold ml-2">{item?.quantity}</span> <ChevronDownIcon className="w-5 h-5 ml-2" />
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

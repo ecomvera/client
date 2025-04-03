@@ -67,7 +67,7 @@ const SelectSize = ({
             Move to Cart
           </Button>
         ) : (
-          <Button variant={"link"} className="py-[6px] rounded-md w-full decoration-transparent px-0 mobile:px-4">
+          <Button variant={"link"} className="py-[2px] h-fit rounded-md w-full decoration-transparent px-0">
             Size: <span className="font-semibold ml-1 ">{item?.size}</span> <ChevronDownIcon className="w-5 h-5" />
           </Button>
         )}

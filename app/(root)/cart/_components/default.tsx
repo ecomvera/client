@@ -68,13 +68,15 @@ const CartProduct = ({ item }: { item: ICartItem }) => {
             height={0}
             priority
             sizes="100vw"
-            className="w-full"
+            className="w-full h-full object-cover"
           />
         </AspectRatio>
       </Link>
-      <div className="flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col relative">
         <div className="relative">
-          <h1 className="text-sm tablet:text-base font-semibold text-light-1">{item.product.name}</h1>
+          <h1 className="text-xs mobile:text-sm tablet:text-base font-semibold text-light-1 mr-5 line-clamp-2 truncate text-wrap">
+            {item.product.name}
+          </h1>
           <span
             style={{ backgroundColor: item.color }}
             className="w-5 h-5 tablet:w-7 tablet:h-7 rounded-full flex items-center justify-center mt-1"
@@ -84,12 +86,12 @@ const CartProduct = ({ item }: { item: ICartItem }) => {
           <DeleteCartItem item={item} />
         </div>
         <div className="flex-1"></div>
-        <div className="flex justify-between">
-          <div className="flex gap-2 items-center">
+        <div className="flex justify-between absolute mobile:static bottom-[-5px] left-0 right-0">
+          <div className="flex gap-3 mobile:gap-5 items-end">
             <SelectSize item={item} />
             <UpdateQuantity item={item} />
           </div>
-          <div className="flex gap-1 tablet:gap-2 items-end">
+          <div className="flex flex-col mobile:flex-row gap-1 tablet:gap-2 items-end">
             <p className="font-bold text-sm tablet:text-lg">₹{item.product.price * item.quantity}</p>
             <p className="line-through text-[10px] tablet:text-sm">₹{item.product.mrp * item.quantity}</p>
           </div>

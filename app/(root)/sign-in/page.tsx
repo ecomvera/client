@@ -22,21 +22,21 @@ const Page = () => {
   }, [isLoading, user, router, params]);
 
   return (
-    <div className="max-w-desktop mx-auto h-[calc(100vh-50px)] tablet:h-[calc(100vh-80px)]">
+    <div className=" mx-auto h-[calc(100vh-50px)] tablet:h-[calc(100vh-80px)]">
       <div className="flex flex-col tablet:flex-row h-full">
         <div className="w-full h-full block tablet:hidden overflow-hidden relative ">
           <ProductSlider gradient="bottom" />
         </div>
         <div className="w-full h-full hidden tablet:block overflow-hidden relative">
-          {/* <ProductSlider gradient="right" /> */}
-          <Image
+          <ProductSlider gradient="right" />
+          {/* <Image
             src="/assets/signin/1.png"
             alt="signin"
             width={0}
             height={0}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="w-full h-full object-cover object-top"
-          />
+          /> */}
         </div>
 
         <div className="w-full h-full flex flex-col justify-center items-center">

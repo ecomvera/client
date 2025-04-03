@@ -159,10 +159,10 @@ const SignInForm = ({
       <p className="text-sm">Join our community & get exclusive offers</p>
 
       <Tabs defaultValue="email" className="mt-6">
-        <TabsList className="grid w-full grid-cols-2">
+        {/* <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="email">Email</TabsTrigger>
           <TabsTrigger value="phone">Phone</TabsTrigger>
-        </TabsList>
+        </TabsList> */}
 
         <TabsContent value="email" className="mt-4">
           <form onSubmit={handleSubmit} className="space-y-4">
