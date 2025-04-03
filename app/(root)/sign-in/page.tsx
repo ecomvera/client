@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@/hooks/useUser";
 import Image from "next/image";
 import PhoneSignIn from "./PhoneSignIn";
-import ProductSlider from "./ProductSlider";
+import ProductSlider from "@/components/Shared/ProductSlider";
 
 const Page = () => {
   const params = useSearchParams();

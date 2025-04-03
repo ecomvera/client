@@ -14,6 +14,7 @@ import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/comp
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import Image from "next/image";
 import { Eye } from "lucide-react";
+import ProductSlider from "@/components/Shared/ProductSlider";
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -240,11 +241,13 @@ export default function OnboardingPage() {
   }, []);
 
   return (
-    <div className="max-w-desktop ">
-      <div className="flex flex-col tablet:flex-row  h-full">
-        <div className="w-full h-full tablet:w-1/2 p-2"></div>
+    <div className="flex mx-auto h-[calc(100vh+100px)]">
+      <div className="w-full h-full hidden tablet:block overflow-hidden relative">
+        <ProductSlider gradient="right" />
+      </div>
 
-        <div className="bg-background rounded-t-xl flex flex-col justify-center h-max w-full tablet:max-w-[450px] m-auto p-2 tablet:p-5 py-8 mb-10">
+      <div className="w-full h-full flex flex-col justify-center items-center">
+        <div className="bg-background rounded-t-xl flex flex-col justify-center h-max w-full tablet:max-w-[450px] m-auto p-2 tablet:p-5 py-8 mb-14 tablet:mb-5">
           <Image
             src="/assets/logo_200x200.png"
             alt="logo"
