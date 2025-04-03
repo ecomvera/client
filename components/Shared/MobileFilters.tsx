@@ -11,7 +11,7 @@ interface ISelectedItem {
   value: string[];
 }
 
-interface ISetFilters extends React.Dispatch<React.SetStateAction<ISelectedItem[]>> {}
+type SetFilters = React.Dispatch<React.SetStateAction<ISelectedItem[]>>;
 
 const MobileFilters = ({
   genders,
@@ -30,7 +30,7 @@ const MobileFilters = ({
   attributes: IAttribute[];
   colors: IColor[];
   filters: ISelectedItem[];
-  setFilters: ISetFilters;
+  setFilters: SetFilters;
 }) => {
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
   const isFilterSelected = (category: string) => filters.findIndex((item) => item.key === category);
@@ -55,6 +55,7 @@ const MobileFilters = ({
       }
     });
   };
+
   return (
     <Drawer open={isFilterOpen} onOpenChange={setIsFilterOpen}>
       <DrawerTitle className="hidden">Filters</DrawerTitle>
@@ -113,7 +114,7 @@ const MobileFilters = ({
               {colors.map((color) => (
                 <Item
                   key={color.id}
-                  category="color"
+                  category="colors"
                   value={color.name}
                   filters={filters}
                   handleSelectItem={handleSelectItem}
@@ -123,13 +124,13 @@ const MobileFilters = ({
                 </Item>
               ))}
             </TabsContent>
-            {/* <TabsContent value="sizes">
+            <TabsContent value="sizes">
               {sizes.map((size) => (
                 <Item key={size} category="sizes" value={size} filters={filters} handleSelectItem={handleSelectItem}>
                   {size}
                 </Item>
               ))}
-            </TabsContent> */}
+            </TabsContent>
             {attributes.map((attribute) => (
               <TabsContent value={attribute.key} key={attribute.key}>
                 {attribute.value.map((value, index) => (
@@ -184,33 +185,37 @@ const TabItem = ({
   );
 };
 
-const Item = ({
-  children,
-  value,
-  filters,
-  handleSelectItem,
-  category,
-}: {
-  children: React.ReactNode;
-  value: string;
-  filters: ISelectedItem[];
-  handleSelectItem: (category: string, value: string) => void;
-  category: string;
-}) => {
-  const isClicked = filters.filter((item) => item.key === category)[0]?.value?.includes(value.replace(" ", "-"));
-  return (
-    <div onClick={() => handleSelectItem(category, value.replace(" ", "-"))}>
-      <div className="flex justify-between items-center mb-2">
-        <label
-          htmlFor={value}
-          className="text-sm mobile:text-base flex items-center gap-2 font-semibold text-muted-foreground"
-        >
-          {children}
-        </label>
-        {isClicked ? <ImCheckboxChecked size={16} className="text-primary" /> : <ImCheckboxUnchecked size={16} />}
+const Item = React.memo(
+  ({
+    children,
+    value,
+    filters,
+    handleSelectItem,
+    category,
+  }: {
+    children: React.ReactNode;
+    value: string;
+    filters: ISelectedItem[];
+    handleSelectItem: (category: string, value: string) => void;
+    category: string;
+  }) => {
+    const isClicked = filters.filter((item) => item.key === category)[0]?.value?.includes(value.replace(" ", "-"));
+    return (
+      <div onClick={() => handleSelectItem(category, value.replace(" ", "-"))}>
+        <div className="flex justify-between items-center mb-2">
+          <label
+            htmlFor={value}
+            className="text-sm mobile:text-base flex items-center gap-2 font-semibold text-muted-foreground"
+          >
+            {children}
+          </label>
+          {isClicked ? <ImCheckboxChecked size={16} className="text-primary" /> : <ImCheckboxUnchecked size={16} />}
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+);
+
+Item.displayName = "Item";
 
 export default MobileFilters;

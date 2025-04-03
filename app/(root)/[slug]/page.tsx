@@ -6,7 +6,7 @@ import Filters from "@/components/Shared/Filters";
 import ProductsList from "@/components/Shared/ProductsList";
 import React, { useEffect, useState } from "react";
 import { Accordion } from "@/components/ui/accordion";
-import { IAttribute, ICategory, IProduct, ISize } from "@/types";
+import { IAttribute, ICategory, IProduct, IProductType, ISize } from "@/types";
 import { fetcher, fetchOpt } from "@/lib/utils";
 import useSWR from "swr";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -106,7 +106,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
     }
 
     // Set the subcategories for parent category or group category
-    setProductTypes(data.productTypes);
+    setProductTypes([...new Set(data.productTypes.map((item: IProductType) => item.name))] as string[]);
 
     // If it's a group category and there are products directly under this category
     if (data?.products) {
@@ -179,7 +179,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
           </div>
         </div>
 
-        <div className="flex flex-col w-full mt-[-5px]">
+        <div className="flex flex-col w-full mt-[-5px] mb-24 tablet:mb-0">
           <div className="z-[2] flex justify-between items-center gap-5 sticky md:flex top-10 md:top-auto bg-background mb-3 py-3 md:p-0">
             <div className="font-semibold text-xl md:text-2xl font-sans tracking-wide">
               {category?.name}{" "}
