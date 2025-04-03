@@ -1,49 +1,88 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import Image from "next/image";
 
 const imagesData = [
-  "/assets/slider-desktop/1.png",
-  "/assets/slider-desktop/2.png",
-  "/assets/slider-desktop/3.png",
-  "/assets/slider-desktop/4.png",
-  "/assets/slider-desktop/5.png",
-  "/assets/slider-desktop/6.png",
-  "/assets/slider-desktop/7.png",
-  "/assets/slider-desktop/8.png",
-  "/assets/slider-desktop/9.png",
-  "/assets/slider-desktop/10.png",
-  "/assets/slider-desktop/11.png",
-  "/assets/slider-desktop/12.png",
-  "/assets/slider-desktop/13.png",
-  "/assets/slider-desktop/14.png",
-  "/assets/slider-desktop/15.png",
-  "/assets/slider-desktop/16.png",
-  "/assets/slider-desktop/17.png",
-  "/assets/slider-desktop/18.png",
-  "/assets/slider-desktop/19.png",
-  "/assets/slider-desktop/20.png",
-  "/assets/slider-desktop/21.png",
-  "/assets/slider-desktop/22.png",
-  "/assets/slider-desktop/23.png",
-  "/assets/slider-desktop/24.png",
-  "/assets/slider-desktop/25.png",
-  "/assets/slider-desktop/26.png",
-  "/assets/slider-desktop/27.png",
-  "/assets/slider-desktop/28.png",
-  "/assets/slider-desktop/29.png",
-  "/assets/slider-desktop/30.png",
-  "/assets/slider-desktop/31.png",
-  "/assets/slider-desktop/32.png",
+  "/assets/slider/1.png",
+  "/assets/slider/2.png",
+  "/assets/slider/3.png",
+  "/assets/slider/4.png",
+  "/assets/slider/5.png",
+  "/assets/slider/6.png",
+  "/assets/slider/7.png",
+  "/assets/slider/8.png",
+  "/assets/slider/9.png",
+  "/assets/slider/10.png",
+  "/assets/slider/11.png",
+  "/assets/slider/12.png",
+  "/assets/slider/13.png",
+  "/assets/slider/14.png",
+  "/assets/slider/15.png",
+  "/assets/slider/16.png",
+  "/assets/slider/17.png",
+  "/assets/slider/18.png",
+  "/assets/slider/19.png",
+  "/assets/slider/20.png",
+  "/assets/slider/21.png",
+  "/assets/slider/22.png",
+  "/assets/slider/23.png",
+  "/assets/slider/24.png",
+  "/assets/slider/25.png",
+  "/assets/slider/26.png",
+  "/assets/slider/27.png",
+  "/assets/slider/28.png",
+  "/assets/slider/29.png",
+  "/assets/slider/30.png",
+  "/assets/slider/31.png",
+  "/assets/slider/32.png",
 ];
 
+const duplicateAndShuffleImages = (images: string[], screenWidth: number) => {
+  const multiplier = screenWidth < 768 ? 2 : 4;
+  const duplicatedImages = [...images];
+  for (let i = 0; i < multiplier; i++) {
+    duplicatedImages.push(...images);
+  }
+  // Shuffle the duplicated images
+  for (let i = duplicatedImages.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [duplicatedImages[i], duplicatedImages[j]] = [duplicatedImages[j], duplicatedImages[i]];
+  }
+  return duplicatedImages;
+};
+
 const ProductSlider = ({ gradient }: { gradient: "bottom" | "right" }) => {
+  const [windowWidth, setWindowWidth] = useState<number>(800);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    // Set initial width
+    handleResize();
+
+    // Add event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const rows = useMemo(() => {
     const rowsData: any[] = [];
-    for (let i = 0; i < imagesData.length; i += 8) {
-      rowsData.push(imagesData.slice(i, i + 8));
+    // const imagesPerRow = windowWidth < 768 ? 8 : 18;
+    const imagesPerRow = 18;
+    const duplicatedImages = duplicateAndShuffleImages(imagesData, windowWidth);
+
+    console.log(duplicatedImages.length);
+
+    for (let i = 0; i < duplicatedImages.length; i += imagesPerRow) {
+      rowsData.push(duplicatedImages.slice(i, i + imagesPerRow));
     }
     return rowsData;
-  }, []);
+  }, [windowWidth]);
 
   return (
     <div className="pointer-events-none">
@@ -70,8 +109,8 @@ const MemoizedRow = React.memo(({ row, index }: { row: any; index: number }) => 
             key={index}
             className={`mb-[6px] justify-center rounded-lg items-center flex overflow-hidden`}
             style={{
-              width: "calc(100vw * 0.2)",
-              height: "calc(100vw * 0.2)",
+              width: "100px",
+              height: "100px",
             }}
           >
             <Image
@@ -79,7 +118,8 @@ const MemoizedRow = React.memo(({ row, index }: { row: any; index: number }) => 
               alt="product"
               width={100}
               height={100}
-              loading="lazy"
+              // loading="lazy"
+              priority
               className="w-full h-full object-contain"
             />
           </div>

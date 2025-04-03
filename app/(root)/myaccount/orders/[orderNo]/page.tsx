@@ -212,10 +212,10 @@ export default function OrderDetailsPage({ params }: { params: { orderNo: string
 
           {/* Order Items */}
           <Card>
-            <CardHeader className="p-2 pt-5 mobile:px-5">
+            <CardHeader>
               <CardTitle>Order Items</CardTitle>
             </CardHeader>
-            <CardContent className="p-2 mobile:p-5">
+            <CardContent>
               <div className="space-y-2">
                 {order.items.map((item) => (
                   <div key={item.id} className="flex items-start gap-2">
