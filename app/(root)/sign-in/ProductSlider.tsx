@@ -2,38 +2,38 @@ import React, { useMemo } from "react";
 import Image from "next/image";
 
 const imagesData = [
-  "/assets/slider/1.png",
-  "/assets/slider/2.png",
-  "/assets/slider/3.png",
-  "/assets/slider/4.png",
-  "/assets/slider/5.png",
-  "/assets/slider/6.png",
-  "/assets/slider/7.png",
-  "/assets/slider/8.png",
-  "/assets/slider/9.png",
-  "/assets/slider/10.png",
-  "/assets/slider/11.png",
-  "/assets/slider/12.png",
-  "/assets/slider/13.png",
-  "/assets/slider/14.png",
-  "/assets/slider/15.png",
-  "/assets/slider/16.png",
-  "/assets/slider/17.png",
-  "/assets/slider/18.png",
-  "/assets/slider/19.png",
-  "/assets/slider/20.png",
-  "/assets/slider/21.png",
-  "/assets/slider/22.png",
-  "/assets/slider/23.png",
-  "/assets/slider/24.png",
-  "/assets/slider/25.png",
-  "/assets/slider/26.png",
-  "/assets/slider/27.png",
-  "/assets/slider/28.png",
-  "/assets/slider/29.png",
-  "/assets/slider/30.png",
-  "/assets/slider/31.png",
-  "/assets/slider/32.png",
+  "/assets/slider-desktop/1.png",
+  "/assets/slider-desktop/2.png",
+  "/assets/slider-desktop/3.png",
+  "/assets/slider-desktop/4.png",
+  "/assets/slider-desktop/5.png",
+  "/assets/slider-desktop/6.png",
+  "/assets/slider-desktop/7.png",
+  "/assets/slider-desktop/8.png",
+  "/assets/slider-desktop/9.png",
+  "/assets/slider-desktop/10.png",
+  "/assets/slider-desktop/11.png",
+  "/assets/slider-desktop/12.png",
+  "/assets/slider-desktop/13.png",
+  "/assets/slider-desktop/14.png",
+  "/assets/slider-desktop/15.png",
+  "/assets/slider-desktop/16.png",
+  "/assets/slider-desktop/17.png",
+  "/assets/slider-desktop/18.png",
+  "/assets/slider-desktop/19.png",
+  "/assets/slider-desktop/20.png",
+  "/assets/slider-desktop/21.png",
+  "/assets/slider-desktop/22.png",
+  "/assets/slider-desktop/23.png",
+  "/assets/slider-desktop/24.png",
+  "/assets/slider-desktop/25.png",
+  "/assets/slider-desktop/26.png",
+  "/assets/slider-desktop/27.png",
+  "/assets/slider-desktop/28.png",
+  "/assets/slider-desktop/29.png",
+  "/assets/slider-desktop/30.png",
+  "/assets/slider-desktop/31.png",
+  "/assets/slider-desktop/32.png",
 ];
 
 const ProductSlider = ({ gradient }: { gradient: "bottom" | "right" }) => {
@@ -74,7 +74,14 @@ const MemoizedRow = React.memo(({ row, index }: { row: any; index: number }) => 
               height: "calc(100vw * 0.2)",
             }}
           >
-            <Image src={image} alt="product" width={100} height={100} className="w-full h-full object-contain" />
+            <Image
+              src={image}
+              alt="product"
+              width={100}
+              height={100}
+              loading="lazy"
+              className="w-full h-full object-contain"
+            />
           </div>
         );
       })}
