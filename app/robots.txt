@@ -1,0 +1,44 @@
+﻿#  Silkyester Robots.txt File  
+
+
+User-agent: *
+Disallow: /*?*utm_source=
+Disallow: /*?*utm_medium=
+Disallow: /*?*utm_campaign=
+Disallow: /*?*ref=
+Disallow: /*?*colors=
+Disallow: /*?*sizes=
+Disallow: /*?*material=
+Disallow: /*?*fit=
+Disallow: /*?*sleeve=
+Disallow: /*?*pocket=
+Disallow: /*?*occasion=
+Disallow: /*?*sort_by=
+Disallow: /*?*filter=
+Disallow: /*?*page=
+Disallow: /*?*variant=
+Disallow: /*?*currency=
+Disallow: /*?*lang=
+Disallow: /*?*tracking=
+Disallow: /*?*session=
+Disallow: /search
+Disallow: /cart
+Disallow: /checkout
+Disallow: /orders
+Disallow: /wishlist
+Disallow: /track-order
+Disallow: /account
+Disallow: /login
+Disallow: /register
+Disallow: /contact-us
+Disallow: /privacy-policy
+Disallow: /terms-and-conditions
+Disallow: /shipping-returns
+Disallow: /cancellation-refunds
+Disallow: /customer-support
+Disallow: /admin
+Disallow: /backend
+Disallow: /settings
+
+
+Sitemap: https://silkyester.com/sitemap.xml
