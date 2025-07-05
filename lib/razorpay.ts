@@ -21,16 +21,19 @@ export const razorpayPayment = async ({
   try {
     const res = await fetch("/api/user/payment/razorpay/create-order", {
       method: "POST",
-      headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token.access}`,
+      },
       body: JSON.stringify({ orderNo, amount }),
     }).then((res) => res.json());
 
-    console.log({ res });
-
     if (!res.ok) {
-      devLog("error -", res);
-      toast({ description: res.error || "Payment failed", variant: "destructive" });
-      await handleUpdateOrderPaymentStatus(orderNo, "PAYMENT_FAILED", res.paymentId);
+      toast({
+        description: res.error || "Payment failed",
+        variant: "destructive",
+      });
+      await handleUpdateOrderPaymentStatus(orderNo, "PAYMENT_FAILED");
       return;
     }
 
@@ -39,23 +42,35 @@ export const razorpayPayment = async ({
       amount: res.data.amount,
       currency: "INR",
       name: "Silkyester",
-      description: "Test Transaction",
+      description: "Payment for order " + orderNo,
       image: "https://www.silkyester.com/favicon.ico",
       order_id: res.data.id,
+      modal: {
+        ondismiss: async function () {
+          await handleUpdateOrderPaymentStatus(orderNo, "PAYMENT_FAILED");
+        },
+      },
       handler: async function (response: any) {
         const data = await fetch("/api/user/payment/razorpay/verify", {
           method: "POST",
-          headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token.access}`,
+          },
           body: JSON.stringify({
             orderNo: orderNo,
             razorpayPaymentId: response.razorpay_payment_id,
             razorpayOrderId: response.razorpay_order_id,
             razorpaySignature: response.razorpay_signature,
+            response: response,
           }),
         }).then((res) => res.json());
         if (!data.ok) {
           devLog("error -", data);
-          toast({ description: data.error || "Something went wrong", variant: "destructive" });
+          toast({
+            description: data.error || "Something went wrong",
+            variant: "destructive",
+          });
           await handleUpdateOrderPaymentStatus(orderNo, "PAYMENT_FAILED");
           return;
         } else {
@@ -77,25 +92,44 @@ export const razorpayPayment = async ({
 
     const paymentObject = new window.Razorpay(options);
     await paymentObject.open();
+
+    paymentObject.on("payment.exit");
+
     paymentObject.on("payment.failed", async function (response: any) {
-      toast({ description: response.error.description || "Payment failed", variant: "destructive" });
+      console.log({ response });
+      toast({
+        description: response.error.description || "Payment failed",
+        variant: "destructive",
+      });
       await handleUpdateOrderPaymentStatus(orderNo, "PAYMENT_FAILED");
     });
   } catch (error) {
-    console.error(error);
+    console.error("Error in razorpayPayment", error);
     toast({ description: "Payment failed", variant: "destructive" });
     await handleUpdateOrderPaymentStatus(orderNo, "PAYMENT_FAILED");
   }
 };
 
-const handleUpdateOrderPaymentStatus = async (orderNo: string, status: string, paymentId?: string) => {
+const handleUpdateOrderPaymentStatus = async (orderNo: string, status: string) => {
   const token = localStorage.getItem("accessToken");
-  // if (!paymentId) {
   await fetch("/api/user/orders/status", {
     method: "PUT",
-    headers: { "Content-Type": "application/json", authorization: `Bearer ${token}` },
+    headers: {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${token}`,
+    },
     body: JSON.stringify({ orderNo, status }),
   });
-  // }
+  await fetch("/api/user/payment/status", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      orderNo,
+      status: status === "PAYMENT_FAILED" ? "FAILED" : status,
+    }),
+  });
   window.location.replace("/order/failure?paymentMode=Razorpay Payment");
 };
