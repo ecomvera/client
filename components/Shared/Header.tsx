@@ -47,7 +47,7 @@ const Header = () => {
           <div className="flex justify-between gap-3 items-center">
             <div className="flex gap-4">
               <HeadLink href="/about-us" label="About" />
-              <HeadLink href="/blog" label="Blog" />
+              <HeadLink href="https://blog.silkyester.com" label="Blog" />
             </div>
             <div className="flex gap-4">
               <HeadLink href="/contact-us" label="Contact" />

@@ -104,7 +104,7 @@ export const footer = {
   links: [
     {
       label: "Blog",
-      route: "blog",
+      route: "https://blog.silkyester.com",
     },
     {
       label: "Careers",

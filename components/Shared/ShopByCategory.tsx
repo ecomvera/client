@@ -37,7 +37,7 @@ const ShopByCategory = ({ data }: { data: any }) => {
                               width={0}
                               height={0}
                               sizes="100vw"
-                              className="rounded-md object-contain w-full h-full"
+                              className="rounded-md object-cover w-full h-full"
                             />
                             <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-gray-900 to-transparent"></div>
                             <h1 className="absolute left-0 bottom-0 ml-2 text-sm mobile:text-lg text-white">{child.name}</h1>

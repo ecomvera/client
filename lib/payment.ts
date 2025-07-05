@@ -29,7 +29,7 @@ export const makePayment = async ({
       toast({ description: "Wrong payment gateway", variant: "destructive" });
     }
   } catch (error) {
-    console.log(error);
+    console.log("Error in payment", error);
     toast({ description: "Something went wrong", variant: "destructive" });
   }
 };

@@ -93,7 +93,10 @@ const Page = () => {
     setLoading(true);
     const res = await fetch("/api/user/orders", {
       method: "POST",
-      headers: { "Content-Type": "application/json", authorization: `Bearer ${token.access}` },
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token.access}`,
+      },
       body: JSON.stringify(data),
     }).then((res) => res.json());
 
@@ -118,12 +121,17 @@ const Page = () => {
       return;
     }
 
-    // localStorage.removeItem("cart");
-    // setCart([]);
+    localStorage.removeItem("cart");
+    setCart([]);
 
     if (paymentMode === "PREPAID") {
-      devLog({ amount: data.subTotal });
-      await makePayment({ orderNo: res.data.orderNumber, amount: data.subTotal, user, token, gateway: "razorpay" });
+      await makePayment({
+        orderNo: res.data.orderNumber,
+        amount: data.subTotal,
+        user,
+        token,
+        gateway: "razorpay",
+      });
     }
 
     if (paymentMode === "COD") {
@@ -426,7 +434,7 @@ const DeliveryDetails = ({
                       {mode === "PREPAID" ? (
                         <>
                           Online
-                          {/* <span className="text-xs">(UPI, Credit/Debit Card, Netbanking, etc)</span> */}
+                          <span className="text-xs ml-2">(UPI, Credit/Debit Card, Netbanking, etc)</span>
                         </>
                       ) : (
                         "Cash On Delivery"

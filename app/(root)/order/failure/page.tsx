@@ -22,8 +22,9 @@ export default function OrderFailurePage() {
       if (countdown < 1) {
         clearInterval(interval);
         return;
+      } else {
+        setCountdown((prev) => prev - 1);
       }
-      setCountdown((prev) => prev - 1);
     }, 1000);
 
     return () => {

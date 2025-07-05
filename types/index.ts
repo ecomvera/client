@@ -93,6 +93,7 @@ export interface IProduct {
   attributes: IProductAttribute[];
   warehouses: IWarehouseProduct[];
   ProductReviews: any;
+  genders: string[];
 
   category?: ICategory;
   categoryId: string;
