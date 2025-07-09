@@ -11,6 +11,7 @@ const InputField = ({
   placeholder,
   leftElement,
   disabled = false,
+  required = false,
   type = "text",
 }: {
   control?: any;
@@ -21,6 +22,7 @@ const InputField = ({
   placeholder?: string;
   leftElement?: React.ReactNode;
   disabled?: boolean;
+  required?: boolean;
   type?: string;
 }) => {
   if (!control)
@@ -28,7 +30,7 @@ const InputField = ({
       <div className="flex flex-col w-full my-2">
         <div className="w-full flex items-center border rounded-md px-2 py-2 relative">
           <Label className="absolute -top-[10px] left-[10px] text-xs mobile:text-sm text-light-1 bg-background px-2">
-            {label}*
+            {label} {required && "*"}
           </Label>
           {leftElement}
           <Input

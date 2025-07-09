@@ -15,23 +15,23 @@ import {
 
 export const categories = [
   {
-    route: "men",
+    route: "/men",
     label: "Men's Clothing",
   },
   {
-    route: "women",
+    route: "/women",
     label: "Women's Clothing",
   },
   {
-    route: "kids",
+    route: "/kids",
     label: "Kids's Clothing",
   },
   {
-    route: "watch",
+    route: "/watch",
     label: "Watches",
   },
   {
-    route: "accessories",
+    route: "/accessories",
     label: "Accessories",
   },
 ];
@@ -40,65 +40,65 @@ export const footer = {
   about: [
     {
       label: "About Us",
-      route: "about",
+      route: "/about",
     },
     {
       label: "Blogs",
-      route: "blogs",
+      route: "/blogs",
     },
   ],
   company: [
     {
       label: "Our Stores",
-      route: "stores",
+      route: "/stores",
     },
     {
       label: "Careers",
-      route: "careers",
+      route: "/careers",
     },
   ],
   help: [
     {
       label: "FAQ",
-      route: "faq",
+      route: "/faq",
     },
     {
       label: "Contact Us",
-      route: "contact-us",
+      route: "/contact-us",
     },
     {
       label: "Privacy Policy",
-      route: "privacy-policy",
+      route: "/privacy-policy",
     },
     {
       label: "Terms & Conditions",
-      route: "terms-and-conditions",
+      route: "/terms-and-conditions",
     },
     {
       label: "Shipping & Returns",
-      route: "shipping-and-returns",
+      route: "/shipping-and-returns",
     },
     {
       label: "Cancellation & Refunds",
-      route: "cancellation-and-refunds",
+      route: "/cancellation-and-refunds",
     },
   ],
   popularSearches: [
     {
       label: "T-shirts",
-      route: "t-shirts",
+      route: "/t-shirts",
     },
     {
       label: "Shirts",
-      route: "shirts",
+      route: "/shirts",
     },
     {
       label: "Jeans",
-      route: "jeans",
+      route: "/jeans",
     },
     {
       label: "Sweatshirts",
-      route: "sweatshirts",
+      route: "/sweatshirts",
     },
   ],
   links: [
@@ -108,19 +108,19 @@ export const footer = {
     },
     {
       label: "Careers",
-      route: "careers",
+      route: "/careers",
     },
     {
       label: "About Us",
-      route: "about-us",
+      route: "/about-us",
     },
     {
       label: "Track Order",
-      route: "myaccount/orders",
+      route: "/myaccount/orders",
     },
     {
       label: "Become a Seller",
-      route: "seller-registration",
+      route: "/seller-registration",
     },
   ],
 };

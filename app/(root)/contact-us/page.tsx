@@ -18,7 +18,7 @@ export default function ContactUs() {
     contactPoint: [
       {
         "@type": "ContactPoint",
-        telephone: "02269646745",
+        telephone: "7579842556",
         contactType: "customer service",
         areaServed: ["IN", "US"],
         availableLanguage: ["Hindi", "English"],
@@ -65,7 +65,7 @@ export default function ContactUs() {
               </div>
               <div className="">
                 <Phone className="text-blue-500" />
-                <p className="text-gray-700 mt-2">02269646745</p>
+                <p className="text-gray-700 mt-2">7579842556</p>
               </div>
             </div>
 

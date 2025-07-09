@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Check, Clock, Pencil, Plus } from "lucide-react";
+import { ArrowLeft, Check, Clock, Pencil, Plus, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -22,84 +22,23 @@ export default function OrderDetailsPage({ params }: { params: { orderNo: string
   const { showLoadingScreen, setShowLoadingScreen } = useAction();
   const [order, setOrder] = useState<IOrder | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  // This would normally be fetched from an API based on the order ID
-  const orderr = {
-    id: "7867050244",
-    date: "Mar 16, 2025, 10:39 AM",
-    status: "processing", // Can be: created, confirmed, processing, shipped, delivered, cancelled
-    items: [
-      {
-        id: "1",
-        name: "Silkyester men t-shirt",
-        image: "/placeholder.svg?height=80&width=80",
-        price: 999,
-        quantity: 1,
-      },
-      {
-        id: "2",
-        name: "Premium Denim Jeans",
-        image: "/placeholder.svg?height=80&width=80",
-        price: 1499,
-        quantity: 1,
-      },
-    ],
-    subtotal: 2498,
-    shipping: 99,
-    tax: 250,
-    total: 2847,
-    paymentMethod: "Credit Card (ending in 4242)",
-    shippingAddress: {
-      name: "John Doe",
-      line1: "123 Main Street",
-      line2: "Apt 4B",
-      city: "Mumbai",
-      state: "Maharashtra",
-      postalCode: "400001",
-      country: "India",
-    },
-    timeline: [
-      { status: "ORDER_CREATED", completed: true },
-      { status: "PROCESSING", completed: true },
-      { status: "CONFIRMED", completed: true, current: true },
-      { status: "Shipped", completed: false },
-      { status: "OUT_FOR_PICKUP", completed: false },
-      { status: "PICKED_UP", completed: false },
-      { status: "SHIPPED", completed: false },
-      { status: "IN_TRANSIT", completed: false },
-      { status: "REACHED_AT_DESTINATION", completed: false },
-      { status: "OUT_FOR_DELIVERY", completed: false },
-      { status: "DELIVERED", completed: false },
-      { status: "PAYMENT_PENDING", completed: false },
-      { status: "PAYMENT_FAILED", completed: false },
-      { status: "CANCELLED", completed: false },
-      { status: "FAILED", completed: false },
-      { status: "RETURN_REQUESTED", completed: false },
-      { status: "RETURNED", completed: false },
-      { status: "RETURN_FAILED", completed: false },
-      { status: "RETURN_CANCELLED", completed: false },
-      { status: "REFUNDED", completed: false },
-    ],
-  };
 
   // Helper function to get status color
   const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "created":
-        return "bg-gray-500";
-      case "confirmed":
-        return "bg-blue-500";
-      case "processing":
-        return "bg-yellow-500";
-      case "shipped":
-        return "bg-purple-500";
-      case "delivered":
-        return "bg-green-500";
-      case "cancelled":
-        return "bg-red-500";
-      default:
-        return "bg-gray-500";
-    }
+    const statusColorMap = {
+      created: "bg-gray-500",
+      confirmed: "bg-blue-500",
+      processing: "bg-gray-500",
+      shipped: "bg-purple-500",
+      delivered: "bg-green-500",
+      cancelled: "bg-red-500",
+      "payment failed": "bg-red-500",
+    };
+
+    return (statusColorMap as Record<string, string>)[status.toLowerCase()] || "bg-gray-500";
   };
+
+  const crossIconStatus = ["cancelled", "payment failed"];
 
   useEffect(() => {
     const getOrder = async () => {
@@ -123,8 +62,6 @@ export default function OrderDetailsPage({ params }: { params: { orderNo: string
     };
     getOrder();
   }, [params.orderNo]);
-
-  // console.log(order);
 
   if (isLoading) {
     return <LoadingPage />;
@@ -169,7 +106,11 @@ export default function OrderDetailsPage({ params }: { params: { orderNo: string
               <div className="relative">
                 {/* Stepper line */}
                 {order.timeline.length > 0 ? (
-                  <div className="absolute left-5 top-0 h-full w-0.5 bg-muted" />
+                  <div
+                    className={`absolute left-5 top-0 ${
+                      order.timeline.filter((item) => !item.completed).length ? `h-[100%]` : `h-[90%]`
+                    } w-0.5 bg-muted`}
+                  />
                 ) : (
                   <p>No tracking info</p>
                 )}
@@ -179,29 +120,27 @@ export default function OrderDetailsPage({ params }: { params: { orderNo: string
                   {order.timeline.map((step, index) => (
                     <div key={index} className="relative flex items-start">
                       <div
-                        className={`absolute left-0 flex h-10 w-10 items-center justify-center rounded-full border ${
+                        className={`${getStatusColor(
+                          step.message
+                        )} text-white absolute left-0 flex h-10 w-10 items-center justify-center rounded-full border ${
                           step.completed
                             ? step.current
-                              ? "border-primary bg-primary text-primary-foreground"
-                              : "border-primary bg-primary text-primary-foreground"
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-primary text-primary-foreground"
                             : "border-muted bg-background"
                         }`}
                       >
                         {!step.completed ? (
-                          <>
-                            {step.current ? (
-                              <Clock className="h-5 w-5" />
-                            ) : (
-                              <span className="h-2 w-2 rounded-full bg-muted-foreground" />
-                            )}
-                          </>
+                          <Clock className="h-5 w-5" />
+                        ) : crossIconStatus.includes(step.message.toLowerCase()) ? (
+                          <X className="h-5 w-5" />
                         ) : (
                           <Check className="h-5 w-5" />
                         )}
                       </div>
                       <div className="ml-14 space-y-1">
-                        <p className="text-base font-semibold">{step.activity}</p>
-                        <p className="text-sm text-muted-foreground">{step.date}</p>
+                        <p className="text-base font-semibold">{step.message}</p>
+                        <p className="text-sm text-muted-foreground">{formatDateTime(step.createdAt)}</p>
                       </div>
                     </div>
                   ))}
@@ -293,7 +232,8 @@ export default function OrderDetailsPage({ params }: { params: { orderNo: string
             </CardHeader>
             <CardContent>
               <div className="space-y-1">
-                <p className="font-medium">{order.shippingAddress.name}</p>
+                <p className="">{order.shippingAddress.name}</p>
+                <p className="">{order.shippingAddress.phone}</p>
                 <p className="text-sm text-muted-foreground">{order.shippingAddress.line1}</p>
                 {order.shippingAddress.line2 && (
                   <p className="text-sm text-muted-foreground">{order.shippingAddress.line2}</p>
@@ -313,7 +253,19 @@ export default function OrderDetailsPage({ params }: { params: { orderNo: string
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                {order.paymentMode === "COD" ? "Cash on Delivery" : "Online Payment"}
+                {order.payment.mode === "CASH_ON_DELIVERY" ? "Cash on Delivery" : "Online Payment"}{" "}
+                <Badge
+                  variant={
+                    order.payment.status === "PAID"
+                      ? "default"
+                      : order.payment.status === "PENDING"
+                      ? "outline"
+                      : "destructive"
+                  }
+                  className="font-medium ml-2"
+                >
+                  {order.payment.status}
+                </Badge>
               </p>
             </CardContent>
           </Card>

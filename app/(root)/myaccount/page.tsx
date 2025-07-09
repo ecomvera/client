@@ -34,13 +34,13 @@ const Page = () => {
       <h1 className="flex items-center gap-2 font-semibold text-xl md:text-2xl font-sans">My Account</h1>
       <div className="flex flex-col justify-between items-baseline my-6 border max-w-96 p-5">
         <div className="flex">
-          <Avatar className="w-14 md:w-20 h-14 md:h-20">
+          <Avatar className="w-10 md:w-14 h-10 md:h-14">
             <AvatarImage src="#" />
             <AvatarFallback className="text-lg md:text-3xl">{user?.name?.slice(0, 1).toUpperCase()}</AvatarFallback>
           </Avatar>
           <div className="ml-1 md:ml-5 text-light-1">
             <h1 className="text-lg md:text-2xl font-semibold">{user?.name}</h1>
-            <p className="text-sm md:text-lg">{user?.email}</p>
+            <p className="text-sm md:text-lg">+91 {user?.phone}</p>
           </div>
         </div>
         <Link href="/myaccount/profile" className="w-full mt-10">

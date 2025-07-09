@@ -25,7 +25,7 @@ const Page = () => {
   const [orders, setOrders] = React.useState([]);
   const [statusOptions, setStatusOptions] = React.useState([]);
 
-  const getStatus = (status: string) => statusOptions?.find((option: any) => option.value === status);
+  const getStatus = (status: string) => statusOptions?.find((option: any) => option.label === status);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,7 +65,7 @@ const Page = () => {
                 <h1 className="text-xs sm:text-base font-semibold">Order #{order.orderNumber}</h1>
                 <p className="text-sm">{formatDateTime(order.createdAt)}</p>
               </span>
-              {/* <Status id={order.id} amount={order.totalAmount} status={getStatus(order.status)} /> */}
+              <Status id={order.id} amount={order.totalAmount} status={getStatus(order.status)} />
             </div>
 
             {order.items.map((item: any) => (
@@ -117,23 +117,23 @@ const Page = () => {
 
 const Status = ({ id, amount, status }: any) => {
   const navigate = useRouter();
-  const handleRetry = async () => {
-    navigate.push(`/payment?id=${id}&amount=${amount}`);
-  };
+  // const handleRetry = async () => {
+  //   navigate.push(`/payment?id=${id}&amount=${amount}`); // need to create this route
+  // };
   return (
     <div>
       <p className={`text-xs sm:text-sm font-semibold`} style={{ color: status.color }}>
         {status.label}
       </p>
       <div className="flex gap-1 sm:gap-[6px]">
-        {(status.label === "Payment Failed" || status.label === "Payment Pending") && (
+        {/* {(status.label === "Payment Failed" || status.label === "Payment Pending") && (
           <button
             className="mt-1 text-xs sm:text-sm sm:py-[2px] border border-light-3 px-2 rounded hover:bg-gray-100"
             onClick={handleRetry}
           >
             Retry
           </button>
-        )}
+        )} */}
         {status.label === "Payment Pending" && (
           <button className="mt-1 text-xs sm:text-sm sm:py-[2px] px-2 rounded bg-red-400 text-white hover:bg-red-500">
             Cancel

@@ -158,7 +158,7 @@ const SignInForm = ({
       <h1 className="text-lg font-bold">Sign In / Sign Up</h1>
       <p className="text-sm">Join our community & get exclusive offers</p>
 
-      <Tabs defaultValue="email" className="mt-6">
+      <Tabs defaultValue="phone" className="mt-6">
         {/* <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="email">Email</TabsTrigger>
           <TabsTrigger value="phone">Phone</TabsTrigger>
@@ -284,7 +284,7 @@ const SignInForm = ({
               Continue with Phone
             </Button>
 
-            <p className="text-sm text-light-1 !mt-2">Email registration is required to create an account</p>
+            {/* <p className="text-sm text-light-1 !mt-2">Email registration is required to create an account</p> */}
           </div>
         </TabsContent>
       </Tabs>

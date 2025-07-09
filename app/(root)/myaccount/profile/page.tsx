@@ -45,7 +45,7 @@ const Page = () => {
     }
     toast({
       title: "Error",
-      description: "Failed to update profile",
+      description: res.error || "Failed to update profile",
       variant: "destructive",
     });
   };
@@ -68,9 +68,16 @@ const Page = () => {
       </h1>
 
       <div className="flex flex-col">
-        <InputField name="name" label="Name" defaultValue={name} onChange={(e) => setName(e.target.value)} />
-        <InputField name="email" label="Email" disabled defaultValue={email} onChange={(e) => setEmail(e.target.value)} />
-        <InputField name="phone" label="Phone" disabled defaultValue={phone} onChange={(e) => setPhone(e.target.value)} />
+        <InputField name="name" label="Name" required defaultValue={name} onChange={(e) => setName(e.target.value)} />
+        <InputField name="email" label="Email" defaultValue={email} onChange={(e) => setEmail(e.target.value)} />
+        <InputField
+          name="phone"
+          label="Phone"
+          required
+          disabled
+          defaultValue={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
 
         <div className="px-2">
           <span className="text-sm font-semibold mt-5">Gender</span>
@@ -116,7 +123,6 @@ const Page = () => {
           disabled={
             (name === user?.name && email === user?.email && phone === user?.phone && gender === user?.gender) ||
             !name ||
-            !email ||
             !phone ||
             !gender
           }

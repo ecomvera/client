@@ -93,8 +93,6 @@ export const razorpayPayment = async ({
     const paymentObject = new window.Razorpay(options);
     await paymentObject.open();
 
-    paymentObject.on("payment.exit");
-
     paymentObject.on("payment.failed", async function (response: any) {
       console.log({ response });
       toast({
@@ -112,24 +110,13 @@ export const razorpayPayment = async ({
 
 const handleUpdateOrderPaymentStatus = async (orderNo: string, status: string) => {
   const token = localStorage.getItem("accessToken");
-  await fetch("/api/user/orders/status", {
+  await fetch("/api/user/payment/razorpay/failed", {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
       authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ orderNo, status }),
-  });
-  await fetch("/api/user/payment/status", {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      orderNo,
-      status: status === "PAYMENT_FAILED" ? "FAILED" : status,
-    }),
   });
   window.location.replace("/order/failure?paymentMode=Razorpay Payment");
 };

@@ -5,12 +5,14 @@ import { toast } from "@/components/ui/use-toast";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { type Dispatch, type SetStateAction, useState } from "react";
-import { ArrowLeftIcon } from "@radix-ui/react-icons";
+import { ArrowLeftIcon, PersonIcon } from "@radix-ui/react-icons";
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { useUserStore } from "@/stores/user";
 import { useDataStore } from "@/stores/data";
 import { devLog } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { IoFemaleOutline, IoMaleOutline, IoTransgenderOutline } from "react-icons/io5";
 
 const PhoneSignIn = ({
   phone,
@@ -25,6 +27,9 @@ const PhoneSignIn = ({
   const searchParams = useSearchParams();
   const { setUser, setToken } = useUserStore();
   const { cart, wishlist, setCart, setWishlist } = useDataStore();
+  const [onBoarded, setOnBoarded] = useState(true);
+  const [name, setName] = useState("");
+  const [gender, setGender] = useState("");
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
@@ -36,8 +41,6 @@ const PhoneSignIn = ({
         method: "POST",
         body: JSON.stringify({ phone }),
       });
-
-      devLog(res);
 
       if (!res.ok) {
         setIsLoading(false);
@@ -51,9 +54,6 @@ const PhoneSignIn = ({
 
       const resJson = await res.json();
 
-      devLog(resJson);
-      // devLog(`Your OTP is: ${resJson.data.otp}`);
-
       setIsLoading(false);
 
       if (!resJson.ok) {
@@ -64,9 +64,9 @@ const PhoneSignIn = ({
         });
       }
 
+      setOnBoarded(resJson?.onBoarded || false);
       setOtpSent(true);
 
-      // For development purposes only - in production, this would be sent via SMS
       toast({
         title: "OTP Sent",
         description: "Please check your phone for the OTP",
@@ -86,7 +86,7 @@ const PhoneSignIn = ({
       setIsLoading(true);
       const res = await fetch("/api/auth/verify-otp", {
         method: "POST",
-        body: JSON.stringify({ phone, otp }),
+        body: JSON.stringify({ phone, otp, ...(!onBoarded && { name, gender }) }),
       }).then((data) => data.json());
 
       if (!res.ok) {
@@ -99,11 +99,11 @@ const PhoneSignIn = ({
         return;
       }
 
-      // If user is not onboarded, redirect to onboarding
-      if (!res.data.user.onBoarded) {
-        router.push(`/onboarding?phone=${encodeURIComponent(phone)}&otp=${encodeURIComponent(otp)}`);
-        return;
-      }
+      // // If user is not onboarded, redirect to onboarding
+      // if (!res.data.user.onBoarded) {
+      //   router.push(`/onboarding?phone=${encodeURIComponent(phone)}&otp=${encodeURIComponent(otp)}`);
+      //   return;
+      // }
 
       // Set user data and tokens
       setUser(res.data.user);
@@ -175,15 +175,72 @@ const PhoneSignIn = ({
         </InputOTPGroup>
       </InputOTP>
 
+      {!onBoarded && (
+        <>
+          <div className="mt-2">
+            <span className="text-sm font-semibold">Name</span>
+            <div className="border border-light-1 rounded-md p-1 flex items-center w-full">
+              <span className="text-sm font-semibold ml-1">
+                <PersonIcon className="w-5 h-5" />
+              </span>
+              <Input
+                placeholder="Enter Your Full Name"
+                className="border-none focus-visible:ring-transparent shadow-none text-base font-semibold w-full ml-2"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                name="name"
+                autoComplete="name"
+              />
+            </div>
+          </div>
+
+          <div className="mt-2">
+            <span className="text-sm font-semibold">Gender</span>
+            <div className="flex gap-3">
+              <div
+                className={`border border-light-1 rounded-md p-1 flex items-center w-full h-10 cursor-pointer ${
+                  gender === "Male" && "bg-primary text-background"
+                }`}
+                onClick={() => setGender("Male")}
+              >
+                <span className="flex gap-5 text-sm font-semibold ml-1">
+                  <IoMaleOutline className="w-5 h-5" /> <span>Male</span>
+                </span>
+              </div>
+              <div
+                className={`border border-light-1 rounded-md p-1 flex items-center w-full h-10 cursor-pointer ${
+                  gender === "Female" && "bg-primary text-background"
+                }`}
+                onClick={() => setGender("Female")}
+              >
+                <span className="flex gap-5 text-sm font-semibold ml-1">
+                  <IoFemaleOutline className="w-5 h-5" /> <span>Female</span>
+                </span>
+              </div>
+              <div
+                className={`border border-light-1 rounded-md p-1 flex items-center w-full h-10 cursor-pointer ${
+                  gender === "Other" && "bg-primary text-background"
+                }`}
+                onClick={() => setGender("Other")}
+              >
+                <span className="flex gap-5 text-sm font-semibold ml-1">
+                  <IoTransgenderOutline className="w-5 h-5" /> <span>Other</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
       <div className="flex justify-between items-center mt-4">
         <button className="text-blue-800 font-semibold text-sm" onClick={sendOTP} disabled={isLoading}>
           Resend OTP
         </button>
-        <span className="text-sm text-muted-foreground">Valid for 10 minutes</span>
+        <span className="text-sm text-muted-foreground">Valid for 5 minutes</span>
       </div>
 
       <Button
-        disabled={otp.length !== 4 || isLoading}
+        disabled={otp.length !== 4 || isLoading || (!onBoarded && (!name || !gender))}
         className="text-base uppercase font-semibold mt-5 w-full bg-[--c2] hover:bg-[--c2] text-white"
         onClick={verifyOTP}
       >

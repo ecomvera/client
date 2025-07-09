@@ -173,7 +173,7 @@ export interface IOrder {
   giftWrapCharge: number;
   totalAmount: number;
 
-  paymentMode: "COD" | "ONLINE";
+  payment: any;
   shippingAddress: IAddress;
 
   createdAt: string;
