@@ -125,11 +125,11 @@ export default function AboutUs() {
             <p className="mt-6 text-xl font-medium">
               Our dream is to make Silkyester a premium and trusted fashion brand in India and globally.
             </p>
-            <div className="pt-8">
+            {/* <div className="pt-8">
               <Button asChild size="lg" className="bg-[--c2] hover:bg-[--c3] text-white">
                 <Link href="/collections">Explore Our Collections</Link>
               </Button>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
