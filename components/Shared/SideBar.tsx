@@ -164,7 +164,12 @@ const Item = ({
               <AccordionContent className="px-2">
                 <Accordion type="single" collapsible>
                   {arr[item].map((i) => (
-                    <Link href={`/${i.slug}`} onClick={() => setIsSidebarOpen(false)} key={i.id} className="flex gap-3 p-2">
+                    <Link
+                      href={`/category/${i.slug}`}
+                      onClick={() => setIsSidebarOpen(false)}
+                      key={i.id}
+                      className="flex gap-3 p-2"
+                    >
                       <div className="text-sm">{i.name}</div>
                     </Link>
                   ))}

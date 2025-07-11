@@ -58,12 +58,7 @@ const Page = () => {
 
     // Avoid pushing same URL again
     if (decodeURIComponent(window.location.search) !== `?${newParams.toString()}`) {
-      const timer = setTimeout(() => {
-        setShowLoadingScreen(true);
-        router.push(newUrl);
-      }, 100); // adjust delay as needed
-
-      return () => clearTimeout(timer);
+      router.push(newUrl);
     }
   }, [filters, page]);
 
@@ -79,10 +74,17 @@ const Page = () => {
 
   // handle loaded data
   useEffect(() => {
-    setShowLoadingScreen(false);
     if (!data?.ok) return;
     setFilteredProducts(data.data || []);
   }, [data]);
+
+  useEffect(() => {
+    if (isLoading) {
+      setShowLoadingScreen(true);
+    } else {
+      setShowLoadingScreen(false);
+    }
+  }, [isLoading]);
 
   return (
     <div className="max-w-desktop mx-auto px-2 pb-1 md:py-[2px] h-full min-h-[calc(100vh-200px)]">

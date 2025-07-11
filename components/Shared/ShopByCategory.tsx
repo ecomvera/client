@@ -27,7 +27,7 @@ const ShopByCategory = ({ data }: { data: any }) => {
                   (child) =>
                     child.products.length > 0 && (
                       <CarouselItem key={child.id} className="basis-3/5 sm:basis-1/3 md:basis-1/5 lg:basis-1/6 mobile:py-4">
-                        <Link href={`/${child.slug}`} key={child.id} className="w-full min-w-[200px]">
+                        <Link href={`/category/${child.slug}`} key={child.id} className="w-full min-w-[200px]">
                           <AspectRatio ratio={0.8 / 1} className="border rounded-md relative overflow-hidden">
                             <Image
                               src={child.products[0].images[0].url}
@@ -47,7 +47,7 @@ const ShopByCategory = ({ data }: { data: any }) => {
                     )
                 )}
                 <CarouselItem className="basis-3/5 sm:basis-1/3 md:basis-1/5 lg:basis-1/6 mobile:py-4">
-                  <Link href={`/${category.slug}`} key={category.id} className="w-full min-w-[200px]">
+                  <Link href={`/category/${category.slug}`} key={category.id} className="w-full min-w-[200px]">
                     <AspectRatio
                       ratio={0.8 / 1}
                       className="border rounded-md relative bg-gray-100 flex items-center justify-center font-semibold text-lg"

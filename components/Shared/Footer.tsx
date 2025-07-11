@@ -94,7 +94,7 @@ const Footer = () => {
           <ul className="space-y-2">
             {categoriesData.slice(0, 6).map((item: any) => (
               <li key={item.id} className="hover:text-gray-900 cursor-pointer">
-                <Link key={item.label} href={`/${item.slug}`} className="hover:text-gray-900 cursor-pointer">
+                <Link key={item.label} href={`/category/${item.slug}`} className="hover:text-gray-900 cursor-pointer">
                   {item.name}
                 </Link>
               </li>

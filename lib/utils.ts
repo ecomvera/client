@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { nanoid } from "nanoid";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -7,7 +8,9 @@ export function cn(...inputs: ClassValue[]) {
 
 export async function getData(url: string) {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, { cache: "no-store" });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
+      cache: "no-store",
+    });
     if (!res.ok) {
       console.log("error -", "failed to fetch data");
       return [];
@@ -29,7 +32,9 @@ export async function getData(url: string) {
 // default 5 mins
 export async function fetchISR(url: string, revalidate = 300) {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, { next: { revalidate } });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
+      next: { revalidate },
+    });
     if (!res.ok) {
       console.log("error -", "failed to fetch data");
       return [];
@@ -72,11 +77,10 @@ export const noCache = {
 };
 
 export function generateOrderNumber() {
-  const timestamp = Date.now().toString().slice(-6);
-  const randomPart = Math.floor(Math.random() * 1e4)
-    .toString()
-    .padStart(4, "0");
-  return `${timestamp}${randomPart}`;
+  const prefix = process.env.NEXT_PUBLIC_ORDER_PREFIX;
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+  const id = nanoid(6).toUpperCase();
+  return `${prefix}-${date}-${id}`;
 }
 
 export const getDiscount = (mrp: number, price: number) => {
