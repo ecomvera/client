@@ -213,3 +213,8 @@ export interface IPagination {
   total: number;
   totalPages: number;
 }
+
+export interface IFilters {
+  key: string;
+  value: string[];
+}

@@ -15,7 +15,7 @@ import {
 } from "react-icons/io5";
 import { useAction } from "@/stores/action";
 import { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@/hooks/useUser";
 import { useData } from "@/hooks/useData";
 import {
@@ -35,6 +35,7 @@ import Image from "next/image";
 const Header = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { user } = useUser();
   const { cart, wishlist } = useData();
   const { setIsSidebarOpen } = useAction();
@@ -91,7 +92,7 @@ const Header = () => {
             )
           ) : (
             <div className="flex gap-5 items-center mr-2 flex-1 justify-end">
-              <Search className="hidden laptop:flex " />
+              <Search className="hidden laptop:flex " query={searchParams.get("q") || ""} />
 
               {pathname !== "/search" && (
                 <Link href={`/search`} className="hidden tablet:block">

@@ -9,11 +9,11 @@ import { Cross2Icon } from "@radix-ui/react-icons";
 import clsx from "clsx";
 import { ClassNameValue } from "tailwind-merge";
 
-const Search = ({ className }: { className?: ClassNameValue }) => {
+const Search = ({ className, query }: { className?: ClassNameValue; query?: string }) => {
   const navigate = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(query || "");
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -49,7 +49,7 @@ const Search = ({ className }: { className?: ClassNameValue }) => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        {search && <Cross2Icon onClick={() => setSearch("")} className={`cursor-pointer mr-3 text-xl w-5`} />}
+        {search && <Cross2Icon onClick={() => setSearch("")} className={`cursor-pointer mr-3 text-xl w-5 text-black`} />}
       </form>
     </div>
   );
