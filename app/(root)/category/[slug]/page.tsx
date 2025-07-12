@@ -147,11 +147,13 @@ const Page = ({ params }: PageProps) => {
                   <Link className="border-b border-muted-foreground" href={`/category/${data.parentCategory.slug}`}>
                     {data.parentCategory.name}
                   </Link>
-                  {" / "}
+                  <span className="text-muted-foreground"> / </span>
                 </span>
               )}
-              {categoryData?.category?.name || "Products"}
-              {filteredProducts.length > 0 && <span className="ml-2 font-extralight">({filteredProducts.length})</span>}
+              <span className="font-light">
+                {categoryData?.category?.name || "Products"}
+                {filteredProducts.length > 0 && ` (${filteredProducts.length})`}
+              </span>
             </div>
             <div className="hidden md:block">
               <SortBy items={filteredProducts} setItems={setFilteredProducts} desktop />
@@ -161,11 +163,19 @@ const Page = ({ params }: PageProps) => {
           {/* Loading */}
           {isLoading && !filteredProducts.length && <Fetching />}
 
+          {/* No Category Data */}
+          {!isLoading && !categoryData && (
+            <div className="flex flex-col gap-5 items-center text-muted-foreground mt-10">
+              <p className="text-lg">Category not found</p>
+              <Button onClick={() => router.push("/")}>Go to Home</Button>
+            </div>
+          )}
+
           {/* No Products */}
-          {!isLoading && filteredProducts.length === 0 && (
+          {!isLoading && categoryData && filteredProducts.length === 0 && (
             <div className="flex flex-col gap-5 items-center text-muted-foreground mt-10">
               <p className="text-lg">No products found</p>
-              <Button onClick={() => setFilters([])}>Clear All</Button>
+              <Button onClick={() => router.push("/")}>Go to Home</Button>
             </div>
           )}
 
@@ -179,9 +189,7 @@ const Page = ({ params }: PageProps) => {
                 <button
                   key={i + 1}
                   onClick={() => setPage(i + 1)}
-                  className={`px-4 py-2 ${
-                    data.pagination.page === i + 1 ? "bg-blue-500 text-white" : "bg-gray-200"
-                  } rounded`}
+                  className={`px-4 py-2 ${data.pagination.page === i + 1 ? "bg-[--c2] text-white" : "bg-gray-200"} rounded`}
                 >
                   {i + 1}
                 </button>

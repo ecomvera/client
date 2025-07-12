@@ -154,7 +154,7 @@ const Page = () => {
                     key={i + 1}
                     onClick={() => setPage(i + 1)}
                     className={`px-4 py-2 ${
-                      data.pagination.page === i + 1 ? "bg-blue-500 text-white" : "bg-gray-200"
+                      data.pagination.page === i + 1 ? "bg-[--c2] text-white" : "bg-gray-200"
                     } rounded`}
                   >
                     {i + 1}
