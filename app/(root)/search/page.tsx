@@ -15,8 +15,8 @@ import { ReloadIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import SortBy from "@/components/Shared/SortBy";
 import Search from "@/components/forms/Search";
-import DefaultPage from "./DefaultPage";
 import FiltersDrawer from "@/components/Shared/FiltersDrawer";
+import ListByCategory from "@/components/Shared/ListByCategory";
 
 const Page = () => {
   const router = useRouter();
@@ -110,9 +110,9 @@ const Page = () => {
   }, [isLoading]);
 
   return (
-    <div className="max-w-desktop mx-auto px-2 pb-1 md:py-[2px] h-full min-h-[calc(100vh-200px)]">
+    <div className="max-w-desktop mx-auto pb-1 md:py-[2px] h-full min-h-[calc(100vh-200px)]">
       {/* Mobile Search */}
-      <Search className="flex laptop:hidden my-2 mb-4 border-2" query={query} />
+      <Search className="flex laptop:hidden my-2 mb-4 border-2 mx-2" query={query} />
 
       {/* When query exists */}
       {query ? (
@@ -144,8 +144,8 @@ const Page = () => {
           </div>
 
           {/* Product Listing */}
-          <div className="flex flex-col w-full mt-[-5px]">
-            <div className="z-[2] flex justify-between flex-row-reverse items-center gap-5 sticky md:flex top-12 md:top-auto bg-background mb-3 py-0 md:p-0">
+          <div className="flex flex-col w-full mt-[-5px] mb-20">
+            <div className="z-[2] flex justify-between flex-row-reverse items-center gap-5 sticky md:flex top-10 md:top-auto bg-background mb-3 py-2 md:p-0">
               {/* mobile filters drawer */}
               <div className="md:hidden">
                 <FiltersDrawer clearAll={() => setFilters([])} applyedFilters={filters.length}>
@@ -210,7 +210,7 @@ const Page = () => {
           </div>
         </div>
       ) : (
-        <DefaultPage />
+        <ListByCategory />
       )}
     </div>
   );

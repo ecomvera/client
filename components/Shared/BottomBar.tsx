@@ -14,7 +14,8 @@ import {
   IoSearch,
   IoSearchOutline,
 } from "react-icons/io5";
-import { PiPackageFill, PiPackageLight } from "react-icons/pi";
+import { TbCategory } from "react-icons/tb";
+import { BiSolidCategory } from "react-icons/bi";
 
 const BottomBar = () => {
   const router = useRouter();
@@ -29,11 +30,11 @@ const BottomBar = () => {
           <NavLink href="/" label="Home">
             {pathname === "/" ? <IoHome className="text-2xl text-[--c2]" /> : <IoHomeOutline className="text-2xl" />}
           </NavLink>
-          <NavLink href="/myaccount/orders" label="Orders">
-            {pathname === "/myaccount/orders" ? (
-              <PiPackageFill className="text-2xl text-[--c2]" />
+          <NavLink href="/category" label="Category">
+            {pathname === "/category" ? (
+              <BiSolidCategory className="text-2xl text-[--c2]" />
             ) : (
-              <PiPackageLight className="text-2xl" />
+              <TbCategory className="text-2xl" />
             )}
           </NavLink>
           <NavLink href="/search" label="Search">
