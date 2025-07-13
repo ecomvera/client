@@ -34,6 +34,8 @@ const Page = ({ params }: PageProps) => {
   const [filteredProducts, setFilteredProducts] = useState<IProduct[]>([]);
   const [categoryData, setCategoryData] = useState<any>(null);
 
+  const [garmentTypes, setGarmentTypes] = useState<string | string[]>();
+
   const query = searchParams.get("q") || "";
   const [page, setPage] = useState(1);
   const limit = 20;
@@ -48,8 +50,6 @@ const Page = ({ params }: PageProps) => {
     ...fetchOpt,
     revalidateOnMount: true,
   });
-
-  console.log({ data, isLoading });
 
   // parse filters from URL
   useEffect(() => {
@@ -77,16 +77,6 @@ const Page = ({ params }: PageProps) => {
     }
   }, [filters, page]);
 
-  // fetch filter properties once
-  useEffect(() => {
-    const fetchFilters = async () => {
-      const res = await fetch(`/api/filters`);
-      const json = await res.json();
-      setFilterProperties(json?.data || {});
-    };
-    fetchFilters();
-  }, []);
-
   // handle loaded data
   useEffect(() => {
     if (!data?.ok) return;
@@ -96,6 +86,27 @@ const Page = ({ params }: PageProps) => {
       parentCategory: data.parentCategory,
       subCategories: data.subCategories,
     });
+
+    // set filter properties based on category data
+    let garmentTypes = data.category?.garmentType || null;
+    let wearTypes = data.category?.wearType || null;
+
+    // if there is only one garment type, set it as a string
+    if (garmentTypes.length === 1) garmentTypes = garmentTypes[0];
+    setGarmentTypes(garmentTypes);
+
+    const url =
+      `/api/filters?` +
+      `${garmentTypes ? `garment_type=${data.category?.garmentType.join("_")}` : ""}` +
+      `${wearTypes ? `&wear_type=${wearTypes.join("_")}` : ""}`;
+
+    const fetchFilters = async () => {
+      const res = await fetch(url);
+      const json = await res.json();
+      if (!res.ok || !json.ok) return console.error("Failed to fetch filters", json.error);
+      setFilterProperties(json?.data || {});
+    };
+    fetchFilters();
   }, [data]);
 
   useEffect(() => {
@@ -111,7 +122,7 @@ const Page = ({ params }: PageProps) => {
       {/* Mobile Search */}
       <Search className="flex laptop:hidden my-2 mb-4 border-2" query={query} />
 
-      <div className="flex gap-8 md:py-5">
+      <div className="flex gap-8 laptop:py-5">
         {/* Filters Sidebar */}
         <div className="hidden md:block tablet:w-50 laptop:w-64">
           <div className="flex justify-between">
@@ -124,10 +135,13 @@ const Page = ({ params }: PageProps) => {
           </div>
 
           <div className="flex flex-col gap-3">
-            <Accordion type="multiple" defaultValue={["item-1", "item-2", "item-3"]} className="w-full">
+            <Accordion type="multiple" defaultValue={["item-1", "item-2", "item-3", "item-4"]} className="w-full">
               <Filters
-                genders={filterProperties?.genders}
-                productTypes={filterProperties?.productTypes}
+                // categories={data?.subCategories || []}
+                // genders={filterProperties?.genders}
+                // productTypes={filterProperties?.productTypes}
+                productTypes={Array.isArray(garmentTypes) ? garmentTypes : []}
+                // 👆 sending productTypes, if multiple values exists [only for collections or parent category]
                 sizes={filterProperties?.sizes.map((size) => size.value).flat()}
                 attributes={filterProperties?.attributes}
                 colors={filterProperties?.colors}
@@ -175,7 +189,11 @@ const Page = ({ params }: PageProps) => {
           {!isLoading && categoryData && filteredProducts.length === 0 && (
             <div className="flex flex-col gap-5 items-center text-muted-foreground mt-10">
               <p className="text-lg">No products found</p>
-              <Button onClick={() => router.push("/")}>Go to Home</Button>
+              {filters.length ? (
+                <Button onClick={() => setFilters([])}>Clear All</Button>
+              ) : (
+                <Button onClick={() => router.push("/")}>Go to Home</Button>
+              )}
             </div>
           )}
 
