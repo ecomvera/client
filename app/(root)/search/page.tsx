@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import useSWR from "swr";
 
@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import SortBy from "@/components/Shared/SortBy";
 import Search from "@/components/forms/Search";
 import DefaultPage from "./DefaultPage";
+import FiltersDrawer from "@/components/Shared/FiltersDrawer";
 
 const Page = () => {
   const router = useRouter();
@@ -30,9 +31,17 @@ const Page = () => {
   const [page, setPage] = useState(1);
   const limit = 20;
 
+  // Track previous filters
+  const prevFiltersRef = useRef<IFilters[]>([]);
+
   // build the search string from URL and page state
   const searchStr = `${searchParams.toString()}&page=${page}&limit=${limit}`;
   const { data, isLoading } = useSWR(`/api/search?${searchStr}`, fetcher, { ...fetchOpt, revalidateOnMount: true });
+
+  useEffect(() => {
+    const paramPage = parseInt(searchParams.get("page") || "1");
+    setPage(paramPage);
+  }, []);
 
   // parse filters from URL
   useEffect(() => {
@@ -49,18 +58,32 @@ const Page = () => {
     if (!query) return;
 
     const newParams = new URLSearchParams({ q: query });
-
-    filters.forEach((f) => {
-      newParams.set(f.key, f.value.join("_"));
-    });
+    filters.forEach((f) => newParams.set(f.key, f.value.join("_")));
+    newParams.set("page", page.toString());
+    newParams.set("limit", limit.toString());
 
     const newUrl = `/search?${newParams.toString()}`;
+    const current = new URLSearchParams(window.location.search).toString();
 
-    // Avoid pushing same URL again
-    if (decodeURIComponent(window.location.search) !== `?${newParams.toString()}`) {
-      router.push(newUrl);
+    if (current !== `?${newParams.toString()}`) {
+      router.replace(newUrl);
     }
   }, [filters, page]);
+
+  // track previous filters and reset page when filters change
+  useEffect(() => {
+    const prev = prevFiltersRef.current;
+
+    // Compare current vs previous filters
+    const filtersChanged =
+      prev.length !== filters.length ||
+      prev.some((f, i) => f.key !== filters[i]?.key || f.value.join("_") !== filters[i]?.value.join("_"));
+
+    if (filtersChanged) {
+      setPage(1);
+      prevFiltersRef.current = filters;
+    }
+  }, [filters]);
 
   // fetch filter properties once
   useEffect(() => {
@@ -122,13 +145,35 @@ const Page = () => {
 
           {/* Product Listing */}
           <div className="flex flex-col w-full mt-[-5px]">
-            <div className="z-[2] flex justify-between items-center gap-5 sticky md:flex top-12 md:top-auto bg-background mb-3 py-0 md:p-0">
-              <div className="font-semibold text-xl md:text-2xl font-sans tracking-wide">
-                {query}
-                {filteredProducts.length > 0 && <span className="ml-2 font-extralight">({filteredProducts.length})</span>}
+            <div className="z-[2] flex justify-between flex-row-reverse items-center gap-5 sticky md:flex top-12 md:top-auto bg-background mb-3 py-0 md:p-0">
+              {/* mobile filters drawer */}
+              <div className="md:hidden">
+                <FiltersDrawer clearAll={() => setFilters([])} applyedFilters={filters.length}>
+                  <Accordion
+                    type="multiple"
+                    defaultValue={["item-1", "item-2", "item-3", "item-4"]}
+                    className="w-full mb-10"
+                  >
+                    <Filters
+                      genders={filterProperties?.genders}
+                      // productTypes={filterProperties?.productTypes}
+                      // productTypes={Array.isArray(garmentTypes) ? garmentTypes : []}
+                      // 👆 sending productTypes, if multiple values exists [only for collections or parent category]
+                      sizes={filterProperties?.sizes.map((size) => size.value).flat()}
+                      attributes={filterProperties?.attributes}
+                      colors={filterProperties?.colors}
+                      filters={filters}
+                      setFilters={setFilters}
+                    />
+                  </Accordion>
+                </FiltersDrawer>
               </div>
               <div className="hidden md:block">
                 <SortBy items={filteredProducts} setItems={setFilteredProducts} desktop />
+              </div>
+              <div className="font-semibold text-xl md:text-2xl font-sans tracking-wide">
+                {query}
+                {filteredProducts.length > 0 && <span className="ml-2 font-extralight">({filteredProducts.length})</span>}
               </div>
             </div>
 

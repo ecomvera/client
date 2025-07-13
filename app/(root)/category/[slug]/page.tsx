@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import useSWR from "swr";
 
@@ -41,6 +41,9 @@ const Page = ({ params }: PageProps) => {
   const [page, setPage] = useState(1);
   const limit = 20;
 
+  // Track previous filters
+  const prevFiltersRef = useRef<IFilters[]>([]);
+
   // build the search string from URL and page state
   const apiSearchParams = new URLSearchParams(searchParams.toString());
   apiSearchParams.set("page", page.toString());
@@ -51,6 +54,11 @@ const Page = ({ params }: PageProps) => {
     ...fetchOpt,
     revalidateOnMount: true,
   });
+
+  useEffect(() => {
+    const paramPage = parseInt(searchParams.get("page") || "1");
+    setPage(paramPage);
+  }, []);
 
   // parse filters from URL
   useEffect(() => {
@@ -71,12 +79,27 @@ const Page = ({ params }: PageProps) => {
     newParams.set("limit", limit.toString());
 
     const newUrl = `/category/${slug}?${newParams.toString()}`;
-    const current = decodeURIComponent(window.location.search);
+    const current = new URLSearchParams(window.location.search).toString();
 
     if (current !== `?${newParams.toString()}`) {
-      router.push(newUrl);
+      router.replace(newUrl);
     }
   }, [filters, page]);
+
+  // track previous filters and reset page when filters change
+  useEffect(() => {
+    const prev = prevFiltersRef.current;
+
+    // Compare current vs previous filters
+    const filtersChanged =
+      prev.length !== filters.length ||
+      prev.some((f, i) => f.key !== filters[i]?.key || f.value.join("_") !== filters[i]?.value.join("_"));
+
+    if (filtersChanged) {
+      setPage(1);
+      prevFiltersRef.current = filters;
+    }
+  }, [filters]);
 
   // handle loaded data
   useEffect(() => {
@@ -89,16 +112,15 @@ const Page = ({ params }: PageProps) => {
     });
 
     // set filter properties based on category data
-    let garmentTypes = data.category?.garmentType || null;
+    let garmenttypes = data.category?.garmentType || null;
     let wearTypes = data.category?.wearType || null;
 
     // if there is only one garment type, set it as a string
-    if (garmentTypes.length === 1) garmentTypes = garmentTypes[0];
-    setGarmentTypes(garmentTypes);
+    setGarmentTypes(garmenttypes.length === 1 ? garmenttypes[0] : garmenttypes);
 
     const url =
       `/api/filters?` +
-      `${garmentTypes ? `garment_type=${data.category?.garmentType.join("_")}` : ""}` +
+      `${garmenttypes ? `garment_type=${garmenttypes.join("_")}` : ""}` +
       `${wearTypes ? `&wear_type=${wearTypes.join("_")}` : ""}`;
 
     const fetchFilters = async () => {
