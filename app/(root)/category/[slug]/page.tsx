@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import SortBy from "@/components/Shared/SortBy";
 import Search from "@/components/forms/Search";
 import Link from "next/link";
+import FiltersDrawer from "@/components/Shared/FiltersDrawer";
 
 interface PageProps {
   params: {
@@ -124,7 +125,7 @@ const Page = ({ params }: PageProps) => {
 
       <div className="flex gap-8 laptop:py-5">
         {/* Filters Sidebar */}
-        <div className="hidden md:block tablet:w-50 laptop:w-64">
+        <div className="hidden md:block w-full tablet:w-48 laptop:w-64 max-w-[200px]">
           <div className="flex justify-between">
             <span className="font-semibold text-muted-foreground">Filters</span>
             {filters.length > 0 && (
@@ -137,7 +138,6 @@ const Page = ({ params }: PageProps) => {
           <div className="flex flex-col gap-3">
             <Accordion type="multiple" defaultValue={["item-1", "item-2", "item-3", "item-4"]} className="w-full">
               <Filters
-                // categories={data?.subCategories || []}
                 // genders={filterProperties?.genders}
                 // productTypes={filterProperties?.productTypes}
                 productTypes={Array.isArray(garmentTypes) ? garmentTypes : []}
@@ -154,7 +154,29 @@ const Page = ({ params }: PageProps) => {
 
         {/* Product Listing */}
         <div className="flex flex-col w-full mt-[-5px]">
-          <div className="z-[2] flex justify-between items-center gap-5 sticky md:flex top-12 md:top-auto bg-background mb-3 py-0 md:p-0">
+          <div className="z-[2] flex justify-between items-center flex-row-reverse gap-5 sticky md:flex top-12 md:top-auto bg-background mb-3 py-0 md:p-0">
+            {/* mobile filters drawer */}
+            <div className="md:hidden">
+              <FiltersDrawer clearAll={() => setFilters([])} applyedFilters={filters.length}>
+                <Accordion type="multiple" defaultValue={["item-1", "item-2", "item-3", "item-4"]} className="w-full mb-10">
+                  <Filters
+                    // genders={filterProperties?.genders}
+                    // productTypes={filterProperties?.productTypes}
+                    productTypes={Array.isArray(garmentTypes) ? garmentTypes : []}
+                    // 👆 sending productTypes, if multiple values exists [only for collections or parent category]
+                    sizes={filterProperties?.sizes.map((size) => size.value).flat()}
+                    attributes={filterProperties?.attributes}
+                    colors={filterProperties?.colors}
+                    filters={filters}
+                    setFilters={setFilters}
+                  />
+                </Accordion>
+              </FiltersDrawer>
+            </div>
+            <div className="hidden md:block">
+              <SortBy items={filteredProducts} setItems={setFilteredProducts} desktop />
+            </div>
+
             <div className="font-semibold text-lg font-sans tracking-wide">
               {data?.parentCategory && (
                 <span>
@@ -168,9 +190,6 @@ const Page = ({ params }: PageProps) => {
                 {categoryData?.category?.name || "Products"}
                 {filteredProducts.length > 0 && ` (${filteredProducts.length})`}
               </span>
-            </div>
-            <div className="hidden md:block">
-              <SortBy items={filteredProducts} setItems={setFilteredProducts} desktop />
             </div>
           </div>
 

@@ -10,6 +10,8 @@ const deliveryCost = process.env.NEXT_PUBLIC_DELIVERY_CHARGE ? parseInt(process.
 const freeDeliveryAt = process.env.NEXT_PUBLIC_FREE_SHIPPING_AT ? parseInt(process.env.NEXT_PUBLIC_FREE_SHIPPING_AT) : 0;
 
 interface IFilterProperties {
+  genders?: string[];
+  productTypes?: string[];
   sizes: ISize[];
   attributes: IAttribute[];
   colors: IColor[];

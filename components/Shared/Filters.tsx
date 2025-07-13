@@ -9,87 +9,90 @@ interface ISelectedItem {
   value: string[];
 }
 
-interface ISetFilters extends React.Dispatch<React.SetStateAction<ISelectedItem[]>> {}
+type SetFilters = React.Dispatch<React.SetStateAction<ISelectedItem[]>>;
 
-const Filters = ({
-  genders,
-  productTypes,
-  sizes,
-  attributes,
-  colors,
-  filters,
-  setFilters,
-}: {
+interface FiltersProps {
   genders?: string[];
   productTypes?: string[];
   sizes: string[];
   attributes: IAttribute[];
   colors: IColor[];
   filters: ISelectedItem[];
-  setFilters: ISetFilters;
-}) => {
-  const handleSelectItem = (category: string, value: string) => {
-    setFilters((prev) => {
-      const index = prev.findIndex((item) => item.key === category);
-      if (index === -1) {
-        return [...prev, { key: category, value: [value] }];
-      }
-      if (prev[index].value.includes(value)) {
-        const copy = [...prev];
-        copy[index] = { ...copy[index], value: copy[index].value.filter((item) => item !== value) };
-        if (copy[index].value.length === 0) {
-          copy.splice(index, 1); // if the value length is 0, remove the category from the filters
+  setFilters: SetFilters;
+}
+
+interface ItemValue {
+  key: string;
+  value: string;
+  hex?: string;
+}
+
+const Filters: React.FC<FiltersProps> = ({ genders, productTypes, sizes, attributes, colors, filters, setFilters }) => {
+  const handleSelectItem = React.useCallback(
+    (category: string, value: string) => {
+      setFilters((prev) => {
+        const index = prev.findIndex((item) => item.key === category);
+        if (index === -1) {
+          return [...prev, { key: category, value: [value] }];
         }
-        return copy;
-      } else {
-        const copy = [...prev];
-        copy[index] = { ...copy[index], value: [...copy[index].value, value] };
-        return copy;
-      }
-    });
-  };
+        if (prev[index].value.includes(value)) {
+          const copy = [...prev];
+          copy[index] = { ...copy[index], value: copy[index].value.filter((item) => item !== value) };
+          if (copy[index].value.length === 0) {
+            copy.splice(index, 1);
+          }
+          return copy;
+        } else {
+          const copy = [...prev];
+          copy[index] = { ...copy[index], value: [...copy[index].value, value] };
+          return copy;
+        }
+      });
+    },
+    [setFilters]
+  );
 
   return (
     <>
-      {genders && genders?.length > 0 && (
+      {genders && genders.length > 0 && (
         <AccordionItem className="border-none" value="item-1">
-          <AccordionTrigger className="hover:no-underline text-[16px] pb-2">Gender</AccordionTrigger>
+          <AccordionTriggerItem value="Gender" />
           <AccordionContent className="flex flex-col px-4 p-0">
             <CollapsibleList data={genders} category="gender" filters={filters} handleSelectItem={handleSelectItem} />
           </AccordionContent>
         </AccordionItem>
       )}
 
-      {productTypes && productTypes?.length > 0 && (
+      {productTypes && productTypes.length > 0 && (
         <AccordionItem className="border-none" value="item-2">
-          <AccordionTrigger className="hover:no-underline text-[16px] pb-2">Category</AccordionTrigger>
+          <AccordionTriggerItem value="Category" />
           <AccordionContent className="flex flex-col px-4 p-0">
             <CollapsibleList data={productTypes} category="category" filters={filters} handleSelectItem={handleSelectItem} />
           </AccordionContent>
         </AccordionItem>
       )}
 
-      {colors?.length > 0 && (
+      {colors && colors.length > 0 && (
         <AccordionItem className="border-none" value="item-3">
-          <AccordionTrigger className="hover:no-underline text-[16px] pb-2">Colors</AccordionTrigger>
+          <AccordionTriggerItem value="Colors" />
           <AccordionContent className="flex flex-col px-4 p-0">
-            <CollapsibleList data={colors} category="colors" filters={filters} handleSelectItem={handleSelectItem} />
+            <CollapsibleList data={colors} category="color" filters={filters} handleSelectItem={handleSelectItem} />
           </AccordionContent>
         </AccordionItem>
       )}
 
-      {sizes?.length > 0 && (
+      {sizes && sizes.length > 0 && (
         <AccordionItem className="border-none" value="item-4">
-          <AccordionTrigger className="hover:no-underline text-[16px] pb-2">Sizes</AccordionTrigger>
+          <AccordionTriggerItem value="Sizes" />
           <AccordionContent className="flex flex-col px-4 p-0">
-            <CollapsibleList data={sizes} category="sizes" filters={filters} handleSelectItem={handleSelectItem} />
+            <CollapsibleList data={sizes} category="size" filters={filters} handleSelectItem={handleSelectItem} />
           </AccordionContent>
         </AccordionItem>
       )}
 
       {attributes?.map((attribute, index) => (
         <AccordionItem key={attribute.id} className="border-none" value={`item-${index + 5}`}>
-          <AccordionTrigger className="hover:no-underline text-[16px] pb-2">{attribute.key}</AccordionTrigger>
+          <AccordionTriggerItem value={attribute.key} />
           <AccordionContent className="flex flex-col px-4 p-0">
             <CollapsibleList
               data={attribute.value}
@@ -104,19 +107,23 @@ const Filters = ({
   );
 };
 
-const CollapsibleList = ({
-  limit = 5,
-  data,
-  category,
-  filters,
-  handleSelectItem,
-}: {
+const AccordionTriggerItem = ({ value }: { value: string }) => {
+  return (
+    <AccordionTrigger className="hover:no-underline text-[16px] pb-2 text-left">
+      <span className="line-clamp-2">{value}</span>
+    </AccordionTrigger>
+  );
+};
+
+interface CollapsibleListProps {
   limit?: number;
   data: IColor[] | string[];
   category: string;
   filters: ISelectedItem[];
   handleSelectItem: (category: string, value: string) => void;
-}) => {
+}
+
+const CollapsibleList: React.FC<CollapsibleListProps> = ({ limit = 5, data, category, filters, handleSelectItem }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
@@ -142,50 +149,48 @@ const CollapsibleList = ({
   );
 };
 
-const Item = ({
-  filters,
-  handleSelectItem,
-  category,
-  value,
-}: {
+interface ItemProps {
   filters: ISelectedItem[];
   handleSelectItem: (category: string, value: string) => void;
   category: string;
   value: IColor | ICollection | string;
-}) => {
-  // @ts-ignore
-  const v = value as { name: string; slug: string; hex: string };
-  const name = v?.name && v?.name;
-  const slug = v?.slug && v?.slug;
-  const hex = v?.hex && v?.hex;
+}
 
-  const [values, setValues] = useState<{ key: string; value: string; hex?: string }>({ key: "", value: "", hex: "" });
+const Item: React.FC<ItemProps> = ({ filters, handleSelectItem, category, value }) => {
+  const [values, setValues] = useState<ItemValue>({ key: "", value: "" });
 
   useEffect(() => {
-    if (typeof value === "object") {
-      if (category === "colors") {
-        setValues({ key: name, value: name, hex: hex });
-      } else {
-        setValues({ key: name, value: slug });
+    if (typeof value === "object" && value !== null) {
+      if (category === "color" && "name" in value && "hex" in value) {
+        const colorValue = value as IColor;
+        setValues({
+          key: colorValue.name,
+          value: colorValue.name,
+          hex: colorValue.hex,
+        });
+      } else if ("name" in value && "slug" in value) {
+        const collectionValue = value as ICollection;
+        setValues({ key: collectionValue.name, value: collectionValue.slug });
       }
     } else {
-      setValues({ key: value, value: value });
+      setValues({ key: String(value), value: String(value) });
     }
-  }, []);
+  }, [value, category]);
 
-  const isClicked = filters.filter((item) => item.key === category)[0]?.value?.includes(values?.value?.replace(" ", "-"));
+  const isClicked = filters.filter((item) => item.key === category)[0]?.value?.includes(values.value);
+
   return (
     <div
       className={`flex gap-2 items-center px-2 py-1 cursor-pointer text-muted-foreground hover:text-foreground hover:bg-muted rounded ${
         isClicked ? "text-black font-bold" : ""
       }`}
-      onClick={() => handleSelectItem(category, values?.value?.replace(" ", "-"))}
+      onClick={() => handleSelectItem(category, values.value)}
     >
       {isClicked ? <ImCheckboxChecked size={16} className="text-primary" /> : <ImCheckboxUnchecked size={16} />}
-      {category === "colors" ? (
+      {category === "color" ? (
         <div className="flex justify-between items-center w-full">
           {values.key}
-          <div className={`rounded w-5 h-5`} style={{ backgroundColor: values.hex }} />
+          <div className="rounded w-5 h-5 border" style={{ backgroundColor: values.hex }} />
         </div>
       ) : (
         <div className="text-base w-full">{values.key}</div>
