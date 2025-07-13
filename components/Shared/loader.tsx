@@ -21,6 +21,7 @@ const Loader = () => {
               width={0}
               height={0}
               sizes="100vw"
+              priority
               className="w-[95px] ml-[-4px] mt-4 absolute text-white"
             />
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 198 93" className={Styles.trucksvg}>
