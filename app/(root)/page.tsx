@@ -13,8 +13,6 @@ export default async function Home() {
   const bestSellers = await getData(`/api/products?best-sellers`);
   const shopByCategory = await getData(`/api/products?shop-by-category`);
 
-  // console.log(bestSellers);
-
   const hadJSON = {
     "@context": "https://schema.org",
     "@type": "ClothingStore",

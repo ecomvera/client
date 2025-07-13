@@ -175,8 +175,8 @@ const Page = ({ params }: PageProps) => {
         </div>
 
         {/* Product Listing */}
-        <div className="flex flex-col w-full mt-[-5px]">
-          <div className="z-[2] flex justify-between items-center flex-row-reverse gap-5 sticky md:flex top-12 md:top-auto bg-background mb-3 py-0 md:p-0">
+        <div className="flex flex-col w-full mt-[-5px] mb-20">
+          <div className="z-[2] flex justify-between items-center flex-row-reverse gap-5 sticky md:flex top-10 md:top-auto bg-background mb-3 py-2 md:p-0">
             {/* mobile filters drawer */}
             <div className="md:hidden">
               <FiltersDrawer clearAll={() => setFilters([])} applyedFilters={filters.length}>

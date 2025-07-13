@@ -30,7 +30,7 @@ const Search = ({ className, query }: { className?: ClassNameValue; query?: stri
   return (
     <div
       className={clsx(
-        `items-center h-9 rounded overflow-hidden bg-[--white] bg-primary-50 w-full laptop:w-[400px] border-[--c1] border-[1px]`,
+        `items-center h-9 rounded overflow-hidden bg-[--white] bg-primary-50 laptop:w-[400px] border-[--c1] border-[1px]`,
         className
       )}
     >
